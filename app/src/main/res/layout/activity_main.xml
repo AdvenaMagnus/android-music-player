@@ -12,42 +12,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/fragment_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Files chooser" />
-
-                <Button
-                    android:id="@+id/buttonChoseFiles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Choose files" />
-
-                <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-                <!--android:id="@+id/scroll"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="fill_parent">-->
-                <!---->
-                <!--</ScrollView>-->
-
-                <ListView
-                    android:id="@+id/lvMain"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></ListView>
-            </LinearLayout>
+                android:layout_height="match_parent" />
 
 
             <ListView
                 android:id="@+id/left_drawer"
-                android:layout_width="340dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:background="#111"

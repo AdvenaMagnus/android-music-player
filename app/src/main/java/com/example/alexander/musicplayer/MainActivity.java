@@ -1,30 +1,19 @@
 package com.example.alexander.musicplayer;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-//import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+import com.example.alexander.musicplayer.entities.Playlist;
+import com.example.alexander.musicplayer.file_chooser.FileChoosingFragment;
 
-import com.example.alexander.musicplayer.file_chooser.FileChosingActivity;
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    String[] plLists = { "Play list 1", "Play list 2", "Play list 3", "Play list 4", "Play list 5",
-            "Play list 6", "Play list 7", "Play list 8", "Play list 9", "Play list 10",
-            "Play list 11", "Play list 12", "Play list 13", "Play list 14", "Play list 15"};
-
-    private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
+    PlaylistsFragment playlistsFragment;
+    List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
 
     @Override
@@ -35,79 +24,61 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        final TextView textView = (TextView) findViewById(R.id.text1);
+        if (savedInstanceState != null) {
+            return;
+        }
 
-        Button buttonForChosingFiles = (Button)  findViewById(R.id.buttonChoseFiles);
-        buttonForChosingFiles.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        textView.setText("Files chose");
+        playlistsFragment = new PlaylistsFragment();
+        playlistsFragment.setArguments(getIntent().getExtras());
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, playlistsFragment).commit();
 
-                        Intent intent = new Intent(MainActivity.this, FileChosingActivity.class);
-                        //startActivity(intent);
-                        startActivityForResult(intent, 1);
-                    }
-                }
-        );
+        setDrawerLayout();
+    }
 
-        ListView lvMain = (ListView) findViewById(R.id.lvMain);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, Arrays.asList(plLists));
-
-        lvMain.setAdapter(adapter);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    private void setDrawerLayout(){
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(new TrackControllerAdapter(this));
-        //mDrawerLayout =  getLayoutInflater().inflate(R.layout.slide_menu_activity, null).findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.app_name, R.string.app_name) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                //getActionBar().setTitle("Title");
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                //getActionBar().setTitle("Title");
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        //mDrawerLayout.closeDrawers();
-        mDrawerToggle.syncState();
-
-
+        setWidthForSlide(0.8f);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null) {return;}
-        List<String> paths = data.getStringArrayListExtra("name");
-        StringBuilder pathsSB = new StringBuilder();
-        for(String s: paths){
-            pathsSB.append(s);
-            pathsSB.append(" ");
-        }
-        ((TextView) findViewById(R.id.text1)).setText(pathsSB.toString());
-        System.out.println(paths);
+    private void setWidthForSlide(float widthMultiplier){
+        int width = (int) (getResources().getDisplayMetrics().widthPixels*widthMultiplier);
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
+        params.width = width;
+        mDrawerList.setLayoutParams(params);
     }
 
-    /* Called whenever we call invalidateOptionsMenu() */
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        // If the nav drawer is open, hide action items related to the content view
-//        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-//        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-//        return super.onPrepareOptionsMenu(menu);
-//    }
 
+    public void showChooseFilesFragment(ArrayList<String> tracks) {
+        FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
+        //fileChoosingFragment.setPaths(tracks);
+        Bundle args = new Bundle();
+        args.putStringArrayList("paths", tracks);
+        //args.putAll(getIntent().getExtras());
+        fileChoosingFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fileChoosingFragment).addToBackStack(null).commit();
+    }
 
+    public void showPlayLists() {
+//        if (playlistsFragment == null) {
+//            playlistsFragment = new PlaylistsFragment();
+//            //playlistsFragment.setArguments(getIntent().getExtras());
+//        }
+//            MediaPlayer mpintro = MediaPlayer.create(this, Uri.parse(paths.get(0)));
+//            mpintro.setLooping(true);
+//            mpintro.start();
+        //getSupportFragmentManager().beginTransaction().detach(playlistsFragment).attach(playlistsFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistsFragment).addToBackStack(null).commit();
+        //getSupportFragmentManager().beginTransaction().attach(playlistsFragment);
+    }
+
+    public void showPlayListContent(Playlist playlist){
+        PlaylistContentFragment playlistContentFragment = new PlaylistContentFragment();
+        playlistContentFragment.setCurrentPlaylist(playlist);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistContentFragment).addToBackStack(null).commit();
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
 }

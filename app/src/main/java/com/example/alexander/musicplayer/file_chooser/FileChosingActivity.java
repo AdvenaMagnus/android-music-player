@@ -24,7 +24,7 @@ public class FileChosingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_file_chosing);
+        setContentView(R.layout.file_choosing_layout);
 
         //checkBoxesLL = (LinearLayout) findViewById(R.id.checkboxesLayout);
 
@@ -46,52 +46,5 @@ public class FileChosingActivity extends AppCompatActivity {
                 }
         );
     }
-
-//    void updateFilesToShow(HashMap<String, List<File>> files, String prevDir) {
-//        checkBoxesLL.removeAllViews();
-//        if (!prevDir.isEmpty() && !prevDir.equals(forbiddenDirectoryLevel)) {
-//            View prevDirView = createDirWidget(new File(prevDir), "...");
-//            checkBoxesLL.addView(prevDirView);
-//        }
-//        for (File file : files.get("dirs")) {
-//            checkBoxesLL.addView(createDirWidget(file));
-//        }
-//        for (File file : files.get("files")) {
-//            checkBoxesLL.addView(createFileWidget(file));
-//        }
-//    }
-//
-//    View createFileWidget(final File file){
-//        //CheckBox cb = new CheckBox(this);
-//        LayoutInflater ltInflater = getLayoutInflater();
-//        CheckBox cb = (CheckBox) ltInflater.inflate(R.layout.file_chooser_checkbox, null, false);
-//        cb.setText(file.getName());
-//        cb.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view) {
-//                if(paths.contains(file.getAbsolutePath())) paths.remove(file.getAbsolutePath());
-//                else paths.add(file.getAbsolutePath());
-//            }
-//        });
-//        return cb;
-//    }
-//
-//    View createDirWidget(final File file, String text){
-//        //TextView txv = new TextView(this);
-//        LayoutInflater ltInflater = getLayoutInflater();
-//        TextView txv = (TextView) ltInflater.inflate(R.layout.file_chooser_dir, null, false);
-//        txv.setText(text);
-//        txv.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view) {
-//                updateFilesToShow(FileUtils.filesInDirectoryHMap(file.getAbsolutePath()), file.getParentFile().getAbsolutePath());
-//            }
-//        });
-//        return txv;
-//    }
-//
-//    View createDirWidget(File file){
-//        return createDirWidget(file, file.getName());
-//    }
 
 }
