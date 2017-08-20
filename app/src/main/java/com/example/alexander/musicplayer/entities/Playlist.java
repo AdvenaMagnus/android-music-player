@@ -28,12 +28,4 @@ public class Playlist {
         this.tracks = tracks;
     }
 
-
-    public static List<String> playlistsNames(List<Playlist> playlists){
-        List<String> result =  new ArrayList<>();
-        for(Playlist pl: playlists){
-            result.add(pl.getName());
-        }
-        return result;
-    }
 }

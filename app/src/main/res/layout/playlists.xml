@@ -9,7 +9,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/buttonChoseFiles"
+            android:id="@+id/create_new_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

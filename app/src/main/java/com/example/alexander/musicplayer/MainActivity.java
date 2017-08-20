@@ -51,25 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void showChooseFilesFragment(ArrayList<String> tracks) {
         FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
-        //fileChoosingFragment.setPaths(tracks);
         Bundle args = new Bundle();
         args.putStringArrayList("paths", tracks);
-        //args.putAll(getIntent().getExtras());
         fileChoosingFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fileChoosingFragment).addToBackStack(null).commit();
     }
 
     public void showPlayLists() {
-//        if (playlistsFragment == null) {
-//            playlistsFragment = new PlaylistsFragment();
-//            //playlistsFragment.setArguments(getIntent().getExtras());
-//        }
-//            MediaPlayer mpintro = MediaPlayer.create(this, Uri.parse(paths.get(0)));
-//            mpintro.setLooping(true);
-//            mpintro.start();
-        //getSupportFragmentManager().beginTransaction().detach(playlistsFragment).attach(playlistsFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistsFragment).addToBackStack(null).commit();
-        //getSupportFragmentManager().beginTransaction().attach(playlistsFragment);
     }
 
     public void showPlayListContent(Playlist playlist){
