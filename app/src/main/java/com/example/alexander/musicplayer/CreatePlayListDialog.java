@@ -18,6 +18,7 @@ public class CreatePlayListDialog extends DialogFragment {
 
     Playlist playlist;
     View.OnClickListener goToNewPlaylist;
+    View.OnClickListener onCancelCallback;
     EditText playlistName;
 
     @Override
@@ -34,7 +35,7 @@ public class CreatePlayListDialog extends DialogFragment {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 playlist.setName(playlistName.getText().toString());
-                goToNewPlaylist.onClick(v);
+                if(goToNewPlaylist!=null) goToNewPlaylist.onClick(v);
                 CreatePlayListDialog.this.dismiss();
             }
         };
@@ -43,6 +44,7 @@ public class CreatePlayListDialog extends DialogFragment {
     private View.OnClickListener getCancelButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
+                if(onCancelCallback!=null) onCancelCallback.onClick(v);
                 CreatePlayListDialog.this.dismiss();
             }
         };
@@ -53,6 +55,13 @@ public class CreatePlayListDialog extends DialogFragment {
     }
     public void setGoToNewPlaylist(View.OnClickListener goToNewPlaylist) {
         this.goToNewPlaylist = goToNewPlaylist;
+    }
+
+    public View.OnClickListener getOnCancelCallback() {
+        return onCancelCallback;
+    }
+    public void setOnCancelCallback(View.OnClickListener onCancelCallback) {
+        this.onCancelCallback = onCancelCallback;
     }
 
     public Playlist getPlaylist() {

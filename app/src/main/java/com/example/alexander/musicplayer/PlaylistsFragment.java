@@ -64,6 +64,11 @@ public class PlaylistsFragment extends Fragment {
                 mainActivity.showPlayListContent(playlist);
             }
         });
+        dialog.setOnCancelCallback(new View.OnClickListener() {
+            public void onClick(View v) {
+                mainActivity.playlists.remove(playlist);
+            }
+        });
         dialog.show(mainActivity.getFragmentManager(), "Create playlist");
     }
 

@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     PlaylistsFragment playlistsFragment;
     List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
+    TrackControllerAdapter trackController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setDrawerLayout(){
+        trackController = new TrackControllerAdapter(this);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new TrackControllerAdapter(this));
+        mDrawerList.setAdapter(trackController);
         setWidthForSlide(0.8f);
     }
 
@@ -69,5 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
     public List<Playlist> getPlaylists() {
         return playlists;
+    }
+
+    public TrackControllerAdapter getTrackController() {
+        return trackController;
     }
 }

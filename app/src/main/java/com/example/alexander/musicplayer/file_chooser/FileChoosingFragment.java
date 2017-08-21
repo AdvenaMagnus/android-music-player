@@ -47,11 +47,6 @@ public class FileChoosingFragment extends Fragment {
         buttonForChosingFiles.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        //Intent intent = new Intent();
-                        //intent.putStringArrayListExtra("name", (ArrayList<String>) paths);
-//                        setResult(RESULT_OK, intent);
-//                        finish();
-                        //((MainActivity)inflater.getContext()).showPlayLists(paths);
                         ((FragmentActivity)inflater.getContext()).getSupportFragmentManager().popBackStack();
                     }
                 }

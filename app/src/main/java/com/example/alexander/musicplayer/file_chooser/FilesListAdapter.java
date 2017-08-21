@@ -22,21 +22,20 @@ import java.util.List;
 
 public class FilesListAdapter extends BaseAdapter {
 
-    List<File> files;
     Context ctx;
     LayoutInflater ltInflater;
-    static String forbiddenDirectoryLevel = "/storage";
+    List<File> files;
     List<String> paths;
-    String path;
+    String initPath;
     boolean firstElementIsPrevFolder = false;
+    static String forbiddenDirectoryLevel = "/storage";
 
 
     public FilesListAdapter(Context ctx, String path, List<String> filePaths){
         this.ctx = ctx;
-        ltInflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         paths = filePaths;
-        this.path = path;
+        this.initPath = path;
         updateFilesToShow(new File(path));
     }
 
@@ -67,6 +66,7 @@ public class FilesListAdapter extends BaseAdapter {
     View createFileWidget(final File file){
         CheckBox cb = (CheckBox) ltInflater.inflate(R.layout.file_chooser_checkbox, null, false);
         cb.setText(file.getName());
+        cb.setChecked(paths.contains(file.getAbsolutePath()));
         cb.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -97,21 +97,19 @@ public class FilesListAdapter extends BaseAdapter {
 
     void updateFilesToShow(File path) {
         ArrayList<File> filesInNewDir = new ArrayList<File>();
-        if (path.getParentFile()!=null && !path.getParentFile().getAbsolutePath().equals(forbiddenDirectoryLevel)) {
-//            View prevDirView = createDirWidget(new File(prevDir), "...");
-//            checkBoxesLL.addView(prevDirView);
-            filesInNewDir.add(path.getParentFile());
-            firstElementIsPrevFolder = true;
-        } else firstElementIsPrevFolder = false;
-
-
-        //filesInNewDir.addAll(FileUtils.filesInDirectory(path.getAbsolutePath()));
+        createOnLevelUpLinkIfNeed(filesInNewDir, path);
+        //filesInNewDir.addAll(FileUtils.filesInDirectory(initPath.getAbsolutePath()));
         HashMap<String, List<File>> filesAndDirs = FileUtils.filesInDirectoryHMap(path.getAbsolutePath());
         filesInNewDir.addAll(filesAndDirs.get("dirs"));
         filesInNewDir.addAll(filesAndDirs.get("files"));
-
         files = filesInNewDir;
-        //this.files = new ArrayList<File>();
+    }
+
+    private void createOnLevelUpLinkIfNeed(ArrayList<File> filesInNewDir, File path){
+        if (path.getParentFile()!=null && !path.getParentFile().getAbsolutePath().equals(forbiddenDirectoryLevel)) {
+            filesInNewDir.add(path.getParentFile());
+            firstElementIsPrevFolder = true;
+        } else firstElementIsPrevFolder = false;
     }
 
 }
