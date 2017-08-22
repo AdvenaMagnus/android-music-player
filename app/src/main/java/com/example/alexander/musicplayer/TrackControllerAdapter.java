@@ -3,6 +3,7 @@ package com.example.alexander.musicplayer;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.example.alexander.musicplayer.entities.Playlist;
+
+import java.io.Serializable;
 
 /**
  * Created by Alexander on 16.08.2017.
@@ -151,7 +154,8 @@ public class TrackControllerAdapter extends BaseAdapter{
         playSong(++currentTrackNumber);
     }
 
-    private void setupProgressBarUpdater(){
+    public void setupProgressBarUpdater(){
+        if(progressBarUpdater!=null) progressBarUpdater.interrupt();
         progressBarUpdater = new Thread(new Runnable() {
             @Override
             public void run() {

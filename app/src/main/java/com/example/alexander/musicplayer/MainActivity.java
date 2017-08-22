@@ -1,6 +1,7 @@
 package com.example.alexander.musicplayer;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
@@ -15,29 +16,32 @@ public class MainActivity extends AppCompatActivity {
     PlaylistsFragment playlistsFragment;
     List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
-    TrackControllerAdapter trackController;
+    static TrackControllerAdapter trackController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setHomeButtonEnabled(false);
 
-        if (savedInstanceState != null) {
-            return;
+        if(playlistsFragment==null) {
+            playlistsFragment = new PlaylistsFragment();
+            playlistsFragment.setArguments(getIntent().getExtras());
         }
-
-        playlistsFragment = new PlaylistsFragment();
-        playlistsFragment.setArguments(getIntent().getExtras());
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, playlistsFragment).commit();
 
         setDrawerLayout();
     }
 
     private void setDrawerLayout(){
-        trackController = new TrackControllerAdapter(this);
+        if(trackController==null) trackController = new TrackControllerAdapter(this);
+        else {
+            trackController.ctx = this;
+            trackController.setupProgressBarUpdater();
+        }
+
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(trackController);
         setWidthForSlide(0.8f);
