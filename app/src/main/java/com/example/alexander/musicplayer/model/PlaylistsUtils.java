@@ -1,7 +1,9 @@
-package com.example.alexander.musicplayer.utils;
+package com.example.alexander.musicplayer.model;
 
-import com.example.alexander.musicplayer.entities.Playlist;
+import com.example.alexander.musicplayer.model.entities.Playlist;
+import com.example.alexander.musicplayer.model.entities.Song;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,8 @@ import java.util.List;
  */
 
 public class PlaylistsUtils {
+
+
 
     public static List<String> playlistsNames(List<Playlist> playlists){
         List<String> result =  new ArrayList<>();

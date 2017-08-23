@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,18 +28,13 @@ public class FileChoosingFragment extends Fragment {
     ListView listView;
     List<String> paths;
 
+    View.OnClickListener callback;
+
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        //if(paths==null) paths = new ArrayList<String>();
-        //else {paths.clear();}
-
         String rootDir = Environment.getExternalStorageDirectory().toString();
-//        updateFilesToShow(FileUtils.filesInDirectoryHMap(rootDir), "");
-
         paths = getArguments().getStringArrayList("paths");
-
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.file_choosing_layout, container, false);
         listView = ll.findViewById(R.id.fileChoosingList);
         listView.setAdapter(new FilesListAdapter(inflater.getContext(), rootDir, paths));
@@ -47,6 +43,7 @@ public class FileChoosingFragment extends Fragment {
         buttonForChosingFiles.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
+                        if(callback!=null) callback.onClick(v);
                         ((FragmentActivity)inflater.getContext()).getSupportFragmentManager().popBackStack();
                     }
                 }
@@ -58,4 +55,8 @@ public class FileChoosingFragment extends Fragment {
 //    public void setPaths(List<String> paths) {
 //        this.paths = paths;
 //    }
+
+    public void setCallback(View.OnClickListener callback) {
+        this.callback = callback;
+    }
 }

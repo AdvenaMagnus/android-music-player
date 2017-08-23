@@ -1,11 +1,17 @@
 package com.example.alexander.musicplayer;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
-import com.example.alexander.musicplayer.entities.Playlist;
+
+import com.example.alexander.musicplayer.adapters.TrackControllerAdapter;
+import com.example.alexander.musicplayer.fragments.PlaylistContentFragment;
+import com.example.alexander.musicplayer.fragments.PlaylistsFragment;
+import com.example.alexander.musicplayer.model.SongService;
+import com.example.alexander.musicplayer.model.SongsDAO;
+import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.file_chooser.FileChoosingFragment;
 
 import java.util.ArrayList;
@@ -14,9 +20,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     PlaylistsFragment playlistsFragment;
-    List<Playlist> playlists = new ArrayList<>();
+    public List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
     static TrackControllerAdapter trackController;
+
+    SongService songService;
+    SongsDAO songsDAO;
+
+    public MainActivity(){
+        songsDAO = new SongsDAO();
+        songService = new SongService(songsDAO);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +69,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void showChooseFilesFragment(ArrayList<String> tracks) {
+    public void showChooseFilesFragment(ArrayList<String> tracks, View.OnClickListener callback) {
         FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
+        fileChoosingFragment.setCallback(callback);
         Bundle args = new Bundle();
         args.putStringArrayList("paths", tracks);
         fileChoosingFragment.setArguments(args);
@@ -79,5 +94,13 @@ public class MainActivity extends AppCompatActivity {
 
     public TrackControllerAdapter getTrackController() {
         return trackController;
+    }
+
+    public SongService getSongService() {
+        return songService;
+    }
+
+    public SongsDAO getSongsDAO() {
+        return songsDAO;
     }
 }

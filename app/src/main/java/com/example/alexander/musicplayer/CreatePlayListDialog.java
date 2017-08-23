@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.example.alexander.musicplayer.entities.Playlist;
+import com.example.alexander.musicplayer.model.entities.Playlist;
 
 /**
  * Created by Alexander on 18.08.2017.
