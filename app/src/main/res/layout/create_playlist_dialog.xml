@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/button_for_menus"
+    android:gravity="center">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/create_new_playlist_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new playlist"
-        android:textColor="@color/black" />
+        android:textSize="20dp"
+        android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/playlist_title"
@@ -19,26 +22,32 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
-        android:inputType="text" />
+        android:inputType="text"
+        android:textColor="@color/second"
+        android:textColorHighlight="@color/second"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <Button
             android:id="@+id/ok"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Ok" />
+            android:text="Ok"
+            android:layout_marginRight="10dp"/>
 
         <Button
             android:id="@+id/cancel"
-            android:layout_width="wrap_content"
+            style="@style/BrandButtonStyleDarkFilled"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Cancel" />
+            android:text="Cancel"
+            android:layout_marginLeft="10dp"/>
 
     </LinearLayout>
 </LinearLayout>

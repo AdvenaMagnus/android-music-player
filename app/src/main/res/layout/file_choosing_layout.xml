@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.alexander.musicplayer.file_chooser.FileChosingActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/margin_top_layout"
+    tools:context="com.example.alexander.musicplayer.file_chooser.FileChosingActivity">
 
-    <Button
-        android:id="@+id/backToMain"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Back"
-        />
-    <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/scroll"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="fill_parent">-->
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/checkboxesLayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical" />-->
+        <Button
+            android:id="@+id/backToMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ok"
+            android:layout_marginRight="10dp"/>
 
-        <ListView
-            android:id="@+id/fileChoosingList"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent" />
-    <!--</ScrollView>-->
+        <Button
+            android:id="@+id/selectall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select All"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
 
+    <ListView
+        android:id="@+id/fileChoosingList"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" />
 </LinearLayout>

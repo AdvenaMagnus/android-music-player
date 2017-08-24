@@ -2,15 +2,15 @@ package com.example.alexander.musicplayer.adapters;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.media.audiofx.Equalizer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ProgressBar;
+import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.model.entities.Playlist;
@@ -32,13 +32,15 @@ public class TrackControllerAdapter extends BaseAdapter{
     private Thread progressBarUpdater;
     private Visualizer audioOutput;
     private EquilizerService equilizerService;
+    private Button playButton;
+    private TextView songTitle;
 
     public TrackControllerAdapter(Context ctx){
         this.ctx = ctx;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.equilizerService = new EquilizerService();
         initMainControlButtons();
-        setupProgressBarUpdater();
+        runProgressBarUpdater();
     }
 
     enum SlideMenuItems {
@@ -67,37 +69,28 @@ public class TrackControllerAdapter extends BaseAdapter{
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-//        if(layout==null) {
-//
-//        }
         return layout;
     }
 
     private void initMainControlButtons(){
         layout = lInflater.inflate(R.layout.track_controller, null, false);
-        layout.findViewById(R.id.playButton).setOnClickListener(
+
+        playButton = layout.findViewById(R.id.playButton2);
+        playButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        if(mediaPlayer!=null && !mediaPlayer.isPlaying()){
-                            mediaPlayer.start();
-                        }
+                        playButtonAction();
                     }
                 }
         );
 
-        layout.findViewById(R.id.pauseButton).setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        if(mediaPlayer!=null && mediaPlayer.isPlaying()){
-                            mediaPlayer.pause();
-                        }
-                    }
-                }
-        );
+        songTitle = layout.findViewById(R.id.song_title);
+        songTitle.setSelected(true);
 
         layout.findViewById(R.id.nextButton).setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
+                        equilizerService.effect1();
                         playNextSong();
                     }
                 }
@@ -105,13 +98,34 @@ public class TrackControllerAdapter extends BaseAdapter{
         layout.findViewById(R.id.prevButton).setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
+                        equilizerService.effect1();
                         playSong(--currentTrackNumber);
                     }
                 }
         );
 
         progressBar = layout.findViewById(R.id.seekBar);
-        progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        progressBar.setOnSeekBarChangeListener(getProgressBarListener());
+
+        eq = layout.findViewById(R.id.eqLayout);
+        initEq();
+    }
+
+    private void playButtonAction(){
+        if(mediaPlayer!=null){
+            if(mediaPlayer.isPlaying()){
+                mediaPlayer.pause();
+                playButton.setText("Play");
+            }
+            else{
+                mediaPlayer.start();
+                playButton.setText("Pause");
+            }
+        }
+    }
+
+    private SeekBar.OnSeekBarChangeListener getProgressBarListener(){
+        return new SeekBar.OnSeekBarChangeListener() {
             boolean changeProgressByHand=false;
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -120,7 +134,6 @@ public class TrackControllerAdapter extends BaseAdapter{
                     mediaPlayer.seekTo(newPosition);
                 }
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 changeProgressByHand = true;
@@ -129,17 +142,6 @@ public class TrackControllerAdapter extends BaseAdapter{
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 changeProgressByHand = false;
-            }
-        });
-        eq = layout.findViewById(R.id.eqLayout);
-        initEq();
-    }
-
-    private MediaPlayer.OnCompletionListener getOnCompletionListener(){
-        return new MediaPlayer.OnCompletionListener(){
-            @Override
-            public void onCompletion(MediaPlayer mPlayer) {
-                playNextSong();
             }
         };
     }
@@ -155,28 +157,6 @@ public class TrackControllerAdapter extends BaseAdapter{
         equilizerService.register(eq.findViewById(R.id.eq8));
         equilizerService.register(eq.findViewById(R.id.eq9));
         equilizerService.register(eq.findViewById(R.id.eq10));
-
-//        equilizerService.register(eq.findViewById(R.id.eq11));
-//        equilizerService.register(eq.findViewById(R.id.eq21));
-//        equilizerService.register(eq.findViewById(R.id.eq31));
-//        equilizerService.register(eq.findViewById(R.id.eq41));
-//        equilizerService.register(eq.findViewById(R.id.eq51));
-//        equilizerService.register(eq.findViewById(R.id.eq61));
-//        equilizerService.register(eq.findViewById(R.id.eq71));
-//        equilizerService.register(eq.findViewById(R.id.eq81));
-//        equilizerService.register(eq.findViewById(R.id.eq91));
-//        equilizerService.register(eq.findViewById(R.id.eq101));
-
-//        equilizerService.register2(eq.findViewById(R.id.eq12));
-//        equilizerService.register2(eq.findViewById(R.id.eq22));
-//        equilizerService.register2(eq.findViewById(R.id.eq32));
-//        equilizerService.register2(eq.findViewById(R.id.eq42));
-//        equilizerService.register2(eq.findViewById(R.id.eq52));
-//        equilizerService.register2(eq.findViewById(R.id.eq62));
-//        equilizerService.register2(eq.findViewById(R.id.eq72));
-//        equilizerService.register2(eq.findViewById(R.id.eq82));
-//        equilizerService.register2(eq.findViewById(R.id.eq92));
-//        equilizerService.register2(eq.findViewById(R.id.eq102));
     }
 
     public void playSong(int i){
@@ -189,14 +169,31 @@ public class TrackControllerAdapter extends BaseAdapter{
         if(mediaPlayer!=null){
             mediaPlayer.stop();
         }
-        //mediaPlayer = MediaPlayer.create(ctx, Uri.parse(playlist.getTracks().get(currentTrackNumber)));
         mediaPlayer = MediaPlayer.create(ctx, Uri.parse(playlist.getSongs().get(currentTrackNumber).getPath()));
         mediaPlayer.setLooping(false);
         mediaPlayer.setOnCompletionListener(getOnCompletionListener());
-        mediaPlayer.start();
+        //mediaPlayer.start();
+        songTitle.setText(playlist.getSongs().get(currentTrackNumber).getName());
+        playButtonAction();
 
+        runVisualizer(mediaPlayer.getAudioSessionId());
+    }
+
+    private MediaPlayer.OnCompletionListener getOnCompletionListener(){
+        return new MediaPlayer.OnCompletionListener(){
+            @Override
+            public void onCompletion(MediaPlayer mPlayer) {
+                playNextSong();
+            }
+        };
+    }
+
+    private void runVisualizer(int sessionId){
+        if(audioOutput!=null){
+            audioOutput.setEnabled(false);
+        }
         int rate = Visualizer.getMaxCaptureRate();
-        audioOutput = new Visualizer(mediaPlayer.getAudioSessionId()); // get output audio stream
+        audioOutput = new Visualizer(sessionId);
         audioOutput.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
             @Override
             public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
@@ -215,7 +212,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         playSong(++currentTrackNumber);
     }
 
-    public void setupProgressBarUpdater(){
+    public void runProgressBarUpdater(){
         if(progressBarUpdater!=null) progressBarUpdater.interrupt();
         progressBarUpdater = new Thread(new Runnable() {
             @Override
@@ -234,6 +231,18 @@ public class TrackControllerAdapter extends BaseAdapter{
             }
         });
         progressBarUpdater.start();
+    }
+
+    public void onVisualizer(){
+        if(audioOutput!=null){
+            if(!audioOutput.getEnabled()) audioOutput.setEnabled(true);
+        }
+    }
+
+    public void offVisualizer(){
+        if(audioOutput!=null){
+            if(audioOutput.getEnabled()) audioOutput.setEnabled(false);
+        }
     }
 
     public Playlist getPlaylist() {

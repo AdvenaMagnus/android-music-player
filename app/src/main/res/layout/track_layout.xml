@@ -11,7 +11,7 @@
         android:paddingBottom="15px"
         android:paddingLeft="8pt"
         android:text="text"
-        android:textColor="@color/black"
-        android:textSize="7pt" />
+        android:textSize="7pt"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

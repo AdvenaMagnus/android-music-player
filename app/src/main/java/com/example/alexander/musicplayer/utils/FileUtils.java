@@ -27,9 +27,11 @@ public class FileUtils {
         result.put("dirs", new ArrayList<File>());
         File directory = new File(dir);
         File[] files = directory.listFiles();
-        for(File file : files){
-            if(file.isDirectory()) result.get("dirs").add(file);
-            else result.get("files").add(file);
+        if(files!=null) {
+            for (File file : files) {
+                if (file.isDirectory()) result.get("dirs").add(file);
+                else result.get("files").add(file);
+            }
         }
         return result;
     }

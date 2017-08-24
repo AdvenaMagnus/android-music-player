@@ -37,7 +37,8 @@ public class FileChoosingFragment extends Fragment {
         paths = getArguments().getStringArrayList("paths");
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.file_choosing_layout, container, false);
         listView = ll.findViewById(R.id.fileChoosingList);
-        listView.setAdapter(new FilesListAdapter(inflater.getContext(), rootDir, paths));
+        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), rootDir, paths);
+        listView.setAdapter(filesListAdapter);
 
         Button buttonForChosingFiles =  ll.findViewById(R.id.backToMain);
         buttonForChosingFiles.setOnClickListener(
@@ -45,6 +46,14 @@ public class FileChoosingFragment extends Fragment {
                     public void onClick(View v) {
                         if(callback!=null) callback.onClick(v);
                         ((FragmentActivity)inflater.getContext()).getSupportFragmentManager().popBackStack();
+                    }
+                }
+        );
+
+        ll.findViewById(R.id.selectall).setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        filesListAdapter.selectAll();
                     }
                 }
         );

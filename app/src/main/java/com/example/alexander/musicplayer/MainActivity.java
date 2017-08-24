@@ -2,6 +2,7 @@ package com.example.alexander.musicplayer;
 
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
@@ -50,14 +51,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setDrawerLayout(){
+        DrawerLayout dl = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(trackController==null) trackController = new TrackControllerAdapter(this);
         else {
             trackController.ctx = this;
-            trackController.setupProgressBarUpdater();
+            trackController.runProgressBarUpdater();
         }
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(trackController);
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, dl,
+                R.string.app_name, R.string.app_name) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                trackController.offVisualizer();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                trackController.onVisualizer();
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        dl.setDrawerListener(mDrawerToggle);
         setWidthForSlide(0.8f);
     }
 

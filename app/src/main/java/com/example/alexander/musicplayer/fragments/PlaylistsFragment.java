@@ -1,10 +1,12 @@
 package com.example.alexander.musicplayer.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -73,6 +75,7 @@ public class PlaylistsFragment extends Fragment {
                 mainActivity.playlists.remove(playlist);
             }
         });
+        dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
         dialog.show(mainActivity.getFragmentManager(), "Create playlist");
     }
 

@@ -12,9 +12,14 @@ import java.util.List;
 
 public class EquilizerService {
 
-    List<View> pillars = new ArrayList<>();
-    //List<View> pillarsInversed = new ArrayList<>();
-
+    List<ProgressBar> pillars = new ArrayList<>();
+    int span = 0;
+    static int[] values = new int[255];
+    static {
+        for(int i = 0; i < values.length; i++){
+            values[i] = transformWave(i);
+        }
+    }
 //    final ExecutorService es = Executors.newFixedThreadPool(100);
 
     public EquilizerService(){
@@ -22,15 +27,11 @@ public class EquilizerService {
             @Override
             public void run() {
                 while(true){
-                    //for(View view : pillars.keySet()){
                     for(int i = 0; i<pillars.size(); i++){
-                        ProgressBar pb = (ProgressBar) pillars.get(i);
-                        //ProgressBar pb2 = (ProgressBar) pillarsInversed.get(i);
+                        ProgressBar pb =  pillars.get(i);
                         int newVal = pb.getProgress()-2;
                         if(newVal>0) pb.setProgress(newVal);
                         else pb.setProgress(0);
-
-                        //pb2.setProgress(pb.getProgress());
                     }
                     try {
                         Thread.sleep(25);
@@ -44,18 +45,16 @@ public class EquilizerService {
 
 
     public void register(View view){
-        if(!pillars.contains(view)) {
-            pillars.add(view);
+        if(view instanceof ProgressBar && !pillars.contains(view)) {
+            pillars.add((ProgressBar) view);
+            span = 1024/pillars.size();
         }
     }
 
     public void updatePillars(byte[] waveform){
         int j=0;
-        int span = 1024/pillars.size();
         for(int i = 0; i<pillars.size(); i++){
-            //((ProgressBar)view).setProgress(transformWave(mean(waveform, i, i+span-1)));
-            changeVal(pillars.get(i), transformWave(mean(waveform, j, j+span-1)));
-            //((ProgressBar)pillarsInversed.get(i)).setProgress(((ProgressBar)pillars.get(i)).getProgress());
+            changeVal(pillars.get(i), mean(waveform, j, j+span-1));
             j = j + span;
         }
     }
@@ -74,7 +73,28 @@ public class EquilizerService {
     }
 
     private int transformWave(byte b){
+        return values[b];
+        //return (int) (((float)(b+128)/255) * 100);
+    }
+    private static int transformWave(int b){
         return (int) (((float)(b+128)/255) * 100);
+    }
+
+
+    public void effect1(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(View pillar : pillars){
+                    ((ProgressBar) pillar).setProgress(100);
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
 }

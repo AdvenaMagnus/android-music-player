@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
@@ -13,6 +14,7 @@ import com.example.alexander.musicplayer.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class FilesListAdapter extends BaseAdapter {
     LayoutInflater ltInflater;
     List<File> files;
     List<String> paths;
+    List<CheckBox> checkBoxes = new ArrayList<>();
     String initPath;
     boolean firstElementIsPrevFolder = false;
     static String forbiddenDirectoryLevel = "/storage";
@@ -74,13 +77,15 @@ public class FilesListAdapter extends BaseAdapter {
                 else paths.add(file.getAbsolutePath());
             }
         });
+        checkBoxes.add(cb);
         return cb;
     }
 
     View createDirWidget(final File file, String text){
-        TextView txv = (TextView) ltInflater.inflate(R.layout.file_chooser_dir, null, false);
+        LinearLayout ll = (LinearLayout) ltInflater.inflate(R.layout.file_chooser_dir, null, false);
+        TextView txv = ll.findViewById(R.id.text_for_directory);
         txv.setText(text);
-        txv.setOnClickListener(new View.OnClickListener(){
+        ll.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 //updateFilesToShow(FileUtils.filesInDirectoryHMap(file.getAbsolutePath()), file.getParentFile().getAbsolutePath());
@@ -88,7 +93,7 @@ public class FilesListAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         });
-        return txv;
+        return ll;
     }
 
     View createDirWidget(File file){
@@ -103,6 +108,8 @@ public class FilesListAdapter extends BaseAdapter {
         filesInNewDir.addAll(filesAndDirs.get("dirs"));
         filesInNewDir.addAll(filesAndDirs.get("files"));
         files = filesInNewDir;
+
+        if(checkBoxes!=null)checkBoxes.clear();
     }
 
     private void createOnLevelUpLinkIfNeed(ArrayList<File> filesInNewDir, File path){
@@ -110,6 +117,16 @@ public class FilesListAdapter extends BaseAdapter {
             filesInNewDir.add(path.getParentFile());
             firstElementIsPrevFolder = true;
         } else firstElementIsPrevFolder = false;
+    }
+
+    public void selectAll(){
+        for(File file : files){
+            if(!paths.contains(file.getAbsolutePath()) && !file.isDirectory()) paths.add(file.getAbsolutePath());
+        }
+
+        for(CheckBox cb : checkBoxes){
+            cb.setChecked(true);
+        }
     }
 
 }

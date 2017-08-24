@@ -3,5 +3,4 @@
     android:id="@+id/checkbox_for_file_chooser"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text=""
-    />
+    android:text=""/>

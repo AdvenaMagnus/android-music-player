@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="margin_eq">3dp</attr>
+    <dimen name="margin_eq">4dp</dimen>
+    <dimen name="margin_top_layout">10dp</dimen>
+</resources>
