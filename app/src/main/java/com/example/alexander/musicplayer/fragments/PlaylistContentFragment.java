@@ -2,9 +2,12 @@ package com.example.alexander.musicplayer.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -73,6 +76,9 @@ public class PlaylistContentFragment extends Fragment {
         return new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
+//                Animation shake = AnimationUtils.loadAnimation(mainActivity, R.anim.rotation);
+//                v.startAnimation(shake);
+                mainActivity.dl.openDrawer(Gravity.LEFT);
                 TrackControllerAdapter trackController = mainActivity.getTrackController();
                 trackController.setPlaylist(currentPlaylist);
                 trackController.playSong(position);

@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     PlaylistsFragment playlistsFragment;
     public List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
+    public DrawerLayout dl;
     static TrackControllerAdapter trackController;
 
     SongService songService;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setDrawerLayout(){
-        DrawerLayout dl = (DrawerLayout) findViewById(R.id.drawer_layout);
+        dl = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(trackController==null) trackController = new TrackControllerAdapter(this);
         else {
             trackController.ctx = this;

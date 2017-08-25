@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -79,6 +81,8 @@ public class TrackControllerAdapter extends BaseAdapter{
         playButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
+//                        Animation shake = AnimationUtils.loadAnimation(ctx, R.anim.shake);
+//                        v.startAnimation(shake);
                         playButtonAction();
                     }
                 }
