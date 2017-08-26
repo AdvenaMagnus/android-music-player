@@ -1,5 +1,6 @@
-package com.example.alexander.musicplayer.model;
+package com.example.alexander.musicplayer.controller;
 
+import com.example.alexander.musicplayer.model.SongsDAO;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;

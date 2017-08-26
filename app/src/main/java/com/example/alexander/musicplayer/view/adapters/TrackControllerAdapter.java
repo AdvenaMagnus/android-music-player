@@ -1,4 +1,4 @@
-package com.example.alexander.musicplayer.adapters;
+package com.example.alexander.musicplayer.view.adapters;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -7,15 +7,15 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
-import com.example.alexander.musicplayer.model.entities.Playlist;
+import com.example.alexander.musicplayer.controller.TrackController;
+import com.example.alexander.musicplayer.controller.TrackObserver;
+import com.example.alexander.musicplayer.model.entities.Song;
 
 /**
  * Created by Alexander on 16.08.2017.
@@ -28,19 +28,54 @@ public class TrackControllerAdapter extends BaseAdapter{
     private MediaPlayer mediaPlayer;
     private View layout;
     private View eq;
-    private Playlist playlist;
-    private int currentTrackNumber =0;
+//    private Playlist playlist;
+//    private Song currentSong;
+//    private int currentTrackNumber =0;
     private SeekBar progressBar;
     private Thread progressBarUpdater;
     private Visualizer audioOutput;
     private EquilizerService equilizerService;
     private Button playButton;
     private TextView songTitle;
+    //private List<TrackObserver> trackObserverList = new ArrayList<>();
 
-    public TrackControllerAdapter(Context ctx){
+    private TrackController trackController;
+
+    public TrackControllerAdapter(final Context ctx, TrackController trackController){
         this.ctx = ctx;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.equilizerService = new EquilizerService();
+        this.trackController = trackController;
+        this.trackController.registerStartRunningSongObserver("trackControllerAdapter", new TrackObserver() {
+            @Override
+            public void update(int i, Song song) {
+                if(mediaPlayer!=null){
+                    mediaPlayer.stop();
+                }
+                mediaPlayer = MediaPlayer.create(ctx, Uri.parse(song.getPath()));
+                mediaPlayer.setLooping(false);
+                mediaPlayer.setOnCompletionListener(getOnCompletionListener());
+                //mediaPlayer.start();
+                songTitle.setText(song.getName());
+                playButtonAction();
+
+                runVisualizer(mediaPlayer.getAudioSessionId());
+            }
+        });
+
+        this.trackController.registerPauseRunningSongObserverList(new TrackObserver() {
+            @Override
+            public void update(int i, Song song) {
+                playButtonAction();
+            }
+        });
+        this.trackController.registerResumeRunningSongObserverList(new TrackObserver() {
+            @Override
+            public void update(int i, Song song) {
+                playButtonAction();
+            }
+        });
+
         initMainControlButtons();
         runProgressBarUpdater();
     }
@@ -95,7 +130,8 @@ public class TrackControllerAdapter extends BaseAdapter{
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         equilizerService.effect1();
-                        playNextSong();
+                        //playNextSong();
+                        trackController.playNextSong();
                     }
                 }
         );
@@ -103,7 +139,8 @@ public class TrackControllerAdapter extends BaseAdapter{
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         equilizerService.effect1();
-                        playSong(--currentTrackNumber);
+                        //playSong(--currentTrackNumber);
+                        trackController.playPrevSong();
                     }
                 }
         );
@@ -163,58 +200,50 @@ public class TrackControllerAdapter extends BaseAdapter{
         equilizerService.register(eq.findViewById(R.id.eq10));
     }
 
-    public void playSong(int i){
-        if(playlist.getSongs().size()>i && i>=0){
-            currentTrackNumber = i;
-        }
-        else {
-            currentTrackNumber = 0;
-        }
-        if(mediaPlayer!=null){
-            mediaPlayer.stop();
-        }
-        mediaPlayer = MediaPlayer.create(ctx, Uri.parse(playlist.getSongs().get(currentTrackNumber).getPath()));
-        mediaPlayer.setLooping(false);
-        mediaPlayer.setOnCompletionListener(getOnCompletionListener());
-        //mediaPlayer.start();
-        songTitle.setText(playlist.getSongs().get(currentTrackNumber).getName());
-        playButtonAction();
-
-        runVisualizer(mediaPlayer.getAudioSessionId());
-    }
+//    public void playSong(int i){
+//        if(playlist.getSongs().size()>i && i>=0){
+//            currentTrackNumber = i;
+//        }
+//        else {
+//            currentTrackNumber = 0;
+//        }
+//        if(mediaPlayer!=null){
+//            mediaPlayer.stop();
+//        }
+//        mediaPlayer = MediaPlayer.create(ctx, Uri.parse(playlist.getSongs().get(currentTrackNumber).getPath()));
+//        mediaPlayer.setLooping(false);
+//        mediaPlayer.setOnCompletionListener(getOnCompletionListener());
+//        //mediaPlayer.start();
+//        songTitle.setText(playlist.getSongs().get(currentTrackNumber).getName());
+//        playButtonAction();
+//        notifyAboutRunNewSong();
+//
+//        runVisualizer(mediaPlayer.getAudioSessionId());
+//    }
 
     private MediaPlayer.OnCompletionListener getOnCompletionListener(){
         return new MediaPlayer.OnCompletionListener(){
             @Override
             public void onCompletion(MediaPlayer mPlayer) {
-                playNextSong();
+                //playNextSong();
+                trackController.playNextSong();
             }
         };
     }
 
-    private void runVisualizer(int sessionId){
-        if(audioOutput!=null){
-            audioOutput.setEnabled(false);
-        }
-        int rate = Visualizer.getMaxCaptureRate();
-        audioOutput = new Visualizer(sessionId);
-        audioOutput.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
-            @Override
-            public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
-                equilizerService.updatePillars(waveform);
-            }
+//    public void playNextSong(){
+//        playSong(++currentTrackNumber);
+//    }
 
-            @Override
-            public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-
-            }
-        },rate , true, false); // waveform not freq data
-        audioOutput.setEnabled(true);
-    }
-
-    public void playNextSong(){
-        playSong(++currentTrackNumber);
-    }
+//    void registerStartRunningSongObserver(TrackObserver trackObserver){
+//        this.trackObserverList.add(trackObserver);
+//    }
+//
+//    void notifyAboutRunNewSong(){
+//        for(TrackObserver observer : this.trackObserverList){
+//            observer.update(currentTrackNumber, currentSong);
+//        }
+//    }
 
     public void runProgressBarUpdater(){
         if(progressBarUpdater!=null) progressBarUpdater.interrupt();
@@ -237,6 +266,26 @@ public class TrackControllerAdapter extends BaseAdapter{
         progressBarUpdater.start();
     }
 
+    private void runVisualizer(int sessionId){
+        if(audioOutput!=null){
+            audioOutput.setEnabled(false);
+        }
+        int rate = Visualizer.getMaxCaptureRate();
+        audioOutput = new Visualizer(sessionId);
+        audioOutput.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
+            @Override
+            public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
+                equilizerService.updatePillars(waveform);
+            }
+
+            @Override
+            public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
+
+            }
+        },rate , true, false); // waveform not freq data
+        audioOutput.setEnabled(true);
+    }
+
     public void onVisualizer(){
         if(audioOutput!=null){
             if(!audioOutput.getEnabled()) audioOutput.setEnabled(true);
@@ -249,10 +298,19 @@ public class TrackControllerAdapter extends BaseAdapter{
         }
     }
 
-    public Playlist getPlaylist() {
-        return playlist;
-    }
-    public void setPlaylist(Playlist playlist) {
-        this.playlist = playlist;
-    }
+//    public Playlist getPlaylist() {
+//        return playlist;
+//    }
+//    public void setPlaylist(Playlist playlist) {
+//        this.playlist = playlist;
+//    }
+//
+//    public Song getCurrentSong() {
+//        return currentSong;
+//    }
+//
+//    public int getCurrentTrackNumber() {
+//        return currentTrackNumber;
+//    }
+
 }

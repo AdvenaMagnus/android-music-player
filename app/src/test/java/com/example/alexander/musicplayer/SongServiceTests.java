@@ -1,6 +1,6 @@
 package com.example.alexander.musicplayer;
 
-import com.example.alexander.musicplayer.model.SongService;
+import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.model.SongsDAO;
 import com.example.alexander.musicplayer.model.entities.Song;
 

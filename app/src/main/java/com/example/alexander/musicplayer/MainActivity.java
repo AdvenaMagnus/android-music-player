@@ -7,10 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
 
-import com.example.alexander.musicplayer.adapters.TrackControllerAdapter;
-import com.example.alexander.musicplayer.fragments.PlaylistContentFragment;
-import com.example.alexander.musicplayer.fragments.PlaylistsFragment;
-import com.example.alexander.musicplayer.model.SongService;
+import com.example.alexander.musicplayer.controller.TrackController;
+import com.example.alexander.musicplayer.view.adapters.TrackControllerAdapter;
+import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
+import com.example.alexander.musicplayer.view.fragments.PlaylistsFragment;
+import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.model.SongsDAO;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.file_chooser.FileChoosingFragment;
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     public List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
     public DrawerLayout dl;
-    static TrackControllerAdapter trackController;
+    static TrackControllerAdapter trackControllerAdapter;
+    static TrackController trackController;
 
     SongService songService;
     SongsDAO songsDAO;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //        getSupportActionBar().setHomeButtonEnabled(false);
 
+        if(trackController==null) trackController = new TrackController();
+
         if(playlistsFragment==null) {
             playlistsFragment = new PlaylistsFragment();
             playlistsFragment.setArguments(getIntent().getExtras());
@@ -53,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDrawerLayout(){
         dl = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(trackController==null) trackController = new TrackControllerAdapter(this);
+        if(trackControllerAdapter==null) trackControllerAdapter = new TrackControllerAdapter(this, trackController);
         else {
-            trackController.ctx = this;
-            trackController.runProgressBarUpdater();
+            trackControllerAdapter.ctx = this;
+            trackControllerAdapter.runProgressBarUpdater();
         }
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(trackController);
+        mDrawerList.setAdapter(trackControllerAdapter);
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, dl,
                 R.string.app_name, R.string.app_name) {
@@ -68,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                trackController.offVisualizer();
+                trackControllerAdapter.offVisualizer();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                trackController.onVisualizer();
+                trackControllerAdapter.onVisualizer();
             }
         };
 
@@ -113,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         return playlists;
     }
 
-    public TrackControllerAdapter getTrackController() {
+    public static TrackController getTrackController() {
         return trackController;
     }
 

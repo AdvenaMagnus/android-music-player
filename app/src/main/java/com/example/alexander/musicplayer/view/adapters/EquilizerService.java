@@ -1,4 +1,4 @@
-package com.example.alexander.musicplayer.adapters;
+package com.example.alexander.musicplayer.view.adapters;
 
 import android.view.View;
 import android.widget.ProgressBar;

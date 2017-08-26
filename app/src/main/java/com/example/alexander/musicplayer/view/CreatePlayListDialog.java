@@ -1,4 +1,4 @@
-package com.example.alexander.musicplayer;
+package com.example.alexander.musicplayer.view;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 
 /**

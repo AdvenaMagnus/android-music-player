@@ -1,4 +1,4 @@
-package com.example.alexander.musicplayer.fragments;
+package com.example.alexander.musicplayer.view.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -6,18 +6,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.example.alexander.musicplayer.CreatePlayListDialog;
+import com.example.alexander.musicplayer.view.CreatePlayListDialog;
 import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.model.entities.Playlist;
-import com.example.alexander.musicplayer.model.PlaylistsUtils;
+import com.example.alexander.musicplayer.controller.PlaylistsUtils;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;

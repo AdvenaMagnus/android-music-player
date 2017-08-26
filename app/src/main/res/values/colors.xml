@@ -2,6 +2,10 @@
 <resources>
     <color name="second">#FF4000</color>
     <color name="primary">#1C1C1C</color>
-    <!--<color name="second">#0080ff</color>-->
-    <!--<color name="primary">#e6e6e6</color>-->
+
+    <!--<color name="primary">#0080ff</color>-->
+    <!--<color name="second">#ffffff</color>-->
+
+    <!--<color name="second">#000000</color>-->
+    <!--<color name="primary">#d9d9d9</color>-->
 </resources>

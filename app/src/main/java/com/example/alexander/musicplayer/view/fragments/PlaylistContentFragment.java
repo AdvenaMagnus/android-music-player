@@ -1,21 +1,23 @@
-package com.example.alexander.musicplayer.fragments;
+package com.example.alexander.musicplayer.view.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
-import com.example.alexander.musicplayer.adapters.TrackControllerAdapter;
-import com.example.alexander.musicplayer.adapters.TrackListAdapter;
+import com.example.alexander.musicplayer.controller.TrackController;
+import com.example.alexander.musicplayer.controller.TrackObserver;
+import com.example.alexander.musicplayer.model.entities.Song;
+import com.example.alexander.musicplayer.view.adapters.TrackListAdapter;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 
 import java.util.ArrayList;
@@ -39,12 +41,21 @@ public class PlaylistContentFragment extends Fragment {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(),
 //                android.R.layout.simple_list_item_1, currentPlaylist.getTracks());
 
+        final TrackListAdapter trackListAdapter = new TrackListAdapter(mainActivity, currentPlaylist);
         ListView trackList = ll.findViewById(R.id.tracks_list);
-        trackList.setAdapter(new TrackListAdapter(mainActivity, currentPlaylist));
+        trackList.setAdapter(trackListAdapter);
         trackList.setOnItemClickListener(getOnTrackClickListener());
 
         ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
         ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
+
+        MainActivity.getTrackController().registerStartRunningSongObserver("playListContent", new TrackObserver() {
+            @Override
+            public void update(int i, Song song) {
+                //((TextView) trackListAdapter.views.get(i).findViewById(R.id.song_title)).setTextColor(ContextCompat.getColor(mainActivity, R.color.primary));
+                trackListAdapter.setCurrentTrack(i);
+            }
+        });
 
         return ll;
     }
@@ -79,7 +90,8 @@ public class PlaylistContentFragment extends Fragment {
 //                Animation shake = AnimationUtils.loadAnimation(mainActivity, R.anim.rotation);
 //                v.startAnimation(shake);
                 mainActivity.dl.openDrawer(Gravity.LEFT);
-                TrackControllerAdapter trackController = mainActivity.getTrackController();
+                //TrackControllerAdapter trackController = mainActivity.getTrackController();
+                TrackController trackController = mainActivity.getTrackController();
                 trackController.setPlaylist(currentPlaylist);
                 trackController.playSong(position);
             }
