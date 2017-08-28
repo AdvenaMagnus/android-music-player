@@ -1,6 +1,7 @@
 package com.example.alexander.musicplayer.controller;
 
 import com.example.alexander.musicplayer.model.SongsDAO;
+import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;
@@ -26,31 +27,31 @@ public class SongService {
         return result;
     }
 
-    public void updateSongs(List<Song> songs, List<String> paths){
-        addSongsIfNotExist(songs, paths);
-        removeSongsIfNotExist(songs, paths);
+    public void updateSongs(Playlist playlist, List<String> paths){
+        addSongsIfNotExist(playlist, paths);
+        removeSongsIfNotExist(playlist, paths);
     }
 
-    public void addSongsIfNotExist(List<Song> songs, List<String> paths){
+    public void addSongsIfNotExist(Playlist playlist, List<String> paths){
         List<String> toAdd = new ArrayList<>();
         for(String path : paths){
-            if(!isContain(songs, path)){
+            if(!isContain(playlist.getSongs(), path)){
                 toAdd.add(path);
             }
         }
         for(String path : toAdd){
-            songs.add(songsDAO.createSong(path));
+            playlist.getSongs().add(songsDAO.createSong(path, playlist));
         }
     }
 
-    public void removeSongsIfNotExist(List<Song> songs, List<String> paths){
+    public void removeSongsIfNotExist(Playlist playlist, List<String> paths){
         List<Song> toRemove = new ArrayList<>();
-        for(Song song : songs){
+        for(Song song : playlist.getSongs()){
             if(!paths.contains(song.getPath())){
                 toRemove.add(song);
             }
         }
-        songs.removeAll(toRemove);
+        playlist.getSongs().removeAll(toRemove);
     }
 
     public boolean isContain(List<Song> songs, String path){

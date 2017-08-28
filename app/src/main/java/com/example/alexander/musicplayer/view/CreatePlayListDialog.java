@@ -17,10 +17,10 @@ import com.example.alexander.musicplayer.model.entities.Playlist;
 
 public class CreatePlayListDialog extends DialogFragment {
 
-    Playlist playlist;
-    View.OnClickListener goToNewPlaylist;
+    View.OnClickListener onOkClick;
     View.OnClickListener onCancelCallback;
     EditText playlistName;
+    String playListName;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
@@ -35,8 +35,9 @@ public class CreatePlayListDialog extends DialogFragment {
     private View.OnClickListener getOkButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
-                playlist.setName(playlistName.getText().toString());
-                if(goToNewPlaylist!=null) goToNewPlaylist.onClick(v);
+                //playlist.setName(playlistName.getText().toString());
+                playListName = playlistName.getText().toString();
+                if(onOkClick !=null) onOkClick.onClick(v);
                 CreatePlayListDialog.this.dismiss();
             }
         };
@@ -51,11 +52,11 @@ public class CreatePlayListDialog extends DialogFragment {
         };
     }
 
-    public View.OnClickListener getGoToNewPlaylist() {
-        return goToNewPlaylist;
+    public View.OnClickListener getOnOkClick() {
+        return onOkClick;
     }
-    public void setGoToNewPlaylist(View.OnClickListener goToNewPlaylist) {
-        this.goToNewPlaylist = goToNewPlaylist;
+    public void setOnOkClick(View.OnClickListener onOkClick) {
+        this.onOkClick = onOkClick;
     }
 
     public View.OnClickListener getOnCancelCallback() {
@@ -65,10 +66,7 @@ public class CreatePlayListDialog extends DialogFragment {
         this.onCancelCallback = onCancelCallback;
     }
 
-    public Playlist getPlaylist() {
-        return playlist;
-    }
-    public void setPlaylist(Playlist playlist) {
-        this.playlist = playlist;
+    public String getPlayListName() {
+        return playListName;
     }
 }

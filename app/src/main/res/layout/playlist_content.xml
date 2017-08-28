@@ -14,8 +14,8 @@
 
         <Button
             android:id="@+id/buttonChooseFiles"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
             android:text="+ Add tracks" />
@@ -23,8 +23,8 @@
         <Button
             android:id="@+id/back"
             style="@style/BrandButtonStyleDarkFilled"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:text="Back" />

@@ -65,7 +65,7 @@ public class PlaylistContentFragment extends Fragment {
         final View.OnClickListener callback = new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mainActivity.getSongService().updateSongs(currentPlaylist.getSongs(), tracks);
+                mainActivity.getSongService().updateSongs(currentPlaylist, tracks);
             }
         };
         return new View.OnClickListener() {

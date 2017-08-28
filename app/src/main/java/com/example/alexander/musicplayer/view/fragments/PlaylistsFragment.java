@@ -46,32 +46,35 @@ public class PlaylistsFragment extends Fragment {
             prepareListOfPlaylists(mainActivity);
         }
         ((ArrayAdapter)playLists.getAdapter()).clear();
-        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistsUtils.playlistsNames(((MainActivity)inflater.getContext()).getPlaylists()));
+        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistsUtils.playlistsNames(mainActivity.getPlaylists()));
         return ll;
     }
 
     private View.OnClickListener getCreateNewPlaylistListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
-                Playlist playlist = new Playlist();
-                playlist.setSongs(new ArrayList<Song>());
-                mainActivity.playlists.add(playlist);
-                openDialogToCreatePlaylist(playlist);
+//                Playlist playlist = new Playlist();
+//                playlist.setSongs(new ArrayList<Song>());
+//                mainActivity.playlists.add(playlist);
+                openDialogToCreatePlaylist();
             }
         };
     }
 
-    private void openDialogToCreatePlaylist(final Playlist playlist){
+    private void openDialogToCreatePlaylist(){
         final CreatePlayListDialog dialog = new CreatePlayListDialog();
-        dialog.setPlaylist(playlist);
-        dialog.setGoToNewPlaylist(new View.OnClickListener() {
+        //dialog.setPlaylist(playlist);
+        dialog.setOnOkClick(new View.OnClickListener() {
             public void onClick(View v) {
+                Playlist playlist = mainActivity.playlistDAO.createNew(dialog.getPlayListName());
+                playlist.setSongs(new ArrayList<Song>());
+                mainActivity.playlists.add(playlist);
                 mainActivity.showPlayListContent(playlist);
             }
         });
         dialog.setOnCancelCallback(new View.OnClickListener() {
             public void onClick(View v) {
-                mainActivity.playlists.remove(playlist);
+                //mainActivity.playlists.remove(playlist);
             }
         });
         dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);

@@ -2,6 +2,7 @@ package com.example.alexander.musicplayer;
 
 import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.model.SongsDAO;
+import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import org.junit.Test;
@@ -28,7 +29,11 @@ public class SongServiceTests {
 
         String newTrack = "path1";
         Song newSong = new Song("song1", newTrack);
-        doReturn(newSong).when(mockSongsDao).createSong(newTrack);
+
+        Playlist playlist = new Playlist();
+        playlist.setName("playlist 1");
+
+        doReturn(newSong).when(mockSongsDao).createSong(newTrack, playlist);
 
         List<String> paths =  new ArrayList<>();
         paths.add(newTrack);
@@ -37,8 +42,9 @@ public class SongServiceTests {
         List<Song> songs = new ArrayList<>();
         songs.add(new Song("song2", "path2"));
         songs.add(new Song("song3", "path3"));
+        playlist.setSongs(songs);
 
-        songService.updateSongs(songs, paths);
+        songService.updateSongs(playlist, paths);
 
         assertTrue(songs.size()==2);
         assertTrue(songs.get(1)==newSong);

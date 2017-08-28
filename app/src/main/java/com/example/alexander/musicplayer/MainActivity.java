@@ -1,13 +1,18 @@
 package com.example.alexander.musicplayer;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.alexander.musicplayer.controller.TrackController;
+import com.example.alexander.musicplayer.model.PlaylistDAO;
 import com.example.alexander.musicplayer.view.adapters.TrackControllerAdapter;
 import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
 import com.example.alexander.musicplayer.view.fragments.PlaylistsFragment;
@@ -28,12 +33,13 @@ public class MainActivity extends AppCompatActivity {
     static TrackControllerAdapter trackControllerAdapter;
     static TrackController trackController;
 
-    SongService songService;
+    public PlaylistDAO playlistDAO;
     SongsDAO songsDAO;
 
+    SongService songService;
+
     public MainActivity(){
-        songsDAO = new SongsDAO();
-        songService = new SongService(songsDAO);
+
     }
 
     @Override
@@ -41,10 +47,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//        getSupportActionBar().setHomeButtonEnabled(false);
+        bindDAOs();
 
         if(trackController==null) trackController = new TrackController();
+
+        this.findViewById(R.id.track_controller).setOnClickListener(getTrackControllerButtonListener());
+
+        Typeface face= Typeface.createFromAsset(getAssets(), "font/GreatVibes-Regular.otf");
+        ((TextView)this.findViewById(R.id.header)).setTypeface(face);
 
         if(playlistsFragment==null) {
             playlistsFragment = new PlaylistsFragment();
@@ -84,6 +94,31 @@ public class MainActivity extends AppCompatActivity {
         // Set the drawer toggle as the DrawerListener
         dl.setDrawerListener(mDrawerToggle);
         setWidthForSlide(0.8f);
+    }
+
+    private View.OnClickListener getTrackControllerButtonListener(){
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+                dl.openDrawer(Gravity.LEFT);
+            }
+        };
+    }
+
+
+    void bindDAOs(){
+        DBhelper dBhelper = new DBhelper(this);
+        SQLiteDatabase db = dBhelper.getWritableDatabase();
+        songsDAO = new SongsDAO();
+        songsDAO.setDb(db);
+
+        playlistDAO = new PlaylistDAO();
+        playlistDAO.setDb(db);
+        playlistDAO.setSongsDAO(songsDAO);
+
+        songsDAO.setPlaylistDAO(playlistDAO);
+
+        playlists = playlistDAO.getAllPlayLists();
+        songService = new SongService(songsDAO);
     }
 
     private void setWidthForSlide(float widthMultiplier){
