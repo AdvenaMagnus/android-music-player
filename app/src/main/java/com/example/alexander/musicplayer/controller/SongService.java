@@ -1,10 +1,13 @@
 package com.example.alexander.musicplayer.controller;
 
+import android.media.MediaMetadataRetriever;
+
 import com.example.alexander.musicplayer.model.SongsDAO;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -60,6 +63,14 @@ public class SongService {
                 return true;
         }
         return false;
+    }
+
+    public HashMap<String, String> extractMetaData(Song song){
+        HashMap<String, String> result = new HashMap<>();
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(song.getPath());
+        result.put("album", mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+        return result;
     }
 
 }

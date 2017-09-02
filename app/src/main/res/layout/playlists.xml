@@ -8,7 +8,7 @@
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:layout_gravity="center"
-            android:text="+ Create new playlist"
+            android:text="+ new playlist"
             android:textSize="10dp"
             android:layout_marginBottom="10dp"/>
 

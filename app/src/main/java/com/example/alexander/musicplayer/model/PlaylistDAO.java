@@ -3,6 +3,7 @@ package com.example.alexander.musicplayer.model;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.alexander.musicplayer.model.entities.Playlist;
@@ -98,4 +99,28 @@ public class PlaylistDAO {
     public void setSongsDAO(SongsDAO songsDAO) {
         this.songsDAO = songsDAO;
     }
+
+    public void deletePlaylist(Playlist playlist){
+        if(isPersist(playlist)){
+//            Cursor cursor = db.rawQuery("DELETE FROM "+ SongContract.SongEntry.TABLE_NAME +
+//                    " WHERE " + SongContract.SongEntry._ID + " in (SELECT "+ PlaylistContract.PlaylistToSongsEntry.SONG_ID +
+//                    " FROM "+ PlaylistContract.PlaylistToSongsEntry.TABLE_NAME +" WHERE "+ PlaylistContract.PlaylistToSongsEntry.PLAYLIST_ID +" = "+ playlist.getId() +")", null);
+//
+//            db.rawQuery("DELETE FROM "+ PlaylistContract.PlaylistToSongsEntry.TABLE_NAME +" WHERE "+ PlaylistContract.PlaylistToSongsEntry.PLAYLIST_ID +" = "+ playlist.getId(), null);
+//            db.rawQuery("DELETE FROM "+ PlaylistContract.PlaylistEntry.TABLE_NAME +" WHERE "+ PlaylistContract.PlaylistEntry._ID +" = "+ playlist.getId(), null);
+
+            songsDAO.deleteSongsInPlaylist(playlist);
+            deleteSongsPlaylistRelation(playlist);
+
+            int rows = db.delete(PlaylistContract.PlaylistEntry.TABLE_NAME, PlaylistContract.PlaylistEntry._ID +" = "+ playlist.getId(), null);
+            System.out.println("Deleted "+rows+" playlist");
+
+        } else throw new SQLiteException("Playlist to delete is not persist");
+    }
+
+    public void deleteSongsPlaylistRelation(Playlist playlist){
+        int rows = db.delete(PlaylistContract.PlaylistToSongsEntry.TABLE_NAME, PlaylistContract.PlaylistToSongsEntry.PLAYLIST_ID +" = "+ playlist.getId(), null);
+        System.out.println("Deleted "+rows+" relations songs-playlist");
+    }
+
 }

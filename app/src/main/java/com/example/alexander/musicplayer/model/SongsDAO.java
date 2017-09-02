@@ -84,4 +84,11 @@ public class SongsDAO {
     public void setPlaylistDAO(PlaylistDAO playlistDAO) {
         this.playlistDAO = playlistDAO;
     }
+
+    public void deleteSongsInPlaylist(Playlist playlist){
+        int rows = db.delete(SongContract.SongEntry.TABLE_NAME, SongContract.SongEntry._ID + " in (SELECT "+ PlaylistContract.PlaylistToSongsEntry.SONG_ID +
+                " FROM "+ PlaylistContract.PlaylistToSongsEntry.TABLE_NAME +" WHERE "+ PlaylistContract.PlaylistToSongsEntry.PLAYLIST_ID +" = "+ playlist.getId() +")", null);
+        System.out.println("Deleted "+rows+" songs");
+    }
+
 }

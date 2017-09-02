@@ -1,6 +1,7 @@
 package com.example.alexander.musicplayer.view.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
@@ -45,6 +46,7 @@ public class PlaylistContentFragment extends Fragment {
         ListView trackList = ll.findViewById(R.id.tracks_list);
         trackList.setAdapter(trackListAdapter);
         trackList.setOnItemClickListener(getOnTrackClickListener());
+        trackList.setOnItemLongClickListener(getOnLongClickListener(mainActivity));
 
         ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
         ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
@@ -94,6 +96,20 @@ public class PlaylistContentFragment extends Fragment {
                 TrackController trackController = mainActivity.getTrackController();
                 trackController.setPlaylist(currentPlaylist);
                 trackController.playSong(position);
+            }
+        };
+    }
+
+    private AdapterView.OnItemLongClickListener getOnLongClickListener(final MainActivity mainActivity){
+        return new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TrackDetailsDialog trackDetailsDialog = new TrackDetailsDialog();
+                trackDetailsDialog.setSong((Song)adapterView.getItemAtPosition(i));
+                trackDetailsDialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+                trackDetailsDialog.show(mainActivity.getFragmentManager(), "Track Details");
+
+                return true;
             }
         };
     }
