@@ -3,9 +3,9 @@
     <color name="second">#FF4000</color>
     <color name="primary">#1C1C1C</color>
 
-    <!--<color name="primary">#0080ff</color>-->
-    <!--<color name="second">#ffffff</color>-->
+    <color name="primaryLight">#0080ff</color>
+    <color name="secondLight">#ffffff</color>
 
-    <!--<color name="second">#000000</color>-->
-    <!--<color name="primary">#d9d9d9</color>-->
+    <!--<color name="secondLight">#000000</color>-->
+    <!--<color name="primaryLight">#d9d9d9</color>-->
 </resources>

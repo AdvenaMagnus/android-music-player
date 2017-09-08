@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/theme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="9dp"
+            android:text="Theme:"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/songs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="9dp"
+            android:text="text"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/change_theme"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:layout_gravity="center"
+            android:text="+ new playlist"
+            android:textSize="10dp"
+            android:layout_marginBottom="10dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

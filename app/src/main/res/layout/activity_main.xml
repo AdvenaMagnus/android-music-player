@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/primary"
+    android:background="?attr/color_primary"
     tools:context="com.example.alexander.musicplayer.MainActivity">
 
         <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,8 +34,8 @@
                         android:fontFamily=""
                         android:gravity="center"
                         android:text="Simple Music Player"
-                        android:textColor="@color/second"
-                        android:background="@color/primary"
+                        android:textColor="?attr/color_second"
+                        android:background="?attr/color_primary"
                         android:textSize="18dp" />
 
                     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -45,7 +45,7 @@
 
                 </LinearLayout>
                 <Button
-                    android:id="@+id/track_controller"
+                    android:id="@+id/track_controller_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -61,7 +61,7 @@
                     app:layout_constraintHorizontal_bias="0.047" />
 
                 <Button
-                    android:id="@+id/settings"
+                    android:id="@+id/settings_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"

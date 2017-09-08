@@ -27,7 +27,7 @@
             android:id="@+id/song_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/second"
+            android:textColor="?attr/color_second"
             android:textSize="15dp"
             android:layout_marginBottom="10dp"
             android:scrollHorizontally="true"
@@ -187,8 +187,8 @@
             android:id="@+id/seekBar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:progress="50"
-            android:theme="@style/AppTheme.ProgressBar"
+            android:progress="0"
+            android:theme="@style/ProgressBar"
             android:paddingTop="10dp"/>
     </LinearLayout>
 

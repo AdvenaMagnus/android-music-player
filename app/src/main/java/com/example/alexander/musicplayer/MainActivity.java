@@ -3,6 +3,7 @@ package com.example.alexander.musicplayer;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,45 +21,51 @@ import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.model.SongsDAO;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.file_chooser.FileChoosingFragment;
+import com.example.alexander.musicplayer.view.fragments.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    static TrackControllerAdapter trackControllerAdapter;
+    static TrackController trackController;
+
     PlaylistsFragment playlistsFragment;
     public List<Playlist> playlists = new ArrayList<>();
     private ListView mDrawerList;
     public DrawerLayout dl;
-    static TrackControllerAdapter trackControllerAdapter;
-    static TrackController trackController;
 
     public PlaylistDAO playlistDAO;
     SongsDAO songsDAO;
-
     SongService songService;
 
-    public MainActivity(){
-
-    }
+    public static @StyleRes int currentTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(currentTheme ==0){
+            currentTheme = R.style.AppTheme;
+        }
+        setTheme(currentTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bindDAOs();
+        createAndBindBeans();
+        playlists = playlistDAO.getAllPlayLists();
 
-        if(trackController==null) trackController = new TrackController();
+        if(trackController==null)
+            trackController = new TrackController();
 
-        this.findViewById(R.id.track_controller).setOnClickListener(getTrackControllerButtonListener());
+        this.findViewById(R.id.track_controller_button).setOnClickListener(getTrackControllerButtonListener());
+        this.findViewById(R.id.settings_button).setOnClickListener(getSettingsButtonListener());
 
         Typeface face= Typeface.createFromAsset(getAssets(), "font/GreatVibes-Regular.otf");
         ((TextView)this.findViewById(R.id.header)).setTypeface(face);
 
         if(playlistsFragment==null) {
             playlistsFragment = new PlaylistsFragment();
-            playlistsFragment.setArguments(getIntent().getExtras());
+            //playlistsFragment.setArguments(getIntent().getExtras());
         }
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, playlistsFragment).commit();
 
@@ -96,6 +103,13 @@ public class MainActivity extends AppCompatActivity {
         setWidthForSlide(0.8f);
     }
 
+    private void setWidthForSlide(float widthMultiplier){
+        int width = (int) (getResources().getDisplayMetrics().widthPixels*widthMultiplier);
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
+        params.width = width;
+        mDrawerList.setLayoutParams(params);
+    }
+
     private View.OnClickListener getTrackControllerButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
@@ -104,8 +118,16 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private View.OnClickListener getSettingsButtonListener(){
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+                MainActivity.this.showSettings();
+            }
+        };
+    }
 
-    void bindDAOs(){
+
+    void createAndBindBeans(){
         DBhelper dBhelper = new DBhelper(this);
         SQLiteDatabase db = dBhelper.getWritableDatabase();
         songsDAO = new SongsDAO();
@@ -116,16 +138,7 @@ public class MainActivity extends AppCompatActivity {
         playlistDAO.setSongsDAO(songsDAO);
 
         songsDAO.setPlaylistDAO(playlistDAO);
-
-        playlists = playlistDAO.getAllPlayLists();
         songService = new SongService(songsDAO);
-    }
-
-    private void setWidthForSlide(float widthMultiplier){
-        int width = (int) (getResources().getDisplayMetrics().widthPixels*widthMultiplier);
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
-        params.width = width;
-        mDrawerList.setLayoutParams(params);
     }
 
 
@@ -146,6 +159,11 @@ public class MainActivity extends AppCompatActivity {
         PlaylistContentFragment playlistContentFragment = new PlaylistContentFragment();
         playlistContentFragment.setCurrentPlaylist(playlist);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistContentFragment).addToBackStack(null).commit();
+    }
+
+    public void showSettings(){
+        SettingsFragment settingsFragment = new SettingsFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).addToBackStack(null).commit();
     }
 
     public List<Playlist> getPlaylists() {

@@ -23,8 +23,8 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
         android:inputType="text"
-        android:textColor="@color/second"
-        android:textColorHighlight="@color/second"/>
+        android:textColor="?attr/color_second"
+        android:textColorHighlight="?attr/color_second"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
