@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/button_background"
+    android:background="?attr/button_background"
     android:gravity="center">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,7 +42,7 @@
 
         <Button
             android:id="@+id/cancel"
-            style="@style/BrandButtonStyleDarkFilled"
+            style="?attr/button_filled_style"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

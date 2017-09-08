@@ -31,7 +31,7 @@ public class SettingsFragment extends DialogFragment {
                 @Override
                 public void onClick(View view) {
                     //mainActivity.setTheme(R.style.AppThemeLight);
-                    MainActivity.currentTheme = R.style.AppThemeLight;
+                    MainActivity.currentTheme = MainActivity.currentTheme.equals("Dark")? "Light":"Dark";
                     //mainActivity.recreate();
 
                     TaskStackBuilder.create(getActivity())

@@ -8,6 +8,7 @@ import com.example.alexander.musicplayer.model.entities.Song;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.WeakHashMap;
 
 /**
  * Created by Alexander on 26.08.2017.
@@ -18,11 +19,12 @@ public class TrackController {
     private Playlist playlist;
     private Song currentTrack;
     private int currentTrackNumber;
-    private MediaPlayer mediaPlayer;
     //private List<TrackObserver> startRunningSongObserverList = new ArrayList<>();
-    private HashMap<String, TrackObserver> startRunningSongObserverList = new HashMap<>();
-    private List<TrackObserver> pauseRunningSongObserverList = new ArrayList<>();
-    private List<TrackObserver> resumeRunningSongObserverList = new ArrayList<>();
+    private WeakHashMap<String, TrackObserver> startRunningSongObserverList = new WeakHashMap<>();
+    private WeakHashMap<String, TrackObserver> pauseRunningSongObserverList = new WeakHashMap<>();
+    private WeakHashMap<String, TrackObserver> resumeRunningSongObserverList = new WeakHashMap<>();
+//    private List<TrackObserver> pauseRunningSongObserverList = new ArrayList<>();
+//    private List<TrackObserver> resumeRunningSongObserverList = new ArrayList<>();
 
     public void playSong(int i){
         if(playlist.getSongs().size()>i && i>=0){
@@ -44,13 +46,21 @@ public class TrackController {
     }
 
     public void pause(){
-        for(TrackObserver observer : this.pauseRunningSongObserverList){
+//        for(TrackObserver observer : this.pauseRunningSongObserverList){
+//            observer.update(currentTrackNumber, currentTrack);
+//        }
+
+        for(TrackObserver observer : this.pauseRunningSongObserverList.values()){
             observer.update(currentTrackNumber, currentTrack);
         }
     }
 
     public void resume(){
-        for(TrackObserver observer : this.resumeRunningSongObserverList){
+//        for(TrackObserver observer : this.resumeRunningSongObserverList){
+//            observer.update(currentTrackNumber, currentTrack);
+//        }
+
+        for(TrackObserver observer : this.resumeRunningSongObserverList.values()){
             observer.update(currentTrackNumber, currentTrack);
         }
     }
@@ -63,12 +73,12 @@ public class TrackController {
         this.startRunningSongObserverList.put(name, trackObserver);
     }
 
-    public void registerPauseRunningSongObserverList(TrackObserver trackObserver){
-        this.pauseRunningSongObserverList.add(trackObserver);
+    public void registerPauseRunningSongObserverList(String name, TrackObserver trackObserver){
+        this.pauseRunningSongObserverList.put(name, trackObserver);
     }
 
-    public void registerResumeRunningSongObserverList(TrackObserver trackObserver){
-        this.resumeRunningSongObserverList.add(trackObserver);
+    public void registerResumeRunningSongObserverList(String name, TrackObserver trackObserver){
+        this.resumeRunningSongObserverList.put(name, trackObserver);
     }
 
     void notifyAboutRunNewSong(){

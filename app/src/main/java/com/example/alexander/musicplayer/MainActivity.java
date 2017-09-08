@@ -28,7 +28,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static TrackControllerAdapter trackControllerAdapter;
+    TrackControllerAdapter trackControllerAdapter;
     static TrackController trackController;
 
     PlaylistsFragment playlistsFragment;
@@ -40,14 +40,20 @@ public class MainActivity extends AppCompatActivity {
     SongsDAO songsDAO;
     SongService songService;
 
-    public static @StyleRes int currentTheme;
+    public static String currentTheme = "Dark";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(currentTheme ==0){
-            currentTheme = R.style.AppTheme;
+        switch (currentTheme){
+            case "Dark": {
+                setTheme(R.style.AppTheme);
+                break;
+            }
+            case "Light": {
+                setTheme(R.style.AppThemeLight);
+                break;
+            }
         }
-        setTheme(currentTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -74,12 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDrawerLayout(){
         dl = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(trackControllerAdapter==null) trackControllerAdapter = new TrackControllerAdapter(this, trackController);
-        else {
-            trackControllerAdapter.ctx = this;
-            trackControllerAdapter.runProgressBarUpdater();
-        }
-
+        trackControllerAdapter = new TrackControllerAdapter(this, trackController);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(trackControllerAdapter);
 
@@ -165,6 +166,14 @@ public class MainActivity extends AppCompatActivity {
         SettingsFragment settingsFragment = new SettingsFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).addToBackStack(null).commit();
     }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        trackControllerAdapter.onDestroy();
+        System.gc();
+    }
+
 
     public List<Playlist> getPlaylists() {
         return playlists;

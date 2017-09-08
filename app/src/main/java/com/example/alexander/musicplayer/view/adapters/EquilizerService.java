@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -13,20 +14,28 @@ import java.util.List;
 public class EquilizerService {
 
     List<ProgressBar> pillars = new ArrayList<>();
+    Thread waterfallThread;
+    public boolean waterfallStop = false;
     int span = 0;
-    static int[] values = new int[255];
+    static HashMap<Byte, Integer> alignedValues = new HashMap<>();
     static {
-        for(int i = 0; i < values.length; i++){
-            values[i] = transformWave(i);
+        for(byte i = Byte.MIN_VALUE; i < Byte.MAX_VALUE; i++){
+            alignedValues.put(i, (int) (((float)(i+128)/255) * 100));
         }
+        alignedValues.put((byte)127, 100);
     }
 //    final ExecutorService es = Executors.newFixedThreadPool(100);
 
     public EquilizerService(){
-        new Thread(new Runnable() {
+        waterfallThread =  createNewWaterfallThread();
+        waterfallThread.start();
+    }
+
+    private Thread createNewWaterfallThread(){
+        return new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true){
+                while(!waterfallStop){
                     for(int i = 0; i<pillars.size(); i++){
                         ProgressBar pb =  pillars.get(i);
                         int newVal = pb.getProgress()-2;
@@ -40,9 +49,14 @@ public class EquilizerService {
                     }
                 }
             }
-        }).start();
+        });
     }
 
+    public void changePillars(List<View> pillars){
+        this.pillars.clear();
+        for(View pillar : pillars)
+            register(pillar);
+    }
 
     public void register(View view){
         if(view instanceof ProgressBar && !pillars.contains(view)) {
@@ -54,14 +68,16 @@ public class EquilizerService {
     public void updatePillars(byte[] waveform){
         int j=0;
         for(int i = 0; i<pillars.size(); i++){
-            changeVal(pillars.get(i), mean(waveform, j, j+span-1));
+            //changeVal(pillars.get(i),mean(waveform, j, j+span-1));
+            changeVal(pillars.get(i), transformWaveCached(mean(waveform, j, j+span-1)));
             j = j + span;
         }
     }
 
     public void changeVal(final View view, final int newVal){
         ProgressBar pb = (ProgressBar) view;
-        if(pb.getProgress()<newVal) pb.setProgress(newVal);
+        if(pb.getProgress()<newVal)
+            pb.setProgress(newVal);
     }
 
     private byte mean(byte[] bytes, int start, int end){
@@ -72,11 +88,11 @@ public class EquilizerService {
         return (byte) (resultInt/(start-end));
     }
 
-    private int transformWave(byte b){
-        return values[b];
+    private int transformWaveCached(byte b){
+        return alignedValues.get(b);
         //return (int) (((float)(b+128)/255) * 100);
     }
-    private static int transformWave(int b){
+    private int transformWave(int b){
         return (int) (((float)(b+128)/255) * 100);
     }
 

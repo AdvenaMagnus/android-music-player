@@ -17,6 +17,9 @@ import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.TrackObserver;
 import com.example.alexander.musicplayer.model.entities.Song;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Alexander on 16.08.2017.
  */
@@ -25,26 +28,23 @@ public class TrackControllerAdapter extends BaseAdapter{
 
     public Context ctx;
     private LayoutInflater lInflater;
-    private MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer;
+    public EquilizerService equilizerService;
+    public Visualizer audioOutput;
     private View layout;
     private View eq;
-//    private Playlist playlist;
-//    private Song currentSong;
-//    private int currentTrackNumber =0;
     private SeekBar progressBar;
-    private Thread progressBarUpdater;
-    private Visualizer audioOutput;
-    private EquilizerService equilizerService;
+    public Thread progressBarUpdater;
+    public boolean progressBarUpdaterStop=false;
     private Button playButton;
     private TextView songTitle;
-    //private List<TrackObserver> trackObserverList = new ArrayList<>();
 
     private TrackController trackController;
 
     public TrackControllerAdapter(final Context ctx, TrackController trackController){
         this.ctx = ctx;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.equilizerService = new EquilizerService();
+        equilizerService = new EquilizerService();
         this.trackController = trackController;
         this.trackController.registerStartRunningSongObserver("trackControllerAdapter", new TrackObserver() {
             @Override
@@ -55,21 +55,19 @@ public class TrackControllerAdapter extends BaseAdapter{
                 mediaPlayer = MediaPlayer.create(ctx, Uri.parse(song.getPath()));
                 mediaPlayer.setLooping(false);
                 mediaPlayer.setOnCompletionListener(getOnCompletionListener());
-                //mediaPlayer.start();
                 songTitle.setText(song.getName());
                 playButtonAction();
-
                 runVisualizer(mediaPlayer.getAudioSessionId());
             }
         });
 
-        this.trackController.registerPauseRunningSongObserverList(new TrackObserver() {
+        this.trackController.registerPauseRunningSongObserverList("trackControllerAdapter", new TrackObserver() {
             @Override
             public void update(int i, Song song) {
                 playButtonAction();
             }
         });
-        this.trackController.registerResumeRunningSongObserverList(new TrackObserver() {
+        this.trackController.registerResumeRunningSongObserverList("trackControllerAdapter", new TrackObserver() {
             @Override
             public void update(int i, Song song) {
                 playButtonAction();
@@ -77,12 +75,14 @@ public class TrackControllerAdapter extends BaseAdapter{
         });
 
         initMainControlButtons();
+        initEq();
         runProgressBarUpdater();
+        if(mediaPlayer!=null)
+            runVisualizer(mediaPlayer.getAudioSessionId());
     }
 
     enum SlideMenuItems {
         trackController(1);
-
         long id;
         SlideMenuItems(long id){
             this.id = id;
@@ -130,7 +130,6 @@ public class TrackControllerAdapter extends BaseAdapter{
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         equilizerService.effect1();
-                        //playNextSong();
                         trackController.playNextSong();
                     }
                 }
@@ -139,7 +138,6 @@ public class TrackControllerAdapter extends BaseAdapter{
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         equilizerService.effect1();
-                        //playSong(--currentTrackNumber);
                         trackController.playPrevSong();
                     }
                 }
@@ -149,7 +147,6 @@ public class TrackControllerAdapter extends BaseAdapter{
         progressBar.setOnSeekBarChangeListener(getProgressBarListener());
 
         eq = layout.findViewById(R.id.eqLayout);
-        initEq();
     }
 
     private void playButtonAction(){
@@ -200,27 +197,6 @@ public class TrackControllerAdapter extends BaseAdapter{
         equilizerService.register(eq.findViewById(R.id.eq10));
     }
 
-//    public void playSong(int i){
-//        if(playlist.getSongs().size()>i && i>=0){
-//            currentTrackNumber = i;
-//        }
-//        else {
-//            currentTrackNumber = 0;
-//        }
-//        if(mediaPlayer!=null){
-//            mediaPlayer.stop();
-//        }
-//        mediaPlayer = MediaPlayer.create(ctx, Uri.parse(playlist.getSongs().get(currentTrackNumber).getPath()));
-//        mediaPlayer.setLooping(false);
-//        mediaPlayer.setOnCompletionListener(getOnCompletionListener());
-//        //mediaPlayer.start();
-//        songTitle.setText(playlist.getSongs().get(currentTrackNumber).getName());
-//        playButtonAction();
-//        notifyAboutRunNewSong();
-//
-//        runVisualizer(mediaPlayer.getAudioSessionId());
-//    }
-
     private MediaPlayer.OnCompletionListener getOnCompletionListener(){
         return new MediaPlayer.OnCompletionListener(){
             @Override
@@ -231,26 +207,13 @@ public class TrackControllerAdapter extends BaseAdapter{
         };
     }
 
-//    public void playNextSong(){
-//        playSong(++currentTrackNumber);
-//    }
-
-//    void registerStartRunningSongObserver(TrackObserver trackObserver){
-//        this.trackObserverList.add(trackObserver);
-//    }
-//
-//    void notifyAboutRunNewSong(){
-//        for(TrackObserver observer : this.trackObserverList){
-//            observer.update(currentTrackNumber, currentSong);
-//        }
-//    }
-
     public void runProgressBarUpdater(){
         if(progressBarUpdater!=null) progressBarUpdater.interrupt();
+        progressBarUpdaterStop = false;
         progressBarUpdater = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+                while(!progressBarUpdaterStop) {
                     if (mediaPlayer != null) {
                         float trackProgress = (float) mediaPlayer.getCurrentPosition() / (float) mediaPlayer.getDuration();
                         progressBar.setProgress((int) (trackProgress*100));
@@ -267,7 +230,7 @@ public class TrackControllerAdapter extends BaseAdapter{
     }
 
     private void runVisualizer(int sessionId){
-        if(audioOutput!=null){
+        if(audioOutput!=null && audioOutput.getEnabled()){
             audioOutput.setEnabled(false);
         }
         int rate = Visualizer.getMaxCaptureRate();
@@ -298,19 +261,17 @@ public class TrackControllerAdapter extends BaseAdapter{
         }
     }
 
-//    public Playlist getPlaylist() {
-//        return playlist;
-//    }
-//    public void setPlaylist(Playlist playlist) {
-//        this.playlist = playlist;
-//    }
-//
-//    public Song getCurrentSong() {
-//        return currentSong;
-//    }
-//
-//    public int getCurrentTrackNumber() {
-//        return currentTrackNumber;
-//    }
+    public void onDestroy(){
+        this.offVisualizer();
+        if(audioOutput!=null)
+            this.audioOutput.release();
+        //this.trackControllerAdapter.audioOutput = null;
+        this.progressBarUpdater.interrupt();
+        this.progressBarUpdaterStop = true;
+        this.equilizerService.waterfallStop=true;
+        this.equilizerService.changePillars(new ArrayList<View>());
+        //this.trackControllerAdapter.equilizerService = null;
+    }
+
 
 }
