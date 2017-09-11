@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
+import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 
 import java.util.HashMap;
@@ -19,38 +20,37 @@ import java.util.HashMap;
 
 public class TrackListAdapter extends BaseAdapter {
 
-    //List<Song> tracks;
-    Playlist playlist;
+    TrackController trackController;
     private LayoutInflater lInflater;
     int currentTrack = Integer.MAX_VALUE;
 
-    public TrackListAdapter(Context ctx, Playlist playlist){
+    public TrackListAdapter(Context ctx, TrackController trackController){
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.playlist = playlist;
+        this.trackController = trackController;
     }
 
     @Override
     public int getCount() {
-        return playlist.getSongs().size();
+        return trackController.getPlaylist().getSongs().size();
     }
 
     @Override
     public Object getItem(int i) {
-        return playlist.getSongs().get(i);
+        return trackController.getPlaylist().getSongs().get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return playlist.getSongs().get(i).getId();
+        return trackController.getPlaylist().getSongs().get(i).getId();
     }
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         LinearLayout ll;
-        if(i==currentTrack) {
+        if(trackController.getPlaylist().getSongs().get(i)==trackController.getCurrentTrack()) {
             ll = (LinearLayout) lInflater.inflate(R.layout.track_layout_current, null, false);
             TextView title = ll.findViewById(R.id.song_title);
-            title.setText(playlist.getSongs().get(i).getName());
+            title.setText(trackController.getPlaylist().getSongs().get(i).getName());
 
 //            ll.setBackgroundColor(ContextCompat.getColor(lInflater.getContext(), R.color.second));
 //            title.setBackgroundColor(ContextCompat.getColor(lInflater.getContext(), R.color.second));
@@ -59,7 +59,7 @@ public class TrackListAdapter extends BaseAdapter {
         } else {
             ll = (LinearLayout) lInflater.inflate(R.layout.track_layout, null, false);
             TextView title = ll.findViewById(R.id.song_title);
-            title.setText(playlist.getSongs().get(i).getName());
+            title.setText(trackController.getPlaylist().getSongs().get(i).getName());
         }
         return ll;
     }

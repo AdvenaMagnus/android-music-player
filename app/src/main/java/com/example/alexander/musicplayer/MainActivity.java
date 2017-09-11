@@ -1,5 +1,7 @@
 package com.example.alexander.musicplayer;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,8 +14,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.alexander.musicplayer.controller.PlaylistService;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.model.PlaylistDAO;
+import com.example.alexander.musicplayer.view.Theme;
 import com.example.alexander.musicplayer.view.adapters.TrackControllerAdapter;
 import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
 import com.example.alexander.musicplayer.view.fragments.PlaylistsFragment;
@@ -39,26 +43,18 @@ public class MainActivity extends AppCompatActivity {
     public PlaylistDAO playlistDAO;
     SongsDAO songsDAO;
     SongService songService;
+    PlaylistService playlistService;
 
-    public static String currentTheme = "Dark";
+    public static Theme currentTheme = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        switch (currentTheme){
-            case "Dark": {
-                setTheme(R.style.AppTheme);
-                break;
-            }
-            case "Light": {
-                setTheme(R.style.AppThemeLight);
-                break;
-            }
-        }
         super.onCreate(savedInstanceState);
+        applyTheme();
         setContentView(R.layout.activity_main);
 
         createAndBindBeans();
-        playlists = playlistDAO.getAllPlayLists();
+        playlists = trackController != null && trackController.getPlaylist()!=null? playlistDAO.getAllPlayLists(trackController.getPlaylist()): playlistDAO.getAllPlayLists();
 
         if(trackController==null)
             trackController = new TrackController();
@@ -134,9 +130,12 @@ public class MainActivity extends AppCompatActivity {
         songsDAO = new SongsDAO();
         songsDAO.setDb(db);
 
+        playlistService = new PlaylistService();
+
         playlistDAO = new PlaylistDAO();
         playlistDAO.setDb(db);
         playlistDAO.setSongsDAO(songsDAO);
+        playlistDAO.setPlaylistService(playlistService);
 
         songsDAO.setPlaylistDAO(playlistDAO);
         songService = new SongService(songsDAO);
@@ -157,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showPlayListContent(Playlist playlist){
+        trackController.setPlaylist(playlist);
         PlaylistContentFragment playlistContentFragment = new PlaylistContentFragment();
         playlistContentFragment.setCurrentPlaylist(playlist);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistContentFragment).addToBackStack(null).commit();
@@ -174,6 +174,44 @@ public class MainActivity extends AppCompatActivity {
         System.gc();
     }
 
+    private void applyTheme(){
+        if(currentTheme==null){
+            currentTheme = loadCurrentTheme();
+        }
+        switch (currentTheme){
+            case Dark: {
+                setTheme(R.style.AppTheme);
+                break;
+            }
+            case Light: {
+                setTheme(R.style.AppThemeLight);
+                break;
+            }
+        }
+    }
+
+    public void setCurrentTheme(Theme theme){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("Theme", theme.getName());
+        editor.commit();
+        currentTheme = theme;
+    }
+
+    public Theme loadCurrentTheme(){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String themeString = sharedPref.getString("Theme", "Dark");
+        switch (themeString){
+            case "Dark": {
+                return Theme.Dark;
+            }
+            case "Light": {
+                return Theme.Light;
+            }
+        }
+        return null;
+    }
+
 
     public List<Playlist> getPlaylists() {
         return playlists;
@@ -189,5 +227,9 @@ public class MainActivity extends AppCompatActivity {
 
     public SongsDAO getSongsDAO() {
         return songsDAO;
+    }
+
+    public TrackControllerAdapter getTrackControllerAdapter() {
+        return trackControllerAdapter;
     }
 }

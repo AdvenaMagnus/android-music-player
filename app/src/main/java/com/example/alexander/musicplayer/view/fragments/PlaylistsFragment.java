@@ -15,7 +15,7 @@ import android.widget.ListView;
 import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.model.entities.Playlist;
-import com.example.alexander.musicplayer.controller.PlaylistsUtils;
+import com.example.alexander.musicplayer.controller.PlaylistService;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class PlaylistsFragment extends Fragment {
             prepareListOfPlaylists(mainActivity);
         }
 //        ((ArrayAdapter)playLists.getAdapter()).clear();
-//        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistsUtils.playlistsNames(mainActivity.getPlaylists()));
+//        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistService.playlistsNames(mainActivity.getPlaylists()));
         refreshAdapter();
         return ll;
     }
@@ -56,7 +56,7 @@ public class PlaylistsFragment extends Fragment {
 
     private void refreshAdapter(){
         ((ArrayAdapter)playLists.getAdapter()).clear();
-        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistsUtils.playlistsNames(mainActivity.getPlaylists()));
+        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistService.playlistsNames(mainActivity.getPlaylists()));
     }
 
     private void openDialogToCreatePlaylist(){
@@ -91,7 +91,7 @@ public class PlaylistsFragment extends Fragment {
         return new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
-                mainActivity.showPlayListContent(PlaylistsUtils.getPlayListByName((String)adapter.getItemAtPosition(position), mainActivity.getPlaylists()));
+                mainActivity.showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), mainActivity.getPlaylists()));
             }
         };
     }

@@ -12,6 +12,11 @@
             android:textSize="10dp"
             android:layout_marginBottom="10dp"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/color_second"/>
+
         <ListView
         android:id="@+id/playlists"
         android:layout_width="match_parent"

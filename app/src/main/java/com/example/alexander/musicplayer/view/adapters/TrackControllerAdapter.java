@@ -1,6 +1,7 @@
 package com.example.alexander.musicplayer.view.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
@@ -12,13 +13,13 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.TrackObserver;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Alexander on 16.08.2017.
@@ -38,6 +39,7 @@ public class TrackControllerAdapter extends BaseAdapter{
     public boolean progressBarUpdaterStop=false;
     private Button playButton;
     private TextView songTitle;
+    private boolean isVisualizerOn = true;
 
     private TrackController trackController;
 
@@ -45,6 +47,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         this.ctx = ctx;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         equilizerService = new EquilizerService();
+        isVisualizerOn = loadIsVisualizerOn();
         this.trackController = trackController;
         this.trackController.registerStartRunningSongObserver("trackControllerAdapter", new TrackObserver() {
             @Override
@@ -77,6 +80,10 @@ public class TrackControllerAdapter extends BaseAdapter{
         initMainControlButtons();
         initEq();
         runProgressBarUpdater();
+        if(trackController!=null){
+            if(trackController.getCurrentTrack()!=null)
+                songTitle.setText(trackController.getCurrentTrack().getName());
+        }
         if(mediaPlayer!=null)
             runVisualizer(mediaPlayer.getAudioSessionId());
     }
@@ -230,9 +237,7 @@ public class TrackControllerAdapter extends BaseAdapter{
     }
 
     private void runVisualizer(int sessionId){
-        if(audioOutput!=null && audioOutput.getEnabled()){
-            audioOutput.setEnabled(false);
-        }
+        offVisualizer();
         int rate = Visualizer.getMaxCaptureRate();
         audioOutput = new Visualizer(sessionId);
         audioOutput.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
@@ -246,20 +251,44 @@ public class TrackControllerAdapter extends BaseAdapter{
 
             }
         },rate , true, false); // waveform not freq data
-        audioOutput.setEnabled(true);
+        onVisualizer();
     }
 
     public void onVisualizer(){
-        if(audioOutput!=null){
-            if(!audioOutput.getEnabled()) audioOutput.setEnabled(true);
+        if(isVisualizerOn) {
+            if (audioOutput != null) {
+                if (!audioOutput.getEnabled()) audioOutput.setEnabled(true);
+            }
         }
+        //isVisualizerOn = true;
     }
 
     public void offVisualizer(){
         if(audioOutput!=null){
             if(audioOutput.getEnabled()) audioOutput.setEnabled(false);
         }
+        //isVisualizerOn = false;
     }
+
+    public boolean isVisualizerOn() {
+        return isVisualizerOn;
+    }
+
+    public boolean loadIsVisualizerOn(){
+        SharedPreferences sharedPref = ((MainActivity)ctx).getPreferences(Context.MODE_PRIVATE);
+        return sharedPref.getBoolean("Sound levels onOff", true);
+    }
+
+    public void switchVisualizer(){
+        SharedPreferences sharedPref = ((MainActivity)ctx).getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("Sound levels onOff", !isVisualizerOn);
+        editor.commit();
+        isVisualizerOn = !isVisualizerOn;
+        if(!isVisualizerOn)
+            offVisualizer();
+    }
+
 
     public void onDestroy(){
         this.offVisualizer();
@@ -272,6 +301,4 @@ public class TrackControllerAdapter extends BaseAdapter{
         this.equilizerService.changePillars(new ArrayList<View>());
         //this.trackControllerAdapter.equilizerService = null;
     }
-
-
 }

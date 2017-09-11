@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.alexander.musicplayer.controller.PlaylistService;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
@@ -21,11 +22,12 @@ public class PlaylistDAO {
     SQLiteDatabase db;
 
     SongsDAO songsDAO;
+    PlaylistService playlistService;
 
     public PlaylistDAO(){
     }
 
-    public List<Playlist> getAllPlayLists(){
+    public List<Playlist> getAllPlayLists(Playlist excludePlaylist){
         List<Playlist> result = new ArrayList<>();
 
         String[] projection = {
@@ -33,8 +35,15 @@ public class PlaylistDAO {
                 PlaylistContract.PlaylistEntry.PLAYLIST_NAME
         };
 
-        Cursor cursor = db.query(PlaylistContract.PlaylistEntry.TABLE_NAME,
-                projection, null, null, null, null, null);
+        Cursor cursor;
+        if(excludePlaylist != null && excludePlaylist.getId()!=0) {
+            cursor = db.query(PlaylistContract.PlaylistEntry.TABLE_NAME, projection,
+                    PlaylistContract.PlaylistEntry._ID + " != " + excludePlaylist.getId(), null, null, null, null);
+            result.add(excludePlaylist);
+        }
+        else {
+            cursor =  db.query(PlaylistContract.PlaylistEntry.TABLE_NAME, projection, null, null, null, null, null);
+        }
 
         while(cursor.moveToNext()) {
             Playlist playlist = new Playlist();
@@ -44,8 +53,12 @@ public class PlaylistDAO {
             result.add(playlist);
         }
         cursor.close();
-
+        playlistService.sortById(result);
         return result;
+    }
+
+    public List<Playlist> getAllPlayLists(){
+        return getAllPlayLists(null);
     }
 
     public Playlist createNew(String name){
@@ -98,6 +111,10 @@ public class PlaylistDAO {
 
     public void setSongsDAO(SongsDAO songsDAO) {
         this.songsDAO = songsDAO;
+    }
+
+    public void setPlaylistService(PlaylistService playlistService) {
+        this.playlistService = playlistService;
     }
 
     public void deletePlaylist(Playlist playlist){

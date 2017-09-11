@@ -97,4 +97,8 @@ public class TrackController {
     public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
+
+    public Song getCurrentTrack() {
+        return currentTrack;
+    }
 }

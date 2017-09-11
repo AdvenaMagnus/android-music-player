@@ -17,6 +17,8 @@
         <item name="android:buttonStyle">@style/BrandButtonStyleDark</item>
         <item name="buttonStyle">@style/BrandButtonStyleDark</item>
 
+        <item name="colorControlHighlight">?attr/color_second</item>
+
         <item name="android:listViewStyle">@style/ListViewStyleDark</item>
         <item name="android:textViewStyle">@style/TextViewStyleDark</item>
         <item name="android:checkboxStyle">@style/CheckBoxStyleDark</item>
@@ -31,6 +33,7 @@
         <item name="play_button_background">@drawable/play_button_background</item>
         <item name="slide_menu_background">@drawable/slide_menu_background</item>
         <item name="static_equilizer_stroke_style">@drawable/static_equilizer_stroke_style</item>
+
     </style>
 
     <style name="AppThemeLight" parent="AppTheme">

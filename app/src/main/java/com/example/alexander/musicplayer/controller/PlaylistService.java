@@ -5,13 +5,15 @@ import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by Alexander on 20.08.2017.
  */
 
-public class PlaylistsUtils {
+public class PlaylistService {
 
     public static List<String> playlistsNames(List<Playlist> playlists){
         List<String> result =  new ArrayList<>();
@@ -26,6 +28,17 @@ public class PlaylistsUtils {
             if(pl.getName().equals(name)) return pl;
         }
         return null;
+    }
+
+    public void sortById(List<Playlist> plList){
+        Collections.sort(plList, new Comparator<Playlist>() {
+            @Override
+            public int compare(Playlist playlist1, Playlist playlist2) {
+                if(playlist1.getId()>playlist2.getId()) return 1;
+                if(playlist1.getId()<playlist2.getId()) return -1;
+                return 0;
+            }
+        });
     }
 
 }

@@ -9,7 +9,8 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:id="@+id/theme"
@@ -20,11 +21,11 @@
             android:textSize="15dp" />
 
         <TextView
-            android:id="@+id/songs"
+            android:id="@+id/theme_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="9dp"
-            android:text="text"
+            android:text=""
             android:textSize="15dp"/>
 
         <Button
@@ -37,6 +38,32 @@
             />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/color_second"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp">
+
+        <Switch
+            android:id="@+id/sound_levels_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sound levels"
+            android:textOff="Off"
+            android:textOn="On"
+            android:textColor="?attr/color_second"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
 
 
 </LinearLayout>
