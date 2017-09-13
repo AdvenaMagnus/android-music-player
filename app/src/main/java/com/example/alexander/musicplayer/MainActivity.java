@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showPlayListContent(Playlist playlist){
-        trackController.setPlaylist(playlist);
+        //trackController.setPlaylist(playlist);
         PlaylistContentFragment playlistContentFragment = new PlaylistContentFragment();
         playlistContentFragment.setCurrentPlaylist(playlist);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistContentFragment).addToBackStack(null).commit();

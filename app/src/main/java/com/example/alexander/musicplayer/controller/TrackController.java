@@ -27,14 +27,15 @@ public class TrackController {
 //    private List<TrackObserver> resumeRunningSongObserverList = new ArrayList<>();
 
     public void playSong(int i){
-        if(playlist.getSongs().size()>i && i>=0){
-            currentTrackNumber = i;
+        if(playlist!=null) {
+            if (playlist.getSongs().size() > i && i >= 0) {
+                currentTrackNumber = i;
+            } else {
+                currentTrackNumber = 0;
+            }
+            currentTrack = playlist.getSongs().get(currentTrackNumber);
+            notifyAboutRunNewSong();
         }
-        else {
-            currentTrackNumber = 0;
-        }
-        currentTrack = playlist.getSongs().get(currentTrackNumber);
-        notifyAboutRunNewSong();
     }
 
     public void playNextSong(){

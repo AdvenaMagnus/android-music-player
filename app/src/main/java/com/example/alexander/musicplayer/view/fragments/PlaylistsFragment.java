@@ -106,6 +106,9 @@ public class PlaylistsFragment extends Fragment {
                 playlistDetailDialog.setDeleteCallback(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(MainActivity.getTrackController().getPlaylist() == mainActivity.playlists.get(i)){
+                            MainActivity.getTrackController().setPlaylist(null);
+                        }
                         mainActivity.playlistDAO.deletePlaylist(mainActivity.playlists.get(i));
                         mainActivity.playlists.remove(i);
                         refreshAdapter();

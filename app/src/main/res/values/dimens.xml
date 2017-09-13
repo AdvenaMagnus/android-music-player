@@ -5,4 +5,5 @@
     <dimen name="margin_top_layout">10dp</dimen>
     <dimen name="button_width">110dp</dimen>
     <dimen name="button_height">40dp</dimen>
+    <dimen name="track_controller_song_info_titles_width">80dp</dimen>
 </resources>

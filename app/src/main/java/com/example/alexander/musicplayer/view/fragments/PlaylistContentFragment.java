@@ -42,7 +42,7 @@ public class PlaylistContentFragment extends Fragment {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(),
 //                android.R.layout.simple_list_item_1, currentPlaylist.getTracks());
 
-        final TrackListAdapter trackListAdapter = new TrackListAdapter(mainActivity, MainActivity.getTrackController());
+        final TrackListAdapter trackListAdapter = new TrackListAdapter(mainActivity, currentPlaylist, MainActivity.getTrackController());
         ListView trackList = ll.findViewById(R.id.tracks_list);
         trackList.setAdapter(trackListAdapter);
         trackList.setOnItemClickListener(getOnTrackClickListener());
@@ -94,7 +94,7 @@ public class PlaylistContentFragment extends Fragment {
                 mainActivity.dl.openDrawer(Gravity.LEFT);
                 //TrackControllerAdapter trackController = mainActivity.getTrackController();
                 TrackController trackController = mainActivity.getTrackController();
-                //trackController.setPlaylist(currentPlaylist);
+                trackController.setPlaylist(currentPlaylist);
                 trackController.playSong(position);
             }
         };

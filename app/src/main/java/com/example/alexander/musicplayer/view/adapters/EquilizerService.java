@@ -37,8 +37,16 @@ public class EquilizerService {
             public void run() {
                 while(!waterfallStop){
                     for(int i = 0; i<pillars.size(); i++){
-                        ProgressBar pb =  pillars.get(i);
-                        int newVal = pb.getProgress()-2;
+                        final ProgressBar pb =  pillars.get(i);
+                        final int newVal = pb.getProgress()-2;
+//                        pb.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if(newVal>0) pb.setProgress(newVal);
+//                                else pb.setProgress(0);
+//                            }
+//                        });
+                        // Sorry, but this works better
                         if(newVal>0) pb.setProgress(newVal);
                         else pb.setProgress(0);
                     }
@@ -75,9 +83,16 @@ public class EquilizerService {
     }
 
     public void changeVal(final View view, final int newVal){
-        ProgressBar pb = (ProgressBar) view;
-        if(pb.getProgress()<newVal)
+        final ProgressBar pb = (ProgressBar) view;
+        if(pb.getProgress()<newVal){
             pb.setProgress(newVal);
+//            pb.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    pb.setProgress(newVal);
+//                }
+//            });
+        }
     }
 
     private byte mean(byte[] bytes, int start, int end){

@@ -9,6 +9,7 @@ import com.example.alexander.musicplayer.model.entities.Song;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Alexander on 23.08.2017.
@@ -71,6 +72,14 @@ public class SongService {
         mmr.setDataSource(song.getPath());
         result.put("album", mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
         return result;
+    }
+
+    public static String formatDuration(long durationLong){
+        return String.format("%d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(durationLong),
+                TimeUnit.MILLISECONDS.toSeconds(durationLong) -
+                        TimeUnit.MILLISECONDS.toMinutes(durationLong)*60
+        );
     }
 
 }

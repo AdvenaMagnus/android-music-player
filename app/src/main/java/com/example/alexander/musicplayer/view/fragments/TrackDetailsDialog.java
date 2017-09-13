@@ -38,6 +38,13 @@ public class TrackDetailsDialog extends DialogFragment {
         ((TextView)ll.findViewById(R.id.album)).setText(metData.get("album"));
         ((TextView)ll.findViewById(R.id.title)).setText(metData.get("title"));
         ((TextView)ll.findViewById(R.id.duration)).setText(metData.get("duration"));
+
+        ll.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TrackDetailsDialog.this.dismiss();
+            }
+        });
         return ll;
     }
 

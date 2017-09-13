@@ -2,24 +2,35 @@ package com.example.alexander.musicplayer.view.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
+import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.TrackObserver;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Alexander on 16.08.2017.
@@ -38,7 +49,8 @@ public class TrackControllerAdapter extends BaseAdapter{
     public Thread progressBarUpdater;
     public boolean progressBarUpdaterStop=false;
     private Button playButton;
-    private TextView songTitle;
+    private TextView fileName;
+    private TextView duration_past;
     private boolean isVisualizerOn = true;
 
     private TrackController trackController;
@@ -58,7 +70,7 @@ public class TrackControllerAdapter extends BaseAdapter{
                 mediaPlayer = MediaPlayer.create(ctx, Uri.parse(song.getPath()));
                 mediaPlayer.setLooping(false);
                 mediaPlayer.setOnCompletionListener(getOnCompletionListener());
-                songTitle.setText(song.getName());
+                setSongInfo(song);
                 playButtonAction();
                 runVisualizer(mediaPlayer.getAudioSessionId());
             }
@@ -82,7 +94,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         runProgressBarUpdater();
         if(trackController!=null){
             if(trackController.getCurrentTrack()!=null)
-                songTitle.setText(trackController.getCurrentTrack().getName());
+                setSongInfo(trackController.getCurrentTrack());
         }
         if(mediaPlayer!=null)
             runVisualizer(mediaPlayer.getAudioSessionId());
@@ -130,8 +142,8 @@ public class TrackControllerAdapter extends BaseAdapter{
                 }
         );
 
-        songTitle = layout.findViewById(R.id.song_title);
-        songTitle.setSelected(true);
+        fileName = layout.findViewById(R.id.file_name);
+        fileName.setSelected(true);
 
         layout.findViewById(R.id.nextButton).setOnClickListener(
                 new View.OnClickListener() {
@@ -154,6 +166,57 @@ public class TrackControllerAdapter extends BaseAdapter{
         progressBar.setOnSeekBarChangeListener(getProgressBarListener());
 
         eq = layout.findViewById(R.id.eqLayout);
+
+
+        layout.findViewById(R.id.artist).setSelected(true);
+        layout.findViewById(R.id.album).setSelected(true);
+        layout.findViewById(R.id.title).setSelected(true);
+
+        duration_past = layout.findViewById(R.id.duration_past);
+
+        layout.findViewById(R.id.playlist).setOnClickListener(getOnPlaylistClickListener());
+    }
+
+    private void setSongInfo(Song song){
+
+        HashMap<String, String> metData = song.getMetadata();
+
+        fileName.setText(song.getName());
+
+        ((TextView)layout.findViewById(R.id.artist)).setText(metData.get("artist"));
+        ((TextView)layout.findViewById(R.id.album)).setText(metData.get("album"));
+        ((TextView)layout.findViewById(R.id.title)).setText(metData.get("title"));
+        ((TextView)layout.findViewById(R.id.duration)).setText(metData.get("duration"));
+
+        //int width = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
+
+        ImageView albumCoverImg =  layout.findViewById(R.id.album_cover);
+        if(song.getAlbumCover()!=null){
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(song.getAlbumCover(), 0, song.getAlbumCover().length);
+            albumCoverImg.setImageBitmap(bitmap); //associated cover art in bitmap
+            albumCoverImg.setAdjustViewBounds(true);
+            //albumCoverImg.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
+            albumCoverImg.setVisibility(View.VISIBLE);
+            albumCoverImg.setAlpha(0.5f);
+        } else {
+            albumCoverImg.setVisibility(View.INVISIBLE);
+            albumCoverImg.setAlpha(0.5f);
+        }
+
+        String playlistName=trackController.getPlaylist().getName();
+        SpannableString content = new SpannableString(playlistName);
+        content.setSpan(new UnderlineSpan(), 0, playlistName.length(), 0);
+        ((TextView)layout.findViewById(R.id.playlist)).setText(content);
+    }
+
+    private View.OnClickListener getOnPlaylistClickListener(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)ctx).showPlayListContent(trackController.getPlaylist());
+            }
+        };
     }
 
     private void playButtonAction(){
@@ -174,9 +237,14 @@ public class TrackControllerAdapter extends BaseAdapter{
             boolean changeProgressByHand=false;
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(mediaPlayer!=null && changeProgressByHand){
-                    int newPosition = (mediaPlayer.getDuration()*i)/100;
-                    mediaPlayer.seekTo(newPosition);
+                if(mediaPlayer!=null) {
+                    int newPosition = (mediaPlayer.getDuration() * i) / 100;
+                    if (changeProgressByHand) {
+                        mediaPlayer.seekTo(newPosition);
+                    }
+                    duration_past.setText(SongService.formatDuration(newPosition));
+                    //mConstraintSet.setHorizontalBias(duration_past.getId(), (float)i/100);
+                    //mConstraintSet.applyTo((ConstraintLayout) layout);
                 }
             }
             @Override
@@ -222,8 +290,13 @@ public class TrackControllerAdapter extends BaseAdapter{
             public void run() {
                 while(!progressBarUpdaterStop) {
                     if (mediaPlayer != null) {
-                        float trackProgress = (float) mediaPlayer.getCurrentPosition() / (float) mediaPlayer.getDuration();
-                        progressBar.setProgress((int) (trackProgress*100));
+                        final float trackProgress = (float) mediaPlayer.getCurrentPosition() / (float) mediaPlayer.getDuration();
+                        progressBar.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress((int) (trackProgress*100));
+                            }
+                        });
                     }
                     try {
                         Thread.sleep(200);
