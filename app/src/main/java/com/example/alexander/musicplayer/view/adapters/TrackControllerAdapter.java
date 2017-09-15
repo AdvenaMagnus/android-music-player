@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
@@ -178,36 +179,55 @@ public class TrackControllerAdapter extends BaseAdapter{
     }
 
     private void setSongInfo(Song song){
-
         HashMap<String, String> metData = song.getMetadata();
-
         fileName.setText(song.getName());
-
         ((TextView)layout.findViewById(R.id.artist)).setText(metData.get("artist"));
         ((TextView)layout.findViewById(R.id.album)).setText(metData.get("album"));
         ((TextView)layout.findViewById(R.id.title)).setText(metData.get("title"));
         ((TextView)layout.findViewById(R.id.duration)).setText(metData.get("duration"));
 
         //int width = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
-
-        ImageView albumCoverImg =  layout.findViewById(R.id.album_cover);
-        if(song.getAlbumCover()!=null){
-
-            Bitmap bitmap = BitmapFactory.decodeByteArray(song.getAlbumCover(), 0, song.getAlbumCover().length);
-            albumCoverImg.setImageBitmap(bitmap); //associated cover art in bitmap
-            albumCoverImg.setAdjustViewBounds(true);
-            //albumCoverImg.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
-            albumCoverImg.setVisibility(View.VISIBLE);
-            albumCoverImg.setAlpha(0.5f);
-        } else {
-            albumCoverImg.setVisibility(View.INVISIBLE);
-            albumCoverImg.setAlpha(0.5f);
-        }
+        setAlbumCover(song);
 
         String playlistName=trackController.getPlaylist().getName();
         SpannableString content = new SpannableString(playlistName);
         content.setSpan(new UnderlineSpan(), 0, playlistName.length(), 0);
         ((TextView)layout.findViewById(R.id.playlist)).setText(content);
+    }
+
+    private void setAlbumCover(Song song){
+        ImageView albumCoverImg =  layout.findViewById(R.id.album_cover);
+        //ImageView albumCoverImg2 =  layout.findViewById(R.id.album_gradient);
+        final float scale = ctx.getResources().getDisplayMetrics().density;
+        int slideWidth = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
+        if(song.getAlbumCover()!=null){
+
+//            layout.findViewById(R.id.album_covers).getLayoutParams().height = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(song.getAlbumCover(), 0, song.getAlbumCover().length);
+            //albumCoverImg.setImageBitmap(bitmap); //associated cover art in bitmap
+            albumCoverImg.setBackgroundDrawable(new BitmapDrawable(ctx.getResources(), bitmap)); //associated cover art in bitmap
+            albumCoverImg.setAdjustViewBounds(true);
+            //albumCoverImg.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
+            albumCoverImg.setVisibility(View.VISIBLE);
+            albumCoverImg.setAlpha(0.5f);
+
+            //layout.findViewById(R.id.album_covers).getLayoutParams().height = (int) (bitmap.getHeight()/scale);
+            layout.findViewById(R.id.album_covers).getLayoutParams().height = slideWidth;
+            ((ViewGroup.MarginLayoutParams)layout.findViewById(R.id.song_info).getLayoutParams()).topMargin
+                    = (int) (slideWidth-layout.findViewById(R.id.song_info).getLayoutParams().height - 100*scale);
+            //albumCoverImg2.getLayoutParams().height = albumCoverImg.getLayoutParams().height;
+            //albumCoverImg2.getLayoutParams().height = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
+
+        } else {
+            albumCoverImg.setVisibility(View.INVISIBLE);
+            albumCoverImg.setAlpha(0.5f);
+            layout.findViewById(R.id.album_covers).getLayoutParams().height = slideWidth;
+            ((ViewGroup.MarginLayoutParams)layout.findViewById(R.id.song_info).getLayoutParams()).topMargin
+                    = (int) (slideWidth-layout.findViewById(R.id.song_info).getLayoutParams().height - 100*scale);
+
+            //albumCoverImg2.getLayoutParams().height = albumCoverImg.getLayoutParams().height;
+        }
     }
 
     private View.OnClickListener getOnPlaylistClickListener(){

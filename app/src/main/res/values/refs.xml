@@ -12,4 +12,6 @@
     <attr name="play_button_background" format="reference" />
     <attr name="slide_menu_background" format="reference" />
     <attr name="static_equilizer_stroke_style" format="reference" />
+
+    <attr name="gradient_for_album_cover" format="reference" />
 </resources>

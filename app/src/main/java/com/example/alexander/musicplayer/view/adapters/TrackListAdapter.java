@@ -9,8 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
+import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.model.entities.Playlist;
+import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.HashMap;
 
@@ -23,7 +25,6 @@ public class TrackListAdapter extends BaseAdapter {
     TrackController trackController;
     Playlist currentPlaylist;
     private LayoutInflater lInflater;
-    int currentTrack = Integer.MAX_VALUE;
 
     public TrackListAdapter(Context ctx, Playlist playlist, TrackController trackController){
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,15 +50,24 @@ public class TrackListAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         LinearLayout ll;
+        Song song;
         if(currentPlaylist.getSongs().get(i)==trackController.getCurrentTrack()) {
             ll = (LinearLayout) lInflater.inflate(R.layout.track_layout_current, null, false);
-            TextView title = ll.findViewById(R.id.song_title);
-            title.setText(trackController.getPlaylist().getSongs().get(i).getName());
+            song= trackController.getPlaylist().getSongs().get(i);
+
         } else {
             ll = (LinearLayout) lInflater.inflate(R.layout.track_layout, null, false);
-            TextView title = ll.findViewById(R.id.song_title);
-            title.setText(currentPlaylist.getSongs().get(i).getName());
+            song = currentPlaylist.getSongs().get(i);
         }
+        ((TextView)ll.findViewById(R.id.song_title)).setText(song.getName());
+        ((TextView)ll.findViewById(R.id.song_duration)).setText(song.getMetadata().get("duration"));
+
+        TextView songMeta = ll.findViewById(R.id.song_meta);
+        songMeta.setSelected(true);
+        if(song.getMetadata().get("artist")!=null && song.getMetadata().get("title")!=null)
+            songMeta.setText(song.getMetadata().get("artist") + " - " + song.getMetadata().get("title"));
+        else songMeta.setText("");
+
         return ll;
     }
 

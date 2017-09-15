@@ -34,6 +34,8 @@
         <item name="slide_menu_background">@drawable/slide_menu_background</item>
         <item name="static_equilizer_stroke_style">@drawable/static_equilizer_stroke_style</item>
 
+        <item name="gradient_for_album_cover">@drawable/transparent_gradient</item>
+
     </style>
 
     <style name="AppThemeLight" parent="AppTheme">
@@ -56,6 +58,8 @@
         <item name="slide_menu_background">@drawable/slide_menu_background_light</item>
         <item name="static_equilizer_stroke_style">@drawable/static_equilizer_stroke_style_light</item>
 
+        <item name="gradient_for_album_cover">@drawable/transparent_gradient_2</item>
+
     </style>
 
     <!-- ////////////////////////////////////////////////////////////////////////////////// -->
@@ -76,6 +80,7 @@
         <item name="android:background">?attr/button_background</item>
         <!--<item name="android:textColor">@color/second</item>-->
         <item name="android:textColor">?attr/button_textcolor_selector_1</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
     </style>
 
     <!--<style name="BrandButtonStyleLight" parent="Widget.AppCompat.Button">-->
@@ -89,6 +94,7 @@
         <item name="android:background">?attr/button_background_2</item>
         <!--<item name="android:textColor">@color/primary</item>-->
         <item name="android:textColor">?attr/button_textcolor_selector_2</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
     </style>
 
     <!--<style name="BrandButtonStyleLightFilled" parent="Widget.AppCompat.Button">-->

@@ -2,17 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="top"
+    android:paddingTop="@dimen/tracklist_track_margin_vertical"
+    android:paddingBottom="@dimen/tracklist_track_margin_vertical">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/song_title"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15px"
-        android:paddingLeft="8pt"
-        android:text="text"
-        android:textSize="7pt"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/transparent"/>
+        android:orientation="horizontal">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/song_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="text"
+            android:textSize="@dimen/text_size_playlist_tracklist_big" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/song_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="right"
+            android:text="text"
+            android:textSize="@dimen/text_size_playlist_tracklist_small" />
+    </RelativeLayout>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/song_meta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="text"
+            android:textSize="@dimen/text_size_playlist_tracklist_small"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"/>
 
 </LinearLayout>
