@@ -70,7 +70,7 @@
                     android:id="@+id/album_cover"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:src="?attr/gradient_for_album_cover" />
+                    android:src="?attr/gradient_for_album_cover"/>
 
                 <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
                     <!--android:id="@+id/album_covers"-->
