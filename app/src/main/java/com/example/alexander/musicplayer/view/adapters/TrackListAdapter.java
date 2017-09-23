@@ -71,8 +71,8 @@ public class TrackListAdapter extends BaseAdapter {
         return ll;
     }
 
-    public void setCurrentTrack(int i){
-        //currentTrack = i;
-        notifyDataSetChanged();
-    }
+//    public void setCurrentTrack(int i){
+//        //currentTrack = i;
+//        notifyDataSetChanged();
+//    }
 }

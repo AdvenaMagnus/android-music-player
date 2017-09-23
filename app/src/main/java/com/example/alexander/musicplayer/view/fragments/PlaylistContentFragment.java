@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
+import com.example.alexander.musicplayer.controller.TrackCallBack;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.TrackObserver;
 import com.example.alexander.musicplayer.model.entities.Song;
@@ -39,14 +40,11 @@ public class PlaylistContentFragment extends Fragment {
         mainActivity = (MainActivity) inflater.getContext();
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.playlist_content, container, false);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(inflater.getContext(),
-//                android.R.layout.simple_list_item_1, currentPlaylist.getTracks());
-
         final TrackListAdapter trackListAdapter = new TrackListAdapter(mainActivity, currentPlaylist, MainActivity.getTrackController());
         ListView trackList = ll.findViewById(R.id.tracks_list);
         trackList.setAdapter(trackListAdapter);
         trackList.setOnItemClickListener(getOnTrackClickListener());
-        trackList.setOnItemLongClickListener(getOnLongClickListener(mainActivity));
+        trackList.setOnItemLongClickListener(getOnLongClickListener(mainActivity, trackListAdapter));
 
         ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
         ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
@@ -54,8 +52,7 @@ public class PlaylistContentFragment extends Fragment {
         MainActivity.getTrackController().registerStartRunningSongObserver("playListContent", new TrackObserver() {
             @Override
             public void update(int i, Song song) {
-                //((TextView) trackListAdapter.views.get(i).findViewById(R.id.song_title)).setTextColor(ContextCompat.getColor(mainActivity, R.color.primary));
-                trackListAdapter.setCurrentTrack(i);
+                trackListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -100,7 +97,7 @@ public class PlaylistContentFragment extends Fragment {
         };
     }
 
-    private AdapterView.OnItemLongClickListener getOnLongClickListener(final MainActivity mainActivity){
+    private AdapterView.OnItemLongClickListener getOnLongClickListener(final MainActivity mainActivity, final TrackListAdapter trackListAdapter){
         return new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -108,6 +105,15 @@ public class PlaylistContentFragment extends Fragment {
                 trackDetailsDialog.setSong((Song)adapterView.getItemAtPosition(i));
                 trackDetailsDialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
                 trackDetailsDialog.show(mainActivity.getFragmentManager(), "Track Details");
+                trackDetailsDialog.setRemoveCallBack(new TrackCallBack() {
+                    @Override
+                    public void invoke(Song song) {
+                        mainActivity.getSongsDAO().deleteSongWithRelations(song);
+                        currentPlaylist.getSongs().remove(song);
+                        trackListAdapter.notifyDataSetChanged();
+                    }
+                });
+
 
                 return true;
             }

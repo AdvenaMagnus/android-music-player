@@ -162,7 +162,7 @@
             android:layout_marginRight="10dp"/>
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/remove_track"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -91,4 +91,17 @@ public class SongsDAO {
         System.out.println("Deleted "+rows+" songs");
     }
 
+    public void deleteSongWithRelations(Song song){
+        if(song.getId()>0){
+            deleteSongsPlaylistRelation(song);
+            int rows = db.delete(SongContract.SongEntry.TABLE_NAME, SongContract.SongEntry._ID +" = "+ song.getId(), null);
+            System.out.println("Deleted "+rows+" songs");
+        } else throw new SQLiteException("Not persistent song to delete");
+    }
+
+    public void deleteSongsPlaylistRelation(Song song){
+        int rows = db.delete(PlaylistContract.PlaylistToSongsEntry.TABLE_NAME, PlaylistContract.PlaylistToSongsEntry.SONG_ID +" = "+ song.getId(), null);
+        System.out.println("Deleted "+rows+" relations songs-playlist");
+    }
+
 }

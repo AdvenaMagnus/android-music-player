@@ -17,6 +17,7 @@ import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,6 +30,8 @@ public class FileChoosingFragment extends Fragment {
     List<String> paths;
 
     View.OnClickListener callback;
+    private HashMap<String, Boolean> extensionsToFilter;
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -37,7 +40,7 @@ public class FileChoosingFragment extends Fragment {
         paths = getArguments().getStringArrayList("paths");
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.file_choosing_layout, container, false);
         listView = ll.findViewById(R.id.fileChoosingList);
-        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), rootDir, paths);
+        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), rootDir, paths, extensionsToFilter);
         listView.setAdapter(filesListAdapter);
 
         Button buttonForChosingFiles =  ll.findViewById(R.id.backToMain);
@@ -67,5 +70,9 @@ public class FileChoosingFragment extends Fragment {
 
     public void setCallback(View.OnClickListener callback) {
         this.callback = callback;
+    }
+
+    public void setExtensionsToFilter(HashMap<String, Boolean> extensionsToFilter) {
+        this.extensionsToFilter = extensionsToFilter;
     }
 }

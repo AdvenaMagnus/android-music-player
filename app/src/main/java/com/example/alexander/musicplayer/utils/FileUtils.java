@@ -36,4 +36,16 @@ public class FileUtils {
         return result;
     }
 
+    public static String getExtension(String file){
+        String extension = "";
+
+        int i = file.lastIndexOf('.');
+        int p = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = file.substring(i+1);
+        }
+        return extension;
+    }
+
 }

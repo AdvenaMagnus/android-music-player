@@ -24,17 +24,18 @@ import java.util.List;
 
 public class FilesListAdapter extends BaseAdapter {
 
-    Context ctx;
-    LayoutInflater ltInflater;
-    List<File> files;
-    List<String> paths;
-    List<CheckBox> checkBoxes = new ArrayList<>();
-    String initPath;
-    boolean firstElementIsPrevFolder = false;
-    static String forbiddenDirectoryLevel = "/storage";
+    private Context ctx;
+    private LayoutInflater ltInflater;
+    private List<File> files;
+    private List<String> paths;
+    private List<CheckBox> checkBoxes = new ArrayList<>();
+    private String initPath;
+    private boolean firstElementIsPrevFolder = false;
+    private static String forbiddenDirectoryLevel = "/storage";
+    private HashMap<String, Boolean> extensionsToFilter; // Permitted files
 
-
-    public FilesListAdapter(Context ctx, String path, List<String> filePaths){
+    public FilesListAdapter(Context ctx, String path, List<String> filePaths, HashMap<String, Boolean> extensionsToFilter){
+        this.extensionsToFilter = extensionsToFilter;
         this.ctx = ctx;
         ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         paths = filePaths;
@@ -106,7 +107,13 @@ public class FilesListAdapter extends BaseAdapter {
         //filesInNewDir.addAll(FileUtils.filesInDirectory(initPath.getAbsolutePath()));
         HashMap<String, List<File>> filesAndDirs = FileUtils.filesInDirectoryHMap(path.getAbsolutePath());
         filesInNewDir.addAll(filesAndDirs.get("dirs"));
-        filesInNewDir.addAll(filesAndDirs.get("files"));
+
+        if(extensionsToFilter!=null) {
+            for(File file : filesAndDirs.get("files")){
+                if(extensionsToFilter.get(FileUtils.getExtension(file.getAbsolutePath()))!=null)
+                    filesInNewDir.add(file);
+            }
+        } else filesInNewDir.addAll(filesAndDirs.get("files"));
         files = filesInNewDir;
 
         if(checkBoxes!=null)checkBoxes.clear();

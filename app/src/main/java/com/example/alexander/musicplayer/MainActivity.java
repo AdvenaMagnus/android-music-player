@@ -28,6 +28,7 @@ import com.example.alexander.musicplayer.file_chooser.FileChoosingFragment;
 import com.example.alexander.musicplayer.view.fragments.SettingsFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +47,29 @@ public class MainActivity extends AppCompatActivity {
     PlaylistService playlistService;
 
     public static Theme currentTheme = null;
+
+    private static HashMap<String, Boolean> extensionsToFilter = new HashMap<>(); // Permitted files
+    static {
+        extensionsToFilter.put("3gp", true);
+        extensionsToFilter.put("mp4", true);
+        extensionsToFilter.put("m4a", true);
+        extensionsToFilter.put("aac", true);
+        extensionsToFilter.put("ts", true);
+        extensionsToFilter.put("flac", true);
+        extensionsToFilter.put("mid", true);
+        extensionsToFilter.put("xmf", true);
+        extensionsToFilter.put("mxmf", true);
+        extensionsToFilter.put("rtttl", true);
+        extensionsToFilter.put("rtttl", true);
+        extensionsToFilter.put("rtx", true);
+        extensionsToFilter.put("ota", true);
+        extensionsToFilter.put("imy", true);
+        extensionsToFilter.put("mp3", true);
+        extensionsToFilter.put("mkv", true);
+        extensionsToFilter.put("wav", true);
+        extensionsToFilter.put("ogg", true);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
     public void showChooseFilesFragment(ArrayList<String> tracks, View.OnClickListener callback) {
         FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
         fileChoosingFragment.setCallback(callback);
+        fileChoosingFragment.setExtensionsToFilter(extensionsToFilter);
         Bundle args = new Bundle();
         args.putStringArrayList("paths", tracks);
         fileChoosingFragment.setArguments(args);

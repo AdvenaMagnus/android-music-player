@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.controller.SongService;
+import com.example.alexander.musicplayer.controller.TrackCallBack;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
@@ -22,6 +23,7 @@ import java.util.HashMap;
 public class TrackDetailsDialog extends DialogFragment {
 
     Song song;
+    TrackCallBack removeCallBack;
 
     public TrackDetailsDialog(){}
 
@@ -45,6 +47,14 @@ public class TrackDetailsDialog extends DialogFragment {
                 TrackDetailsDialog.this.dismiss();
             }
         });
+
+        ll.findViewById(R.id.remove_track).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(removeCallBack!=null) removeCallBack.invoke(song);
+                TrackDetailsDialog.this.dismiss();
+            }
+        });
         return ll;
     }
 
@@ -52,4 +62,7 @@ public class TrackDetailsDialog extends DialogFragment {
         this.song = song;
     }
 
+    public void setRemoveCallBack(TrackCallBack removeCallBack) {
+        this.removeCallBack = removeCallBack;
+    }
 }
