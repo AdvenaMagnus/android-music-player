@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,6 +39,7 @@ public class PlaylistContentFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mainActivity = (MainActivity) inflater.getContext();
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.playlist_content, container, false);
 
@@ -49,6 +52,8 @@ public class PlaylistContentFragment extends Fragment {
         ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
         ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
 
+        ((TextView)ll.findViewById(R.id.playlist_title)).setText(currentPlaylist.getName());
+
         MainActivity.getTrackController().registerStartRunningSongObserver("playListContent", new TrackObserver() {
             @Override
             public void update(int i, Song song) {
@@ -59,6 +64,7 @@ public class PlaylistContentFragment extends Fragment {
         return ll;
     }
 
+    /** Add/remove files from playlist handler */
     private View.OnClickListener getChooseFilesButtonListener(){
         final List<String> tracks = mainActivity.getSongService().getPaths(currentPlaylist.getSongs());
         final View.OnClickListener callback = new View.OnClickListener(){
@@ -74,6 +80,7 @@ public class PlaylistContentFragment extends Fragment {
         };
     }
 
+    /**Back button handler*/
     private View.OnClickListener getBackButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
@@ -82,6 +89,7 @@ public class PlaylistContentFragment extends Fragment {
         };
     }
 
+    /** Click on track of playlist handler - start song and open track controller*/
     private AdapterView.OnItemClickListener getOnTrackClickListener(){
         return new AdapterView.OnItemClickListener(){
             @Override
@@ -97,6 +105,7 @@ public class PlaylistContentFragment extends Fragment {
         };
     }
 
+    /** Long click on track of playlist handler - show extra info about track/file */
     private AdapterView.OnItemLongClickListener getOnLongClickListener(final MainActivity mainActivity, final TrackListAdapter trackListAdapter){
         return new AdapterView.OnItemLongClickListener(){
             @Override
@@ -119,7 +128,6 @@ public class PlaylistContentFragment extends Fragment {
             }
         };
     }
-
 
     public Playlist getCurrentPlaylist() {
         return currentPlaylist;

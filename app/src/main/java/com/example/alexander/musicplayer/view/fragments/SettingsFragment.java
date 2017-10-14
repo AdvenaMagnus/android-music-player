@@ -40,6 +40,7 @@ public class SettingsFragment extends DialogFragment {
                     mainActivity.getTrackControllerAdapter().switchVisualizer();
                 }
             });
+            ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
         }
         return ll;
     }
@@ -53,6 +54,15 @@ public class SettingsFragment extends DialogFragment {
                         .addNextIntent(new Intent(getActivity(), MainActivity.class))
                         .addNextIntent(getActivity().getIntent())
                         .startActivities();
+            }
+        };
+    }
+
+    /**Back button handler*/
+    private View.OnClickListener getBackButtonListener(){
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+                mainActivity.getSupportFragmentManager().popBackStack();
             }
         };
     }

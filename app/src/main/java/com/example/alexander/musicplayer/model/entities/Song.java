@@ -1,6 +1,7 @@
 package com.example.alexander.musicplayer.model.entities;
 
 import android.media.MediaMetadataRetriever;
+import android.util.Log;
 
 import com.example.alexander.musicplayer.controller.SongService;
 

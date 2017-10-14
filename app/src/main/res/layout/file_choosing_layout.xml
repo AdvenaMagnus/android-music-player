@@ -31,6 +31,22 @@
             android:layout_marginLeft="10dp"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/current_dir_path"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="left"
+        android:text="prevdir/dir"
+        android:textSize="12dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="3dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/color_second"/>
+
     <ListView
         android:id="@+id/fileChoosingList"
         android:layout_width="match_parent"

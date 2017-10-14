@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.alexander.musicplayer.controller.PlaylistService;
 import com.example.alexander.musicplayer.model.entities.Playlist;
@@ -27,6 +28,19 @@ public class PlaylistDAO {
     public PlaylistDAO(){
     }
 
+    public void setDb(SQLiteDatabase db) {
+        this.db = db;
+    }
+
+    public void setSongsDAO(SongsDAO songsDAO) {
+        this.songsDAO = songsDAO;
+    }
+
+    public void setPlaylistService(PlaylistService playlistService) {
+        this.playlistService = playlistService;
+    }
+
+    /** Get all playlists except excludePlaylist */
     public List<Playlist> getAllPlayLists(Playlist excludePlaylist){
         List<Playlist> result = new ArrayList<>();
 
@@ -103,18 +117,6 @@ public class PlaylistDAO {
         cursor.moveToNext();
         if(cursor.getLong(0)==0) return false;
         else return true;
-    }
-
-    public void setDb(SQLiteDatabase db) {
-        this.db = db;
-    }
-
-    public void setSongsDAO(SongsDAO songsDAO) {
-        this.songsDAO = songsDAO;
-    }
-
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
     }
 
     public void deletePlaylist(Playlist playlist){

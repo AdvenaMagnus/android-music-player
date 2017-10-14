@@ -8,18 +8,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
-import android.support.annotation.DrawableRes;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
+import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -29,6 +27,7 @@ import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.TrackObserver;
 import com.example.alexander.musicplayer.model.entities.Song;
+import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +42,7 @@ public class TrackControllerAdapter extends BaseAdapter{
     private LayoutInflater lInflater;
     private static MediaPlayer mediaPlayer;
     public EquilizerService equilizerService;
-    public Visualizer audioOutput;
+    public Visualizer visualizer;
     private View layout;
     private View eq;
     private SeekBar progressBar;
@@ -130,6 +129,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         return layout;
     }
 
+    /** Initialize views in track controller*/
     private void initMainControlButtons(){
         layout = lInflater.inflate(R.layout.track_controller, null, false);
 
@@ -169,7 +169,6 @@ public class TrackControllerAdapter extends BaseAdapter{
 
         eq = layout.findViewById(R.id.eqLayout);
 
-
         layout.findViewById(R.id.artist).setSelected(true);
         layout.findViewById(R.id.album).setSelected(true);
         layout.findViewById(R.id.title).setSelected(true);
@@ -182,6 +181,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         setNoAlbumCover();
     }
 
+    /** Set track information in appropriate views */
     private void setSongInfo(Song song){
         HashMap<String, String> metData = song.getMetadata();
         fileName.setText(song.getName());
@@ -189,8 +189,6 @@ public class TrackControllerAdapter extends BaseAdapter{
         ((TextView)layout.findViewById(R.id.album)).setText(metData.get("album"));
         ((TextView)layout.findViewById(R.id.title)).setText(metData.get("title"));
         ((TextView)layout.findViewById(R.id.duration)).setText(metData.get("duration"));
-
-        //int width = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
         setAlbumCover(song);
 
         String playlistName=trackController.getPlaylist().getName();
@@ -199,39 +197,25 @@ public class TrackControllerAdapter extends BaseAdapter{
         ((TextView)layout.findViewById(R.id.playlist)).setText(content);
     }
 
+    /** Set image for track */
     private void setAlbumCover(Song song){
-        //ImageView albumCoverImg2 =  layout.findViewById(R.id.album_gradient);
         final float scale = ctx.getResources().getDisplayMetrics().density;
         int slideWidth = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
         if(song.getAlbumCover()!=null){
-
-//            layout.findViewById(R.id.album_covers).getLayoutParams().height = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
-
             Bitmap bitmap = BitmapFactory.decodeByteArray(song.getAlbumCover(), 0, song.getAlbumCover().length);
-            //albumCoverImg.setImageBitmap(bitmap); //associated cover art in bitmap
             albumCoverImg.setBackgroundDrawable(new BitmapDrawable(ctx.getResources(), bitmap)); //associated cover art in bitmap
             albumCoverImg.setAdjustViewBounds(true);
-            //albumCoverImg.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
             albumCoverImg.setVisibility(View.VISIBLE);
             albumCoverImg.setAlpha(0.5f);
-
-            //layout.findViewById(R.id.album_covers).getLayoutParams().height = (int) (bitmap.getHeight()/scale);
             layout.findViewById(R.id.album_covers).getLayoutParams().height = slideWidth;
             ((ViewGroup.MarginLayoutParams)layout.findViewById(R.id.song_info).getLayoutParams()).topMargin
                     = (int) (slideWidth-layout.findViewById(R.id.song_info).getLayoutParams().height - 100*scale);
-            //albumCoverImg2.getLayoutParams().height = albumCoverImg.getLayoutParams().height;
-            //albumCoverImg2.getLayoutParams().height = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
-
         } else {
-//            albumCoverImg.setVisibility(View.INVISIBLE);
-//            albumCoverImg.setAlpha(0.5f);
-//            layout.findViewById(R.id.album_covers).getLayoutParams().height = slideWidth;
-//            ((ViewGroup.MarginLayoutParams)layout.findViewById(R.id.song_info).getLayoutParams()).topMargin
-//                    = (int) (slideWidth-layout.findViewById(R.id.song_info).getLayoutParams().height - 100*scale);
             setNoAlbumCover();
         }
     }
 
+    /** If track has no image - set default image*/
     private void setNoAlbumCover(){
         int slideWidth = (int) (ctx.getResources().getDisplayMetrics().widthPixels*0.8f);
         final float scale = ctx.getResources().getDisplayMetrics().density;
@@ -245,15 +229,22 @@ public class TrackControllerAdapter extends BaseAdapter{
                 = (int) (slideWidth-layout.findViewById(R.id.song_info).getLayoutParams().height - 100*scale);
     }
 
+    /** Link on current play list handler */
     private View.OnClickListener getOnPlaylistClickListener(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)ctx).showPlayListContent(trackController.getPlaylist());
+                MainActivity mainActivity = (MainActivity)ctx;
+                Fragment currentFragment = mainActivity.getSupportFragmentManager().getFragments().get(mainActivity.getSupportFragmentManager().getBackStackEntryCount());
+                if(!(currentFragment instanceof PlaylistContentFragment && ((PlaylistContentFragment) currentFragment).getCurrentPlaylist() == trackController.getPlaylist())){
+                    ((MainActivity)ctx).showPlayListContent(trackController.getPlaylist());
+                }
+                mainActivity.dl.closeDrawer(Gravity.LEFT);
             }
         };
     }
 
+    /**Play button handler */
     private void playButtonAction(){
         if(mediaPlayer!=null){
             if(mediaPlayer.isPlaying()){
@@ -267,6 +258,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         }
     }
 
+    /** Seek bar click handler */
     private SeekBar.OnSeekBarChangeListener getProgressBarListener(){
         return new SeekBar.OnSeekBarChangeListener() {
             boolean changeProgressByHand=false;
@@ -294,6 +286,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         };
     }
 
+    /** Initialize sound levels views*/
     private void initEq(){
         equilizerService.register(eq.findViewById(R.id.eq1));
         equilizerService.register(eq.findViewById(R.id.eq2));
@@ -307,6 +300,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         equilizerService.register(eq.findViewById(R.id.eq10));
     }
 
+    /** Track end handler */
     private MediaPlayer.OnCompletionListener getOnCompletionListener(){
         return new MediaPlayer.OnCompletionListener(){
             @Override
@@ -317,6 +311,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         };
     }
 
+    /** Run seek bar updating in another thread */
     public void runProgressBarUpdater(){
         if(progressBarUpdater!=null) progressBarUpdater.interrupt();
         progressBarUpdaterStop = false;
@@ -326,6 +321,8 @@ public class TrackControllerAdapter extends BaseAdapter{
                 while(!progressBarUpdaterStop) {
                     if (mediaPlayer != null) {
                         final float trackProgress = (float) mediaPlayer.getCurrentPosition() / (float) mediaPlayer.getDuration();
+
+                        /** Android documentation says that views must be updated from main thread either like this */
                         progressBar.post(new Runnable() {
                             @Override
                             public void run() {
@@ -344,11 +341,12 @@ public class TrackControllerAdapter extends BaseAdapter{
         progressBarUpdater.start();
     }
 
+    /** Stop and start new Visualizer */
     private void runVisualizer(int sessionId){
         offVisualizer();
         int rate = Visualizer.getMaxCaptureRate();
-        audioOutput = new Visualizer(sessionId);
-        audioOutput.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
+        visualizer = new Visualizer(sessionId);
+        visualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
             @Override
             public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
                 equilizerService.updatePillars(waveform);
@@ -364,16 +362,16 @@ public class TrackControllerAdapter extends BaseAdapter{
 
     public void onVisualizer(){
         if(isVisualizerOn) {
-            if (audioOutput != null) {
-                if (!audioOutput.getEnabled()) audioOutput.setEnabled(true);
+            if (visualizer != null) {
+                if (!visualizer.getEnabled()) visualizer.setEnabled(true);
             }
         }
         //isVisualizerOn = true;
     }
 
     public void offVisualizer(){
-        if(audioOutput!=null){
-            if(audioOutput.getEnabled()) audioOutput.setEnabled(false);
+        if(visualizer !=null){
+            if(visualizer.getEnabled()) visualizer.setEnabled(false);
         }
         //isVisualizerOn = false;
     }
@@ -382,11 +380,13 @@ public class TrackControllerAdapter extends BaseAdapter{
         return isVisualizerOn;
     }
 
+    /** Is visualizer must be enabled - check in preferences*/
     public boolean loadIsVisualizerOn(){
         SharedPreferences sharedPref = ((MainActivity)ctx).getPreferences(Context.MODE_PRIVATE);
         return sharedPref.getBoolean("Sound levels onOff", true);
     }
 
+    /** On/off visualizer enabling and write it in preferences*/
     public void switchVisualizer(){
         SharedPreferences sharedPref = ((MainActivity)ctx).getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -400,9 +400,9 @@ public class TrackControllerAdapter extends BaseAdapter{
 
     public void onDestroy(){
         this.offVisualizer();
-        if(audioOutput!=null)
-            this.audioOutput.release();
-        //this.trackControllerAdapter.audioOutput = null;
+        if(visualizer !=null)
+            this.visualizer.release();
+        //this.trackControllerAdapter.visualizer = null;
         this.progressBarUpdater.interrupt();
         this.progressBarUpdaterStop = true;
         this.equilizerService.waterfallStop=true;

@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         setDrawerLayout();
     }
 
+    /** Initialize track controller */
     private void setDrawerLayout(){
         dl = (DrawerLayout) findViewById(R.id.drawer_layout);
         trackControllerAdapter = new TrackControllerAdapter(this, trackController);
@@ -124,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
         setWidthForSlide(0.8f);
     }
 
+    /** Set width for track controller slide
+     * @param widthMultiplier  - multiplier for all screen width (slide width = multiplyer * screen width) */
     private void setWidthForSlide(float widthMultiplier){
         int width = (int) (getResources().getDisplayMetrics().widthPixels*widthMultiplier);
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
@@ -131,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setLayoutParams(params);
     }
 
+    /** Button handler for button which opens track controller slide*/
     private View.OnClickListener getTrackControllerButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
@@ -139,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    /** Button handler for opening settings */
     private View.OnClickListener getSettingsButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
@@ -148,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /** Some spring-like stuff */
     void createAndBindBeans(){
         DBhelper dBhelper = new DBhelper(this);
         SQLiteDatabase db = dBhelper.getWritableDatabase();
@@ -165,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         songService = new SongService(songsDAO);
     }
 
-
+    /** Show fragment for files chooser and choose the files */
     public void showChooseFilesFragment(ArrayList<String> tracks, View.OnClickListener callback) {
         FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
         fileChoosingFragment.setCallback(callback);
@@ -176,10 +182,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fileChoosingFragment).addToBackStack(null).commit();
     }
 
+    /** Show frgment with playlists */
     public void showPlayLists() {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistsFragment).addToBackStack(null).commit();
     }
 
+    /** Show fragment with certain playlist */
     public void showPlayListContent(Playlist playlist){
         //trackController.setPlaylist(playlist);
         PlaylistContentFragment playlistContentFragment = new PlaylistContentFragment();
@@ -187,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, playlistContentFragment).addToBackStack(null).commit();
     }
 
+    /** Show fragments with settings */
     public void showSettings(){
         SettingsFragment settingsFragment = new SettingsFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).addToBackStack(null).commit();

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class PlaylistsFragment extends Fragment {
 
     LinearLayout ll;
-    ListView playLists;
+    ListView playListsListView;
     MainActivity mainActivity;
 
     @Override
@@ -40,8 +40,6 @@ public class PlaylistsFragment extends Fragment {
             buttonCreateNewPlaylist.setOnClickListener(getCreateNewPlaylistListener());
             prepareListOfPlaylists(mainActivity);
         }
-//        ((ArrayAdapter)playLists.getAdapter()).clear();
-//        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistService.playlistsNames(mainActivity.getPlaylists()));
         refreshAdapter();
         return ll;
     }
@@ -55,8 +53,8 @@ public class PlaylistsFragment extends Fragment {
     }
 
     private void refreshAdapter(){
-        ((ArrayAdapter)playLists.getAdapter()).clear();
-        ((ArrayAdapter)playLists.getAdapter()).addAll(PlaylistService.playlistsNames(mainActivity.getPlaylists()));
+        ((ArrayAdapter) playListsListView.getAdapter()).clear();
+        ((ArrayAdapter) playListsListView.getAdapter()).addAll(PlaylistService.playlistsNames(mainActivity.getPlaylists()));
     }
 
     private void openDialogToCreatePlaylist(){
@@ -79,18 +77,19 @@ public class PlaylistsFragment extends Fragment {
     }
 
     private void prepareListOfPlaylists(MainActivity mainActivity){
-        playLists = ll.findViewById(R.id.playlists);
+        playListsListView = ll.findViewById(R.id.playlists);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mainActivity,
                 android.R.layout.simple_list_item_1, new ArrayList<String>());
-        playLists.setAdapter(adapter);
-        playLists.setOnItemClickListener(getOnPlaylistClickListener(mainActivity));
-        playLists.setOnItemLongClickListener(getOnLongClickListener(mainActivity));
+        playListsListView.setAdapter(adapter);
+        playListsListView.setOnItemClickListener(getOnPlaylistClickListener(mainActivity));
+        playListsListView.setOnItemLongClickListener(getOnLongClickListener(mainActivity));
     }
 
     private AdapterView.OnItemClickListener getOnPlaylistClickListener(final MainActivity mainActivity){
         return new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
+                // adapter.getItemAtPosition(position) returns String - name of playlist, not the playlist
                 mainActivity.showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), mainActivity.getPlaylists()));
             }
         };

@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
@@ -40,7 +41,8 @@ public class FileChoosingFragment extends Fragment {
         paths = getArguments().getStringArrayList("paths");
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.file_choosing_layout, container, false);
         listView = ll.findViewById(R.id.fileChoosingList);
-        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), rootDir, paths, extensionsToFilter);
+        TextView currentPath = ll.findViewById(R.id.current_dir_path);
+        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), rootDir, paths, extensionsToFilter, currentPath);
         listView.setAdapter(filesListAdapter);
 
         Button buttonForChosingFiles =  ll.findViewById(R.id.backToMain);
@@ -68,6 +70,7 @@ public class FileChoosingFragment extends Fragment {
 //        this.paths = paths;
 //    }
 
+    /** Callback when exiting files chooser */
     public void setCallback(View.OnClickListener callback) {
         this.callback = callback;
     }

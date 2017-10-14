@@ -12,45 +12,6 @@
         android:orientation="vertical"
         android:background="?attr/slide_menu_background">
 
-        <!--<LinearLayout-->
-            <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="100dp"-->
-            <!--android:gravity="center">-->
-
-            <!--<ImageView-->
-                <!--android:id="@+id/album_cover"-->
-                <!--android:layout_width="100dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:src="@mipmap/ic_launcher"-->
-                <!--android:background="?attr/button_background"-->
-                <!--android:padding="5dp"-->
-                <!--/>-->
-        <!--</LinearLayout>-->
-
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/titleLayout"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/file_name"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:background="@android:color/transparent"-->
-            <!--android:ellipsize="marquee"-->
-            <!--android:marqueeRepeatLimit="marquee_forever"-->
-            <!--android:scrollHorizontally="true"-->
-            <!--android:singleLine="true"-->
-            <!--android:text=""-->
-            <!--android:textColor="?attr/color_second"-->
-            <!--android:textSize="15dp" />-->
-
-    <!--</LinearLayout>-->
-
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -71,28 +32,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:src="?attr/gradient_for_album_cover"/>
-
-                <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-                    <!--android:id="@+id/album_covers"-->
-                    <!--android:layout_width="fill_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginRight="2dp"-->
-                    <!--android:gravity="center|top">-->
-
-                    <!--<ImageView-->
-                        <!--android:id="@+id/album_cover"-->
-                        <!--android:layout_width="fill_parent"-->
-                        <!--android:layout_height="fill_parent"-->
-                        <!--android:src="@mipmap/ic_launcher" />-->
-
-                    <!--<ImageView-->
-                        <!--android:id="@+id/album_gradient"-->
-                        <!--android:layout_width="fill_parent"-->
-                        <!--android:layout_height="fill_parent"-->
-                        <!--android:background="@drawable/transparent_gradient"-->
-                        <!--android:scaleY="-1" />-->
-
-                <!--</RelativeLayout>-->
 
             </LinearLayout>
 

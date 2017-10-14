@@ -33,13 +33,15 @@ public class FilesListAdapter extends BaseAdapter {
     private boolean firstElementIsPrevFolder = false;
     private static String forbiddenDirectoryLevel = "/storage";
     private HashMap<String, Boolean> extensionsToFilter; // Permitted files
+    private TextView currentPathTextView;
 
-    public FilesListAdapter(Context ctx, String path, List<String> filePaths, HashMap<String, Boolean> extensionsToFilter){
+    public FilesListAdapter(Context ctx, String path, List<String> filePaths, HashMap<String, Boolean> extensionsToFilter, TextView currentPath){
         this.extensionsToFilter = extensionsToFilter;
         this.ctx = ctx;
         ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         paths = filePaths;
         this.initPath = path;
+        this.currentPathTextView = currentPath;
         updateFilesToShow(new File(path));
     }
 
@@ -67,6 +69,7 @@ public class FilesListAdapter extends BaseAdapter {
         else return createFileWidget(files.get(i));
     }
 
+    /** Create list item for file */
     View createFileWidget(final File file){
         CheckBox cb = (CheckBox) ltInflater.inflate(R.layout.file_chooser_checkbox, null, false);
         cb.setText(file.getName());
@@ -82,6 +85,7 @@ public class FilesListAdapter extends BaseAdapter {
         return cb;
     }
 
+    /** Create list item for directory */
     View createDirWidget(final File file, String text){
         LinearLayout ll = (LinearLayout) ltInflater.inflate(R.layout.file_chooser_dir, null, false);
         TextView txv = ll.findViewById(R.id.text_for_directory);
@@ -101,6 +105,7 @@ public class FilesListAdapter extends BaseAdapter {
         return createDirWidget(file, file.getName());
     }
 
+    /** Open (and show) a folder */
     void updateFilesToShow(File path) {
         ArrayList<File> filesInNewDir = new ArrayList<File>();
         createOnLevelUpLinkIfNeed(filesInNewDir, path);
@@ -115,10 +120,11 @@ public class FilesListAdapter extends BaseAdapter {
             }
         } else filesInNewDir.addAll(filesAndDirs.get("files"));
         files = filesInNewDir;
-
         if(checkBoxes!=null)checkBoxes.clear();
+        this.showCurrentPath(path);
     }
 
+    /** If not a root path - create level up link */
     private void createOnLevelUpLinkIfNeed(ArrayList<File> filesInNewDir, File path){
         if (path.getParentFile()!=null && !path.getParentFile().getAbsolutePath().equals(forbiddenDirectoryLevel)) {
             filesInNewDir.add(path.getParentFile());
@@ -126,6 +132,7 @@ public class FilesListAdapter extends BaseAdapter {
         } else firstElementIsPrevFolder = false;
     }
 
+    /** Select all files */
     public void selectAll(){
         for(File file : files){
             if(!paths.contains(file.getAbsolutePath()) && !file.isDirectory()) paths.add(file.getAbsolutePath());
@@ -134,6 +141,11 @@ public class FilesListAdapter extends BaseAdapter {
         for(CheckBox cb : checkBoxes){
             cb.setChecked(true);
         }
+    }
+
+    /** Show/update current path*/
+    private void showCurrentPath(File folder){
+        currentPathTextView.setText(folder.getAbsolutePath());
     }
 
 }

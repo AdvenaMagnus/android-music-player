@@ -53,6 +53,7 @@ public class SongService {
         for(Song song : playlist.getSongs()){
             if(!paths.contains(song.getPath())){
                 toRemove.add(song);
+                songsDAO.deleteSongsPlaylistRelation(song);
             }
         }
         playlist.getSongs().removeAll(toRemove);
