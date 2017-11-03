@@ -17,7 +17,9 @@ public class PlaylistContract {
 
         SQL_CREATE_ENTRIES.add("CREATE TABLE " + PlaylistEntry.TABLE_NAME + " (" +
                 PlaylistEntry._ID + " INTEGER PRIMARY KEY," +
-                PlaylistEntry.PLAYLIST_NAME + " TEXT);");
+                PlaylistEntry.PLAYLIST_NAME + " TEXT," +
+                PlaylistEntry.LAST_SONG + " INTEGER," +
+                PlaylistEntry.LAST_SONG_DURATION + " INTEGER);");
 
         SQL_CREATE_ENTRIES.add("CREATE TABLE " + PlaylistToSongsEntry.TABLE_NAME + " (" +
                 //PlaylistToSongsEntry._ID + " INTEGER PRIMARY KEY," +
@@ -36,6 +38,8 @@ public class PlaylistContract {
     public static class PlaylistEntry implements BaseColumns {
         public static final String TABLE_NAME = "playlist";
         public static final String PLAYLIST_NAME = "name";
+        public static final String LAST_SONG = "last_song_id";
+        public static final String LAST_SONG_DURATION = "last_song_duration";
     }
 
     public static class PlaylistToSongsEntry {

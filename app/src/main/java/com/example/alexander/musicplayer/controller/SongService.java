@@ -67,6 +67,15 @@ public class SongService {
         return false;
     }
 
+    public Song getSongFromListById(List<Song> songs, long id){
+        if(songs!=null){
+            for(Song song: songs){
+                if(song.getId()==id) return song;
+            }
+        }
+        return null;
+    }
+
     public HashMap<String, String> extractMetaData(Song song){
         HashMap<String, String> result = new HashMap<>();
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();

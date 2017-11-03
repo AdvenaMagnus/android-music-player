@@ -77,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
         applyTheme();
         setContentView(R.layout.activity_main);
 
-        createAndBindBeans();
-        playlists = trackController != null && trackController.getPlaylist()!=null? playlistDAO.getAllPlayLists(trackController.getPlaylist()): playlistDAO.getAllPlayLists();
-
         if(trackController==null)
             trackController = new TrackController();
+        createAndBindBeans();
+
+        playlists = trackController != null && trackController.getPlaylist()!=null? playlistDAO.getAllPlayLists(trackController.getPlaylist()): playlistDAO.getAllPlayLists();
 
         this.findViewById(R.id.track_controller_button).setOnClickListener(getTrackControllerButtonListener());
         this.findViewById(R.id.settings_button).setOnClickListener(getSettingsButtonListener());
@@ -169,6 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
         songsDAO.setPlaylistDAO(playlistDAO);
         songService = new SongService(songsDAO);
+
+        playlistDAO.setSongService(songService);
+
+        trackController.setPlaylistDAO(playlistDAO);
     }
 
     /** Show fragment for files chooser and choose the files */

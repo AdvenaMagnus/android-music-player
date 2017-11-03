@@ -2,6 +2,7 @@ package com.example.alexander.musicplayer.controller;
 
 import android.media.MediaPlayer;
 
+import com.example.alexander.musicplayer.model.PlaylistDAO;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
@@ -16,9 +17,12 @@ import java.util.WeakHashMap;
 
 public class TrackController {
 
+    PlaylistDAO playlistDAO;
+
     private Playlist playlist;
     private Song currentTrack;
     private int currentTrackNumber;
+    private boolean isNowPlaying = false;
     //private List<TrackObserver> startRunningSongObserverList = new ArrayList<>();
     private WeakHashMap<String, TrackObserver> startRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> pauseRunningSongObserverList = new WeakHashMap<>();
@@ -34,6 +38,8 @@ public class TrackController {
                 currentTrackNumber = 0;
             }
             currentTrack = playlist.getSongs().get(currentTrackNumber);
+            isNowPlaying = true;
+            playlistDAO.updateCurrentSong(playlist, playlist.getSongs().get(currentTrackNumber), 0);
             notifyAboutRunNewSong();
         }
     }
@@ -50,7 +56,7 @@ public class TrackController {
 //        for(TrackObserver observer : this.pauseRunningSongObserverList){
 //            observer.update(currentTrackNumber, currentTrack);
 //        }
-
+        isNowPlaying = false;
         for(TrackObserver observer : this.pauseRunningSongObserverList.values()){
             observer.update(currentTrackNumber, currentTrack);
         }
@@ -60,7 +66,7 @@ public class TrackController {
 //        for(TrackObserver observer : this.resumeRunningSongObserverList){
 //            observer.update(currentTrackNumber, currentTrack);
 //        }
-
+        isNowPlaying = true;
         for(TrackObserver observer : this.resumeRunningSongObserverList.values()){
             observer.update(currentTrackNumber, currentTrack);
         }
@@ -101,5 +107,17 @@ public class TrackController {
 
     public Song getCurrentTrack() {
         return currentTrack;
+    }
+
+    public boolean isNowPlaying() {
+        return isNowPlaying;
+    }
+
+    public void updateLastSong(){
+
+    }
+
+    public void setPlaylistDAO(PlaylistDAO playlistDAO) {
+        this.playlistDAO = playlistDAO;
     }
 }

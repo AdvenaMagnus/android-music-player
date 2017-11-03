@@ -38,6 +38,8 @@ import java.util.HashMap;
 
 public class TrackControllerAdapter extends BaseAdapter{
 
+    static final String adapterName = "trackControllerAdapter";
+
     public Context ctx;
     private LayoutInflater lInflater;
     private static MediaPlayer mediaPlayer;
@@ -62,7 +64,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         equilizerService = new EquilizerService();
         isVisualizerOn = loadIsVisualizerOn();
         this.trackController = trackController;
-        this.trackController.registerStartRunningSongObserver("trackControllerAdapter", new TrackObserver() {
+        this.trackController.registerStartRunningSongObserver(adapterName, new TrackObserver() {
             @Override
             public void update(int i, Song song) {
                 if(mediaPlayer!=null){
@@ -77,13 +79,13 @@ public class TrackControllerAdapter extends BaseAdapter{
             }
         });
 
-        this.trackController.registerPauseRunningSongObserverList("trackControllerAdapter", new TrackObserver() {
+        this.trackController.registerPauseRunningSongObserverList(adapterName, new TrackObserver() {
             @Override
             public void update(int i, Song song) {
                 playButtonAction();
             }
         });
-        this.trackController.registerResumeRunningSongObserverList("trackControllerAdapter", new TrackObserver() {
+        this.trackController.registerResumeRunningSongObserverList(adapterName, new TrackObserver() {
             @Override
             public void update(int i, Song song) {
                 playButtonAction();
@@ -99,6 +101,20 @@ public class TrackControllerAdapter extends BaseAdapter{
         }
         if(mediaPlayer!=null)
             runVisualizer(mediaPlayer.getAudioSessionId());
+    }
+
+    /**Play button handler */
+    private void playButtonAction(){
+        if(mediaPlayer!=null){
+            if(mediaPlayer.isPlaying()){
+                mediaPlayer.pause();
+                playButton.setText("Play");
+            }
+            else{
+                mediaPlayer.start();
+                playButton.setText("Pause");
+            }
+        }
     }
 
     enum SlideMenuItems {
@@ -139,7 +155,10 @@ public class TrackControllerAdapter extends BaseAdapter{
                     public void onClick(View v) {
 //                        Animation shake = AnimationUtils.loadAnimation(ctx, R.anim.shake);
 //                        v.startAnimation(shake);
-                        playButtonAction();
+                        //playButtonAction();
+                        if(trackController.isNowPlaying()){
+                            trackController.pause();
+                        } else trackController.resume();
                     }
                 }
         );
@@ -242,20 +261,6 @@ public class TrackControllerAdapter extends BaseAdapter{
                 mainActivity.dl.closeDrawer(Gravity.LEFT);
             }
         };
-    }
-
-    /**Play button handler */
-    private void playButtonAction(){
-        if(mediaPlayer!=null){
-            if(mediaPlayer.isPlaying()){
-                mediaPlayer.pause();
-                playButton.setText("Play");
-            }
-            else{
-                mediaPlayer.start();
-                playButton.setText("Pause");
-            }
-        }
     }
 
     /** Seek bar click handler */

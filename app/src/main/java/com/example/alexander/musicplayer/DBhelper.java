@@ -14,7 +14,7 @@ import com.example.alexander.musicplayer.model.entities.Song;
 
 public class DBhelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 8;
     public static final String DATABASE_NAME = "MusicPlayer.db";
 
     public DBhelper(Context context) {

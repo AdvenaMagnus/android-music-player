@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.alexander.musicplayer.controller.PlaylistService;
+import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
@@ -23,6 +24,7 @@ public class PlaylistDAO {
     SQLiteDatabase db;
 
     SongsDAO songsDAO;
+    SongService songService;
     PlaylistService playlistService;
 
     public PlaylistDAO(){
@@ -31,22 +33,25 @@ public class PlaylistDAO {
     public void setDb(SQLiteDatabase db) {
         this.db = db;
     }
-
     public void setSongsDAO(SongsDAO songsDAO) {
         this.songsDAO = songsDAO;
     }
-
     public void setPlaylistService(PlaylistService playlistService) {
         this.playlistService = playlistService;
     }
+    public void setSongService(SongService songService) {
+        this.songService = songService;
+    }
 
-    /** Get all playlists except excludePlaylist */
+    /** Get all playlists except excludePlaylist (search by ID) */
     public List<Playlist> getAllPlayLists(Playlist excludePlaylist){
         List<Playlist> result = new ArrayList<>();
 
         String[] projection = {
                 PlaylistContract.PlaylistEntry._ID,
-                PlaylistContract.PlaylistEntry.PLAYLIST_NAME
+                PlaylistContract.PlaylistEntry.PLAYLIST_NAME,
+                PlaylistContract.PlaylistEntry.LAST_SONG,
+                PlaylistContract.PlaylistEntry.LAST_SONG_DURATION
         };
 
         Cursor cursor;
@@ -63,7 +68,12 @@ public class PlaylistDAO {
             Playlist playlist = new Playlist();
             playlist.setId(cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistContract.PlaylistEntry._ID)));
             playlist.setName(cursor.getString(cursor.getColumnIndexOrThrow(PlaylistContract.PlaylistEntry.PLAYLIST_NAME)));
-            playlist.setSongs(songsDAO.getSongsInPlayList(playlist));
+
+            List<Song> songsInPlaylist = songsDAO.getSongsInPlayList(playlist);
+            playlist.setSongs(songsInPlaylist);
+            long lastSongId = cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistContract.PlaylistEntry.LAST_SONG));
+            playlist.setCurrentTrack(songService.getSongFromListById(songsInPlaylist, lastSongId));
+            playlist.setCurrentTrackLastStop(cursor.getLong(cursor.getColumnIndexOrThrow(PlaylistContract.PlaylistEntry.LAST_SONG_DURATION)));
             result.add(playlist);
         }
         cursor.close();
@@ -105,7 +115,7 @@ public class PlaylistDAO {
 
     public void saveOrUpdate(Playlist playlist){
         if(isPersist(playlist)){
-
+            //TODO
         } else{
             save(playlist);
         }
@@ -140,6 +150,13 @@ public class PlaylistDAO {
     public void deleteSongsPlaylistRelation(Playlist playlist){
         int rows = db.delete(PlaylistContract.PlaylistToSongsEntry.TABLE_NAME, PlaylistContract.PlaylistToSongsEntry.PLAYLIST_ID +" = "+ playlist.getId(), null);
         System.out.println("Deleted "+rows+" relations songs-playlist");
+    }
+
+    public void updateCurrentSong(Playlist playlist, Song song, long duration){
+        ContentValues cv = new ContentValues();
+        cv.put(PlaylistContract.PlaylistEntry.LAST_SONG, song.getId());
+        cv.put(PlaylistContract.PlaylistEntry.LAST_SONG_DURATION, duration);
+        db.update(PlaylistContract.PlaylistEntry.TABLE_NAME, cv, PlaylistContract.PlaylistEntry._ID +"="+ playlist.getId(), null);
     }
 
 }

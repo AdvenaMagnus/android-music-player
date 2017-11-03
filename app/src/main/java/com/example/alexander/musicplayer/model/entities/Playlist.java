@@ -12,6 +12,8 @@ public class Playlist {
     long id;
     String name;
 //    List<String> tracks;
+    Song currentTrack;
+    long currentTrackLastStop = 0;
     List<Song> songs;
 
     public long getId() {
@@ -40,5 +42,19 @@ public class Playlist {
     }
     public void setSongs(List<Song> songs) {
         this.songs = songs;
+    }
+
+    public Song getCurrentTrack() {
+        return currentTrack;
+    }
+    public void setCurrentTrack(Song currentTrack) {
+        this.currentTrack = currentTrack;
+    }
+
+    public long getCurrentTrackLastStop() {
+        return currentTrackLastStop;
+    }
+    public void setCurrentTrackLastStop(long currentTrackLastStop) {
+        this.currentTrackLastStop = currentTrackLastStop;
     }
 }
