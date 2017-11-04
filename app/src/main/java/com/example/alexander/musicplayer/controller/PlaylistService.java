@@ -41,4 +41,12 @@ public class PlaylistService {
         });
     }
 
+    public Playlist getFromListByID(List<Playlist> playlists, long id){
+        for(Playlist playlist: playlists){
+            if(playlist.getId()==id)
+                return playlist;
+        }
+        return null;
+    }
+
 }

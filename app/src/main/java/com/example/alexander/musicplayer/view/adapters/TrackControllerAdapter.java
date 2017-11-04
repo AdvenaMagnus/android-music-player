@@ -256,7 +256,7 @@ public class TrackControllerAdapter extends BaseAdapter{
                 MainActivity mainActivity = (MainActivity)ctx;
                 Fragment currentFragment = mainActivity.getSupportFragmentManager().getFragments().get(mainActivity.getSupportFragmentManager().getBackStackEntryCount());
                 if(!(currentFragment instanceof PlaylistContentFragment && ((PlaylistContentFragment) currentFragment).getCurrentPlaylist() == trackController.getPlaylist())){
-                    ((MainActivity)ctx).showPlayListContent(trackController.getPlaylist());
+                    ((MainActivity)ctx).getBeanContext().getViewChanger().showPlayListContent(trackController.getPlaylist());
                 }
                 mainActivity.dl.closeDrawer(Gravity.LEFT);
             }

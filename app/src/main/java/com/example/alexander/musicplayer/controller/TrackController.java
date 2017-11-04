@@ -20,15 +20,17 @@ public class TrackController {
     PlaylistDAO playlistDAO;
 
     private Playlist playlist;
-    private Song currentTrack;
+//    private Song currentTrack;
     private int currentTrackNumber;
     private boolean isNowPlaying = false;
-    //private List<TrackObserver> startRunningSongObserverList = new ArrayList<>();
+    private CurrentPlaylistStorageService currentPlaylistStorageService;
     private WeakHashMap<String, TrackObserver> startRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> pauseRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> resumeRunningSongObserverList = new WeakHashMap<>();
-//    private List<TrackObserver> pauseRunningSongObserverList = new ArrayList<>();
-//    private List<TrackObserver> resumeRunningSongObserverList = new ArrayList<>();
+
+    public TrackController(Playlist playlist){
+        this.playlist = playlist;
+    }
 
     public void playSong(int i){
         if(playlist!=null) {
@@ -37,9 +39,11 @@ public class TrackController {
             } else {
                 currentTrackNumber = 0;
             }
-            currentTrack = playlist.getSongs().get(currentTrackNumber);
+            //currentTrack = playlist.getSongs().get(currentTrackNumber);
+            playlist.setCurrentTrack(playlist.getSongs().get(currentTrackNumber));
             isNowPlaying = true;
             playlistDAO.updateCurrentSong(playlist, playlist.getSongs().get(currentTrackNumber), 0);
+            currentPlaylistStorageService.updateLastPlaylist(playlist);
             notifyAboutRunNewSong();
         }
     }
@@ -53,28 +57,27 @@ public class TrackController {
     }
 
     public void pause(){
-//        for(TrackObserver observer : this.pauseRunningSongObserverList){
-//            observer.update(currentTrackNumber, currentTrack);
-//        }
         isNowPlaying = false;
         for(TrackObserver observer : this.pauseRunningSongObserverList.values()){
-            observer.update(currentTrackNumber, currentTrack);
+            //observer.update(currentTrackNumber, currentTrack);
+            observer.update(currentTrackNumber, playlist.getCurrentTrack());
         }
     }
 
     public void resume(){
-//        for(TrackObserver observer : this.resumeRunningSongObserverList){
-//            observer.update(currentTrackNumber, currentTrack);
-//        }
         isNowPlaying = true;
         for(TrackObserver observer : this.resumeRunningSongObserverList.values()){
-            observer.update(currentTrackNumber, currentTrack);
+            //observer.update(currentTrackNumber, currentTrack);
+            observer.update(currentTrackNumber, playlist.getCurrentTrack());
         }
     }
 
-//    public void registerStartRunningSongObserver(TrackObserver trackObserver){
-//        this.startRunningSongObserverList.add(trackObserver);
-//    }
+    void notifyAboutRunNewSong(){
+        for(TrackObserver observer : this.startRunningSongObserverList.values()){
+            //observer.update(currentTrackNumber, currentTrack);
+            observer.update(currentTrackNumber, playlist.getCurrentTrack());
+        }
+    }
 
     public void registerStartRunningSongObserver(String name, TrackObserver trackObserver){
         this.startRunningSongObserverList.put(name, trackObserver);
@@ -88,16 +91,6 @@ public class TrackController {
         this.resumeRunningSongObserverList.put(name, trackObserver);
     }
 
-    void notifyAboutRunNewSong(){
-//        for(TrackObserver observer : this.startRunningSongObserverList){
-//            observer.update(currentTrackNumber, currentTrack);
-//        }
-
-        for(TrackObserver observer : this.startRunningSongObserverList.values()){
-            observer.update(currentTrackNumber, currentTrack);
-        }
-    }
-
     public Playlist getPlaylist() {
         return playlist;
     }
@@ -106,7 +99,8 @@ public class TrackController {
     }
 
     public Song getCurrentTrack() {
-        return currentTrack;
+        //return currentTrack;
+        return playlist!=null? playlist.getCurrentTrack(): null;
     }
 
     public boolean isNowPlaying() {
@@ -119,5 +113,9 @@ public class TrackController {
 
     public void setPlaylistDAO(PlaylistDAO playlistDAO) {
         this.playlistDAO = playlistDAO;
+    }
+
+    public void setCurrentPlaylistStorageService(CurrentPlaylistStorageService currentPlaylistStorageService) {
+        this.currentPlaylistStorageService = currentPlaylistStorageService;
     }
 }

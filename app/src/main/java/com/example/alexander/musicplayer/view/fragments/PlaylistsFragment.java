@@ -61,10 +61,10 @@ public class PlaylistsFragment extends Fragment {
         final CreatePlayListDialog dialog = new CreatePlayListDialog();
         dialog.setOnOkClick(new View.OnClickListener() {
             public void onClick(View v) {
-                Playlist playlist = mainActivity.playlistDAO.createNew(dialog.getPlayListName());
+                Playlist playlist = mainActivity.getBeanContext().getPlaylistDAO().createNew(dialog.getPlayListName());
                 playlist.setSongs(new ArrayList<Song>());
                 mainActivity.playlists.add(playlist);
-                mainActivity.showPlayListContent(playlist);
+                mainActivity.getBeanContext().getViewChanger().showPlayListContent(playlist);
             }
         });
 //        dialog.setOnCancelCallback(new View.OnClickListener() {
@@ -90,7 +90,7 @@ public class PlaylistsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
                 // adapter.getItemAtPosition(position) returns String - name of playlist, not the playlist
-                mainActivity.showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), mainActivity.getPlaylists()));
+                mainActivity.getBeanContext().getViewChanger().showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), mainActivity.getPlaylists()));
             }
         };
     }
@@ -108,7 +108,7 @@ public class PlaylistsFragment extends Fragment {
                         if(MainActivity.getTrackController().getPlaylist() == mainActivity.playlists.get(i)){
                             MainActivity.getTrackController().setPlaylist(null);
                         }
-                        mainActivity.playlistDAO.deletePlaylist(mainActivity.playlists.get(i));
+                        mainActivity.getBeanContext().getPlaylistDAO().deletePlaylist(mainActivity.playlists.get(i));
                         mainActivity.playlists.remove(i);
                         refreshAdapter();
                         playlistDetailDialog.dismiss();

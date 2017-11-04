@@ -31,7 +31,7 @@ public class SettingsFragment extends DialogFragment {
             mainActivity = (MainActivity) inflater.getContext();
             ll = (LinearLayout) inflater.inflate(R.layout.settings, container, false);
             ll.findViewById(R.id.change_theme).setOnClickListener(changeThemeButtonListener());
-            ((TextView)ll.findViewById(R.id.theme_name)).setText(MainActivity.currentTheme.getName());
+            ((TextView)ll.findViewById(R.id.theme_name)).setText(mainActivity.getBeanContext().getThemeService().getCurrentTheme().getName());
 
             ((Switch)ll.findViewById(R.id.sound_levels_switch)).setChecked(mainActivity.getTrackControllerAdapter().isVisualizerOn());
             ll.findViewById(R.id.sound_levels_switch).setOnClickListener(new View.OnClickListener() {
@@ -49,7 +49,7 @@ public class SettingsFragment extends DialogFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainActivity.setCurrentTheme(MainActivity.currentTheme==Theme.Dark? Theme.Light: Theme.Dark);
+                mainActivity.getBeanContext().getThemeService().setCurrentTheme(mainActivity.getBeanContext().getThemeService().getCurrentTheme()==Theme.Dark? Theme.Light: Theme.Dark);
                 TaskStackBuilder.create(getActivity())
                         .addNextIntent(new Intent(getActivity(), MainActivity.class))
                         .addNextIntent(getActivity().getIntent())

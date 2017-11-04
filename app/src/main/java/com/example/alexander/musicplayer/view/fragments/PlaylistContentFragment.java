@@ -66,16 +66,16 @@ public class PlaylistContentFragment extends Fragment {
 
     /** Add/remove files from playlist handler */
     private View.OnClickListener getChooseFilesButtonListener(){
-        final List<String> tracks = mainActivity.getSongService().getPaths(currentPlaylist.getSongs());
+        final List<String> tracks = mainActivity.getBeanContext().getSongService().getPaths(currentPlaylist.getSongs());
         final View.OnClickListener callback = new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mainActivity.getSongService().updateSongs(currentPlaylist, tracks);
+                mainActivity.getBeanContext().getSongService().updateSongs(currentPlaylist, tracks);
             }
         };
         return new View.OnClickListener() {
             public void onClick(View v) {
-                mainActivity.showChooseFilesFragment((ArrayList<String>) tracks, callback);
+                mainActivity.getBeanContext().getViewChanger().showChooseFilesFragment((ArrayList<String>) tracks, callback);
             }
         };
     }
@@ -117,7 +117,7 @@ public class PlaylistContentFragment extends Fragment {
                 trackDetailsDialog.setRemoveCallBack(new TrackCallBack() {
                     @Override
                     public void invoke(Song song) {
-                        mainActivity.getSongsDAO().deleteSongWithRelations(song);
+                        mainActivity.getBeanContext().getSongsDAO().deleteSongWithRelations(song);
                         currentPlaylist.getSongs().remove(song);
                         trackListAdapter.notifyDataSetChanged();
                     }

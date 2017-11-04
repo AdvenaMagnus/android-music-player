@@ -19,8 +19,7 @@ public class SongService {
 
     SongsDAO songsDAO;
 
-    public SongService(SongsDAO songsDAO){
-        this.songsDAO = songsDAO;
+    public SongService(){
     }
 
     public List<String> getPaths(List<Song> songs){
@@ -92,4 +91,7 @@ public class SongService {
         );
     }
 
+    public void setSongsDAO(SongsDAO songsDAO) {
+        this.songsDAO = songsDAO;
+    }
 }
