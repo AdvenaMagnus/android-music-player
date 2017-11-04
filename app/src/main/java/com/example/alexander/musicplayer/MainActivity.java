@@ -37,7 +37,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     TrackControllerAdapter trackControllerAdapter;
-    public List<Playlist> playlists = new ArrayList<>();
 
     BeanContext beanContext;
 
@@ -49,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if(beanContext.getTrackController() != null){
-            playlists = beanContext.getTrackController().getPlaylist()!=null? beanContext.getPlaylistDAO().getAllPlayLists(beanContext.getTrackController().getPlaylist()): beanContext.getPlaylistDAO().getAllPlayLists();
+            beanContext.setPlaylists(beanContext.getTrackController().getPlaylist()!=null?
+                    beanContext.getPlaylistDAO().getAllPlayLists(beanContext.getTrackController().getPlaylist()):
+                    beanContext.getPlaylistDAO().getAllPlayLists());
             beanContext.injectInTrackController();
         } else {
-            playlists = beanContext.getPlaylistDAO().getAllPlayLists();
-            Playlist playlist = beanContext.getCurrentPlaylistStorageService().getLastPlayList(playlists);
+            beanContext.setPlaylists(beanContext.getPlaylistDAO().getAllPlayLists());
+            Playlist playlist = beanContext.getCurrentPlaylistStorageService().getLastPlayList(beanContext.getPlaylists());
             beanContext.setTrackController(new TrackController(playlist));
             beanContext.injectInTrackController();
         }
@@ -138,11 +139,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         trackControllerAdapter.onDestroy();
         System.gc();
-    }
-
-
-    public List<Playlist> getPlaylists() {
-        return playlists;
     }
 
     public TrackControllerAdapter getTrackControllerAdapter() {

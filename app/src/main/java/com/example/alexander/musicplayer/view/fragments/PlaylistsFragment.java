@@ -1,7 +1,7 @@
 package com.example.alexander.musicplayer.view.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +12,17 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
+import com.example.alexander.musicplayer.controller.callbacks.CreatePlaylistCallback;
+import com.example.alexander.musicplayer.controller.TrackController;
+import com.example.alexander.musicplayer.controller.ViewChanger;
+import com.example.alexander.musicplayer.model.PlaylistDAO;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.controller.PlaylistService;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alexander on 18.08.2017.
@@ -28,17 +32,22 @@ public class PlaylistsFragment extends Fragment {
 
     LinearLayout ll;
     ListView playListsListView;
-    MainActivity mainActivity;
+    //MainActivity mainActivity;
+
+    ViewChanger viewChanger;
+    List<Playlist> playlists;
+    PlaylistDAO playlistDAO;
+    TrackController trackController;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if(ll==null) {
-            mainActivity = (MainActivity) inflater.getContext();
+            Context ctx = inflater.getContext();
             ll = (LinearLayout) inflater.inflate(R.layout.playlists, container, false);
             Button buttonCreateNewPlaylist = ll.findViewById(R.id.create_new_playlist);
             buttonCreateNewPlaylist.setOnClickListener(getCreateNewPlaylistListener());
-            prepareListOfPlaylists(mainActivity);
+            prepareListOfPlaylists(ctx);
         }
         refreshAdapter();
         return ll;
@@ -47,78 +56,72 @@ public class PlaylistsFragment extends Fragment {
     private View.OnClickListener getCreateNewPlaylistListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
-                openDialogToCreatePlaylist();
+                viewChanger.openDialogToCreatePlaylist(new CreatePlaylistCallback() {
+                    public void invoke(String name) {
+                        Playlist playlist = playlistDAO.createNew(name);
+                        playlist.setSongs(new ArrayList<Song>());
+                        playlists.add(playlist);
+                        viewChanger.showPlayListContent(playlist);
+                    }
+                });
             }
         };
     }
 
     private void refreshAdapter(){
         ((ArrayAdapter) playListsListView.getAdapter()).clear();
-        ((ArrayAdapter) playListsListView.getAdapter()).addAll(PlaylistService.playlistsNames(mainActivity.getPlaylists()));
+        ((ArrayAdapter) playListsListView.getAdapter()).addAll(PlaylistService.playlistsNames(playlists));
     }
 
-    private void openDialogToCreatePlaylist(){
-        final CreatePlayListDialog dialog = new CreatePlayListDialog();
-        dialog.setOnOkClick(new View.OnClickListener() {
-            public void onClick(View v) {
-                Playlist playlist = mainActivity.getBeanContext().getPlaylistDAO().createNew(dialog.getPlayListName());
-                playlist.setSongs(new ArrayList<Song>());
-                mainActivity.playlists.add(playlist);
-                mainActivity.getBeanContext().getViewChanger().showPlayListContent(playlist);
-            }
-        });
-//        dialog.setOnCancelCallback(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                //mainActivity.playlists.remove(playlist);
-//            }
-//        });
-        dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        dialog.show(mainActivity.getFragmentManager(), "Create playlist");
-    }
-
-    private void prepareListOfPlaylists(MainActivity mainActivity){
+    private void prepareListOfPlaylists(Context ctx){
         playListsListView = ll.findViewById(R.id.playlists);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mainActivity,
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ctx,
                 android.R.layout.simple_list_item_1, new ArrayList<String>());
         playListsListView.setAdapter(adapter);
-        playListsListView.setOnItemClickListener(getOnPlaylistClickListener(mainActivity));
-        playListsListView.setOnItemLongClickListener(getOnLongClickListener(mainActivity));
+        playListsListView.setOnItemClickListener(getOnPlaylistClickListener());
+        playListsListView.setOnItemLongClickListener(getOnLongClickListener());
     }
 
-    private AdapterView.OnItemClickListener getOnPlaylistClickListener(final MainActivity mainActivity){
+    private AdapterView.OnItemClickListener getOnPlaylistClickListener(){
         return new AdapterView.OnItemClickListener(){
             @Override
-            public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
-                // adapter.getItemAtPosition(position) returns String - name of playlist, not the playlist
-                mainActivity.getBeanContext().getViewChanger().showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), mainActivity.getPlaylists()));
+            public void onItemClick(AdapterView<?>adapter, View v, int position, long id){
+                /** adapter.getItemAtPosition(position) returns String - name of playlist, not the playlist */
+                viewChanger.showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), playlists));
             }
         };
     }
 
-    private AdapterView.OnItemLongClickListener getOnLongClickListener(final MainActivity mainActivity){
+    private AdapterView.OnItemLongClickListener getOnLongClickListener(){
         return new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
-                final PlaylistDetailDialog playlistDetailDialog = new PlaylistDetailDialog();
-                playlistDetailDialog.setPlaylist(mainActivity.playlists.get(i));
-                playlistDetailDialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-                playlistDetailDialog.setDeleteCallback(new View.OnClickListener() {
+                viewChanger.showPlaylistDetailsDialog(playlists.get(i), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(mainActivity.getBeanContext().getTrackController().getPlaylist() == mainActivity.playlists.get(i)){
-                            mainActivity.getBeanContext().getTrackController().setPlaylist(null);
+                        if(trackController.getPlaylist() == playlists.get(i)){
+                            trackController.setPlaylist(null);
                         }
-                        mainActivity.getBeanContext().getPlaylistDAO().deletePlaylist(mainActivity.playlists.get(i));
-                        mainActivity.playlists.remove(i);
+                        playlistDAO.deletePlaylist(playlists.get(i));
+                        playlists.remove(i);
                         refreshAdapter();
-                        playlistDetailDialog.dismiss();
                     }
                 });
-                playlistDetailDialog.show(mainActivity.getFragmentManager(), "Playlist Details");
                 return true;
             }
         };
     }
 
-
+    public void setViewChanger(ViewChanger viewChanger) {
+        this.viewChanger = viewChanger;
+    }
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
+    }
+    public void setPlaylistDAO(PlaylistDAO playlistDAO) {
+        this.playlistDAO = playlistDAO;
+    }
+    public void setTrackController(TrackController trackController) {
+        this.trackController = trackController;
+    }
 }

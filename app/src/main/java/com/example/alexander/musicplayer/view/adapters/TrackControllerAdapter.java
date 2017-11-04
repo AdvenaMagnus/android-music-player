@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.controller.TrackController;
-import com.example.alexander.musicplayer.controller.TrackObserver;
+import com.example.alexander.musicplayer.controller.callbacks.TrackObserver;
 import com.example.alexander.musicplayer.model.entities.Song;
 import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
 
@@ -69,7 +68,6 @@ public class TrackControllerAdapter extends BaseAdapter{
             public void update(int i, Song song) {
                 setupTrack(song);
                 playButtonAction();
-                runVisualizer(mediaPlayer.getAudioSessionId());
             }
         });
 
@@ -92,7 +90,6 @@ public class TrackControllerAdapter extends BaseAdapter{
         if(trackController!=null && trackController.getCurrentTrack()!=null){
             setupTrack(trackController.getCurrentTrack());
             mediaPlayer.seekTo((int) trackController.getPlaylist().getCurrentTrackLastStop());
-            runVisualizer(mediaPlayer.getAudioSessionId());
         }
 
     }
@@ -105,6 +102,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         mediaPlayer.setLooping(false);
         mediaPlayer.setOnCompletionListener(getOnCompletionListener());
         setSongInfo(song);
+        runVisualizer(mediaPlayer.getAudioSessionId());
     }
 
     /**Play button handler */

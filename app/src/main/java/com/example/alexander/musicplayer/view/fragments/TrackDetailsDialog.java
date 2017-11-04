@@ -9,9 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
-import com.example.alexander.musicplayer.controller.SongService;
-import com.example.alexander.musicplayer.controller.TrackCallBack;
-import com.example.alexander.musicplayer.model.entities.Playlist;
+import com.example.alexander.musicplayer.controller.callbacks.TrackCallBack;
 import com.example.alexander.musicplayer.model.entities.Song;
 
 import java.util.HashMap;

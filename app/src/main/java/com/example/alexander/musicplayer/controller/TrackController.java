@@ -1,14 +1,10 @@
 package com.example.alexander.musicplayer.controller;
 
-import android.media.MediaPlayer;
-
+import com.example.alexander.musicplayer.controller.callbacks.TrackObserver;
 import com.example.alexander.musicplayer.model.PlaylistDAO;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.WeakHashMap;
 
 /**
@@ -28,7 +24,11 @@ public class TrackController {
     private WeakHashMap<String, TrackObserver> resumeRunningSongObserverList = new WeakHashMap<>();
 
     public TrackController(Playlist playlist){
-        this.playlist = playlist;
+        if(playlist!=null) {
+            this.playlist = playlist;
+            if (playlist.getCurrentTrack() != null)
+                currentTrackNumber = playlist.getSongs().indexOf(playlist.getCurrentTrack());
+        }
     }
 
     public void playSong(int i){

@@ -36,6 +36,7 @@ public class PlaylistDetailDialog extends DialogFragment {
             public void onClick(View view) {
                 if(deleteCallback!=null)
                     deleteCallback.onClick(view);
+                PlaylistDetailDialog.this.dismiss();
             }
         });
 

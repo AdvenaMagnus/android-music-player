@@ -5,8 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.alexander.musicplayer.model.PlaylistDAO;
 import com.example.alexander.musicplayer.model.SongsDAO;
+import com.example.alexander.musicplayer.model.entities.Playlist;
+import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
+import com.example.alexander.musicplayer.view.fragments.PlaylistsFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Alexander on 04.11.2017.
@@ -16,12 +21,14 @@ public class BeanContext {
 
     static TrackController trackController;
 
+    List<Playlist> playlists = new ArrayList<>();
+
     SongsDAO songsDAO = new SongsDAO();
     PlaylistService playlistService = new PlaylistService();
     PlaylistDAO playlistDAO = new PlaylistDAO();
     SongService songService = new SongService();
     CurrentPlaylistStorageService currentPlaylistStorageService = new CurrentPlaylistStorageService();
-    ViewChanger viewChanger = new ViewChanger();
+    ViewChanger viewChanger = new ViewChanger(this);
     ThemeService themeService = new ThemeService();
 
     public BeanContext(){
@@ -52,6 +59,19 @@ public class BeanContext {
         themeService.setActivity(activity);
     }
 
+    public void injectInPlaylistContentFragment(PlaylistContentFragment playlistContentFragment){
+        playlistContentFragment.setTrackController(trackController);
+        playlistContentFragment.setSongsDAO(songsDAO);
+        playlistContentFragment.setSongService(songService);
+        playlistContentFragment.setViewChanger(viewChanger);
+    }
+
+    public void injectInPlaylistsFragment(PlaylistsFragment playlistsFragment){
+        playlistsFragment.setTrackController(trackController);
+        playlistsFragment.setViewChanger(viewChanger);
+        playlistsFragment.setPlaylists(playlists);
+        playlistsFragment.setPlaylistDAO(playlistDAO);
+    }
 
     public SongsDAO getSongsDAO() {
         return songsDAO;
@@ -80,6 +100,13 @@ public class BeanContext {
     }
     public static void setTrackController(TrackController trackController) {
         BeanContext.trackController = trackController;
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
     }
 
     private static HashMap<String, Boolean> extensionsToFilter = new HashMap<>(); // Permitted files

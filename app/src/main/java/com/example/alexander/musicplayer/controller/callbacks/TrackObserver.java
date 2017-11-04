@@ -1,4 +1,4 @@
-package com.example.alexander.musicplayer.controller;
+package com.example.alexander.musicplayer.controller.callbacks;
 
 import com.example.alexander.musicplayer.model.entities.Song;
 

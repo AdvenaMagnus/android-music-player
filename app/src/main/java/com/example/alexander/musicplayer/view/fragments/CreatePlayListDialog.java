@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.example.alexander.musicplayer.R;
+import com.example.alexander.musicplayer.controller.callbacks.CreatePlaylistCallback;
 
 /**
  * Created by Alexander on 18.08.2017.
@@ -16,16 +17,15 @@ import com.example.alexander.musicplayer.R;
 
 public class CreatePlayListDialog extends DialogFragment {
 
-    View.OnClickListener onOkClick;
-    View.OnClickListener onCancelCallback;
-    EditText playlistName;
+    CreatePlaylistCallback onOkClick;
+    EditText playlistNameView;
     String playListName;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         final LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.create_playlist_dialog, container, false);
-        playlistName = ll.findViewById(R.id.playlist_title);
+        playlistNameView = ll.findViewById(R.id.playlist_title);
         ll.findViewById(R.id.ok).setOnClickListener(getOkButtonListener());
         ll.findViewById(R.id.cancel).setOnClickListener(getCancelButtonListener());
         return ll;
@@ -34,9 +34,9 @@ public class CreatePlayListDialog extends DialogFragment {
     private View.OnClickListener getOkButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
-                //playlist.setName(playlistName.getText().toString());
-                playListName = playlistName.getText().toString();
-                if(onOkClick !=null) onOkClick.onClick(v);
+                //playlist.setName(playlistNameView.getText().toString());
+                playListName = playlistNameView.getText().toString();
+                if(onOkClick !=null) onOkClick.invoke(playListName);
                 CreatePlayListDialog.this.dismiss();
             }
         };
@@ -45,24 +45,13 @@ public class CreatePlayListDialog extends DialogFragment {
     private View.OnClickListener getCancelButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
-                if(onCancelCallback!=null) onCancelCallback.onClick(v);
                 CreatePlayListDialog.this.dismiss();
             }
         };
     }
 
-    public View.OnClickListener getOnOkClick() {
-        return onOkClick;
-    }
-    public void setOnOkClick(View.OnClickListener onOkClick) {
+    public void setOnOkClick(CreatePlaylistCallback onOkClick) {
         this.onOkClick = onOkClick;
-    }
-
-    public View.OnClickListener getOnCancelCallback() {
-        return onCancelCallback;
-    }
-    public void setOnCancelCallback(View.OnClickListener onCancelCallback) {
-        this.onCancelCallback = onCancelCallback;
     }
 
     public String getPlayListName() {
