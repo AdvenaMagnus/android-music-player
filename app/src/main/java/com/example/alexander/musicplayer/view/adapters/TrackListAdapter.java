@@ -9,12 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
-import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
-
-import java.util.HashMap;
 
 /**
  * Created by Alexander on 23.08.2017.
@@ -22,8 +19,11 @@ import java.util.HashMap;
 
 public class TrackListAdapter extends BaseAdapter {
 
-    TrackController trackController;
-    Playlist currentPlaylist;
+    private TrackController trackController;
+
+    /** Current listed playlist */
+    private Playlist currentPlaylist;
+
     private LayoutInflater lInflater;
 
     public TrackListAdapter(Context ctx, Playlist playlist, TrackController trackController){
@@ -49,26 +49,36 @@ public class TrackListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        LinearLayout ll;
-        Song song;
+        Song song = currentPlaylist.getSongs().get(i);
+        LinearLayout ll = getStyleForTrackView(i);
+        setSongViewNameAndMarkLastPlayed(ll, song, i);
+        setSongMetadata(ll, song);
+        return ll;
+    }
+
+    private LinearLayout getStyleForTrackView(int i){
         if(currentPlaylist.getSongs().get(i)==trackController.getCurrentTrack()) {
-            ll = (LinearLayout) lInflater.inflate(R.layout.track_layout_current, null, false);
-            song= trackController.getPlaylist().getSongs().get(i);
-
+            return (LinearLayout) lInflater.inflate(R.layout.track_layout_current, null, false);
         } else {
-            ll = (LinearLayout) lInflater.inflate(R.layout.track_layout, null, false);
-            song = currentPlaylist.getSongs().get(i);
+            return (LinearLayout) lInflater.inflate(R.layout.track_layout, null, false);
         }
-        ((TextView)ll.findViewById(R.id.song_title)).setText(song.getName());
-        ((TextView)ll.findViewById(R.id.song_duration)).setText(song.getMetadata().get("duration"));
+    }
 
+    private void setSongViewNameAndMarkLastPlayed(LinearLayout ll, Song song, int i){
+        TextView songTitle = ll.findViewById(R.id.song_title);
+        if(currentPlaylist.getSongs().get(i)==currentPlaylist.getCurrentTrack()){
+            songTitle.setText("(LAST) " + song.getName());
+        } else
+            songTitle.setText(song.getName());
+    }
+
+    private void setSongMetadata(LinearLayout ll, Song song){
+        ((TextView)ll.findViewById(R.id.song_duration)).setText(song.getMetadata().get("duration"));
         TextView songMeta = ll.findViewById(R.id.song_meta);
         songMeta.setSelected(true);
         if(song.getMetadata().get("artist")!=null && song.getMetadata().get("title")!=null)
             songMeta.setText(song.getMetadata().get("artist") + " - " + song.getMetadata().get("title"));
         else songMeta.setText("");
-
-        return ll;
     }
 
 //    public void setCurrentTrack(int i){

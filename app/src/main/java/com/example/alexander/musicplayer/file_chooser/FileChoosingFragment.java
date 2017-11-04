@@ -8,16 +8,13 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.alexander.musicplayer.MainActivity;
 import com.example.alexander.musicplayer.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class FileChoosingFragment extends Fragment {
     ListView listView;
     List<String> paths;
 
-    View.OnClickListener callback;
+    View.OnClickListener okButtonCallback;
     private HashMap<String, Boolean> extensionsToFilter;
 
 
@@ -49,7 +46,7 @@ public class FileChoosingFragment extends Fragment {
         buttonForChosingFiles.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        if(callback!=null) callback.onClick(v);
+                        if(okButtonCallback !=null) okButtonCallback.onClick(v);
                         ((FragmentActivity)inflater.getContext()).getSupportFragmentManager().popBackStack();
                     }
                 }
@@ -71,8 +68,8 @@ public class FileChoosingFragment extends Fragment {
 //    }
 
     /** Callback when exiting files chooser */
-    public void setCallback(View.OnClickListener callback) {
-        this.callback = callback;
+    public void setOkButtonCallback(View.OnClickListener okButtonCallback) {
+        this.okButtonCallback = okButtonCallback;
     }
 
     public void setExtensionsToFilter(HashMap<String, Boolean> extensionsToFilter) {

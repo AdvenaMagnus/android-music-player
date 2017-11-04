@@ -17,13 +17,12 @@ import java.util.WeakHashMap;
 
 public class TrackController {
 
-    PlaylistDAO playlistDAO;
+    private PlaylistDAO playlistDAO;
+    private CurrentPlaylistStorageService currentPlaylistStorageService;
 
     private Playlist playlist;
-//    private Song currentTrack;
     private int currentTrackNumber;
     private boolean isNowPlaying = false;
-    private CurrentPlaylistStorageService currentPlaylistStorageService;
     private WeakHashMap<String, TrackObserver> startRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> pauseRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> resumeRunningSongObserverList = new WeakHashMap<>();
@@ -39,7 +38,6 @@ public class TrackController {
             } else {
                 currentTrackNumber = 0;
             }
-            //currentTrack = playlist.getSongs().get(currentTrackNumber);
             playlist.setCurrentTrack(playlist.getSongs().get(currentTrackNumber));
             isNowPlaying = true;
             playlistDAO.updateCurrentSong(playlist, playlist.getSongs().get(currentTrackNumber), 0);
@@ -59,7 +57,6 @@ public class TrackController {
     public void pause(){
         isNowPlaying = false;
         for(TrackObserver observer : this.pauseRunningSongObserverList.values()){
-            //observer.update(currentTrackNumber, currentTrack);
             observer.update(currentTrackNumber, playlist.getCurrentTrack());
         }
     }
@@ -67,14 +64,12 @@ public class TrackController {
     public void resume(){
         isNowPlaying = true;
         for(TrackObserver observer : this.resumeRunningSongObserverList.values()){
-            //observer.update(currentTrackNumber, currentTrack);
             observer.update(currentTrackNumber, playlist.getCurrentTrack());
         }
     }
 
     void notifyAboutRunNewSong(){
         for(TrackObserver observer : this.startRunningSongObserverList.values()){
-            //observer.update(currentTrackNumber, currentTrack);
             observer.update(currentTrackNumber, playlist.getCurrentTrack());
         }
     }
@@ -99,7 +94,6 @@ public class TrackController {
     }
 
     public Song getCurrentTrack() {
-        //return currentTrack;
         return playlist!=null? playlist.getCurrentTrack(): null;
     }
 
@@ -107,8 +101,8 @@ public class TrackController {
         return isNowPlaying;
     }
 
-    public void updateLastSong(){
-
+    public void updateLastSongDuartion(long duration){
+        playlistDAO.updateCurrentSong(playlist, playlist.getCurrentTrack(), duration);
     }
 
     public void setPlaylistDAO(PlaylistDAO playlistDAO) {

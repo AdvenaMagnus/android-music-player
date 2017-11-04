@@ -67,13 +67,7 @@ public class TrackControllerAdapter extends BaseAdapter{
         this.trackController.registerStartRunningSongObserver(adapterName, new TrackObserver() {
             @Override
             public void update(int i, Song song) {
-                if(mediaPlayer!=null){
-                    mediaPlayer.stop();
-                }
-                mediaPlayer = MediaPlayer.create(ctx, Uri.parse(song.getPath()));
-                mediaPlayer.setLooping(false);
-                mediaPlayer.setOnCompletionListener(getOnCompletionListener());
-                setSongInfo(song);
+                setupTrack(song);
                 playButtonAction();
                 runVisualizer(mediaPlayer.getAudioSessionId());
             }
@@ -95,12 +89,22 @@ public class TrackControllerAdapter extends BaseAdapter{
         initMainControlButtons();
         initEq();
         runProgressBarUpdater();
-        if(trackController!=null){
-            if(trackController.getCurrentTrack()!=null)
-                setSongInfo(trackController.getCurrentTrack());
-        }
-        if(mediaPlayer!=null)
+        if(trackController!=null && trackController.getCurrentTrack()!=null){
+            setupTrack(trackController.getCurrentTrack());
+            mediaPlayer.seekTo((int) trackController.getPlaylist().getCurrentTrackLastStop());
             runVisualizer(mediaPlayer.getAudioSessionId());
+        }
+
+    }
+
+    private void setupTrack(Song song){
+        if(mediaPlayer!=null){
+            mediaPlayer.stop();
+        }
+        mediaPlayer = MediaPlayer.create(ctx, Uri.parse(song.getPath()));
+        mediaPlayer.setLooping(false);
+        mediaPlayer.setOnCompletionListener(getOnCompletionListener());
+        setSongInfo(song);
     }
 
     /**Play button handler */
@@ -157,6 +161,7 @@ public class TrackControllerAdapter extends BaseAdapter{
 //                        v.startAnimation(shake);
                         //playButtonAction();
                         if(trackController.isNowPlaying()){
+                            trackController.updateLastSongDuartion(mediaPlayer.getCurrentPosition());
                             trackController.pause();
                         } else trackController.resume();
                     }
@@ -258,7 +263,7 @@ public class TrackControllerAdapter extends BaseAdapter{
                 if(!(currentFragment instanceof PlaylistContentFragment && ((PlaylistContentFragment) currentFragment).getCurrentPlaylist() == trackController.getPlaylist())){
                     ((MainActivity)ctx).getBeanContext().getViewChanger().showPlayListContent(trackController.getPlaylist());
                 }
-                mainActivity.dl.closeDrawer(Gravity.LEFT);
+                mainActivity.getBeanContext().getViewChanger().closeSlide();
             }
         };
     }

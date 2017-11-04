@@ -37,9 +37,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     TrackControllerAdapter trackControllerAdapter;
-    static TrackController trackController;
     public List<Playlist> playlists = new ArrayList<>();
-    public DrawerLayout dl;
 
     BeanContext beanContext;
 
@@ -50,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
         beanContext.getThemeService().applyTheme();
         setContentView(R.layout.activity_main);
 
-        if(trackController != null){
-            playlists = trackController.getPlaylist()!=null? beanContext.getPlaylistDAO().getAllPlayLists(trackController.getPlaylist()): beanContext.getPlaylistDAO().getAllPlayLists();
-            beanContext.injectInTrackController(trackController);
+        if(beanContext.getTrackController() != null){
+            playlists = beanContext.getTrackController().getPlaylist()!=null? beanContext.getPlaylistDAO().getAllPlayLists(beanContext.getTrackController().getPlaylist()): beanContext.getPlaylistDAO().getAllPlayLists();
+            beanContext.injectInTrackController();
         } else {
             playlists = beanContext.getPlaylistDAO().getAllPlayLists();
             Playlist playlist = beanContext.getCurrentPlaylistStorageService().getLastPlayList(playlists);
-            trackController = new TrackController(playlist);
-            beanContext.injectInTrackController(trackController);
+            beanContext.setTrackController(new TrackController(playlist));
+            beanContext.injectInTrackController();
         }
 
         beanContext.getViewChanger().showPlayLists();
@@ -73,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
     /** Initialize track controller */
     private void setDrawerLayout(){
-        dl = (DrawerLayout) findViewById(R.id.drawer_layout);
-        trackControllerAdapter = new TrackControllerAdapter(this, trackController);
+        DrawerLayout dl = (DrawerLayout) findViewById(R.id.drawer_layout);
+        trackControllerAdapter = new TrackControllerAdapter(this, beanContext.getTrackController());
         ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(trackControllerAdapter);
 
@@ -96,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         // Set the drawer toggle as the DrawerListener
         dl.setDrawerListener(mDrawerToggle);
         setWidthForSlide(mDrawerList, 0.8f);
+        beanContext.getViewChanger().setDrawerLayout(dl);
     }
 
     /** Set width for track controller slide
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener getTrackControllerButtonListener(){
         return new View.OnClickListener() {
             public void onClick(View v) {
-                dl.openDrawer(Gravity.LEFT);
+                beanContext.getViewChanger().openSlide();
             }
         };
     }
@@ -144,10 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
     public List<Playlist> getPlaylists() {
         return playlists;
-    }
-
-    public static TrackController getTrackController() {
-        return trackController;
     }
 
     public TrackControllerAdapter getTrackControllerAdapter() {

@@ -33,7 +33,9 @@ import java.util.List;
 
 public class PlaylistContentFragment extends Fragment {
 
+    /** Current listed playlist */
     Playlist currentPlaylist;
+
     MainActivity mainActivity;
 
     @Override
@@ -43,7 +45,7 @@ public class PlaylistContentFragment extends Fragment {
         mainActivity = (MainActivity) inflater.getContext();
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.playlist_content, container, false);
 
-        final TrackListAdapter trackListAdapter = new TrackListAdapter(mainActivity, currentPlaylist, MainActivity.getTrackController());
+        final TrackListAdapter trackListAdapter = new TrackListAdapter(mainActivity, currentPlaylist, mainActivity.getBeanContext().getTrackController());
         ListView trackList = ll.findViewById(R.id.tracks_list);
         trackList.setAdapter(trackListAdapter);
         trackList.setOnItemClickListener(getOnTrackClickListener());
@@ -54,7 +56,7 @@ public class PlaylistContentFragment extends Fragment {
 
         ((TextView)ll.findViewById(R.id.playlist_title)).setText(currentPlaylist.getName());
 
-        MainActivity.getTrackController().registerStartRunningSongObserver("playListContent", new TrackObserver() {
+        mainActivity.getBeanContext().getTrackController().registerStartRunningSongObserver("playListContent", new TrackObserver() {
             @Override
             public void update(int i, Song song) {
                 trackListAdapter.notifyDataSetChanged();
@@ -96,11 +98,10 @@ public class PlaylistContentFragment extends Fragment {
             public void onItemClick(AdapterView<?>adapter,View v, int position, long id){
 //                Animation shake = AnimationUtils.loadAnimation(mainActivity, R.anim.rotation);
 //                v.startAnimation(shake);
-                mainActivity.dl.openDrawer(Gravity.LEFT);
+                mainActivity.getBeanContext().getViewChanger().openSlide();
                 //TrackControllerAdapter trackController = mainActivity.getTrackController();
-                TrackController trackController = mainActivity.getTrackController();
-                trackController.setPlaylist(currentPlaylist);
-                trackController.playSong(position);
+                mainActivity.getBeanContext().getTrackController().setPlaylist(currentPlaylist);
+                mainActivity.getBeanContext().getTrackController().playSong(position);
             }
         };
     }

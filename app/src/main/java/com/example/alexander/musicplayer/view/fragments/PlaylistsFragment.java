@@ -105,8 +105,8 @@ public class PlaylistsFragment extends Fragment {
                 playlistDetailDialog.setDeleteCallback(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(MainActivity.getTrackController().getPlaylist() == mainActivity.playlists.get(i)){
-                            MainActivity.getTrackController().setPlaylist(null);
+                        if(mainActivity.getBeanContext().getTrackController().getPlaylist() == mainActivity.playlists.get(i)){
+                            mainActivity.getBeanContext().getTrackController().setPlaylist(null);
                         }
                         mainActivity.getBeanContext().getPlaylistDAO().deletePlaylist(mainActivity.playlists.get(i));
                         mainActivity.playlists.remove(i);
@@ -114,9 +114,7 @@ public class PlaylistsFragment extends Fragment {
                         playlistDetailDialog.dismiss();
                     }
                 });
-
                 playlistDetailDialog.show(mainActivity.getFragmentManager(), "Playlist Details");
-
                 return true;
             }
         };

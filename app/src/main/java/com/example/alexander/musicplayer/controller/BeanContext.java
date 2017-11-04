@@ -14,6 +14,8 @@ import java.util.HashMap;
 
 public class BeanContext {
 
+    static TrackController trackController;
+
     SongsDAO songsDAO = new SongsDAO();
     PlaylistService playlistService = new PlaylistService();
     PlaylistDAO playlistDAO = new PlaylistDAO();
@@ -37,9 +39,11 @@ public class BeanContext {
         playlistDAO.setDb(db);
     }
 
-    public void injectInTrackController(TrackController trackController){
-        trackController.setPlaylistDAO(playlistDAO);
-        trackController.setCurrentPlaylistStorageService(currentPlaylistStorageService);
+    public void injectInTrackController(){
+        if(trackController!=null) {
+            trackController.setPlaylistDAO(playlistDAO);
+            trackController.setCurrentPlaylistStorageService(currentPlaylistStorageService);
+        } else throw new NullPointerException("Trying to inject in not existing Track Controller");
     }
 
     public void injectActivity(Activity activity){
@@ -69,6 +73,13 @@ public class BeanContext {
     }
     public ThemeService getThemeService() {
         return themeService;
+    }
+
+    public static TrackController getTrackController() {
+        return trackController;
+    }
+    public static void setTrackController(TrackController trackController) {
+        BeanContext.trackController = trackController;
     }
 
     private static HashMap<String, Boolean> extensionsToFilter = new HashMap<>(); // Permitted files
