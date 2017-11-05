@@ -22,6 +22,7 @@ public class TrackController {
     private WeakHashMap<String, TrackObserver> startRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> pauseRunningSongObserverList = new WeakHashMap<>();
     private WeakHashMap<String, TrackObserver> resumeRunningSongObserverList = new WeakHashMap<>();
+    private WeakHashMap<String, TrackObserver> changePlaylistObserverList = new WeakHashMap<>();
 
     public TrackController(Playlist playlist){
         if(playlist!=null) {
@@ -38,9 +39,11 @@ public class TrackController {
             } else {
                 currentTrackNumber = 0;
             }
-            playlist.setCurrentTrack(playlist.getSongs().get(currentTrackNumber));
+            if(playlist.getCurrentTrack()!=playlist.getSongs().get(currentTrackNumber)){
+                playlist.setCurrentTrack(playlist.getSongs().get(currentTrackNumber));
+                this.updateLastSongDuartion(0);
+            }
             isNowPlaying = true;
-            playlistDAO.updateCurrentSong(playlist, playlist.getSongs().get(currentTrackNumber), 0);
             currentPlaylistStorageService.updateLastPlaylist(playlist);
             notifyAboutRunNewSong();
         }
@@ -57,20 +60,20 @@ public class TrackController {
     public void pause(){
         isNowPlaying = false;
         for(TrackObserver observer : this.pauseRunningSongObserverList.values()){
-            observer.update(currentTrackNumber, playlist.getCurrentTrack());
+            observer.update(currentTrackNumber, playlist);
         }
     }
 
     public void resume(){
         isNowPlaying = true;
         for(TrackObserver observer : this.resumeRunningSongObserverList.values()){
-            observer.update(currentTrackNumber, playlist.getCurrentTrack());
+            observer.update(currentTrackNumber, playlist);
         }
     }
 
     void notifyAboutRunNewSong(){
         for(TrackObserver observer : this.startRunningSongObserverList.values()){
-            observer.update(currentTrackNumber, playlist.getCurrentTrack());
+            observer.update(currentTrackNumber, playlist);
         }
     }
 
@@ -85,11 +88,19 @@ public class TrackController {
     public void registerResumeRunningSongObserverList(String name, TrackObserver trackObserver){
         this.resumeRunningSongObserverList.put(name, trackObserver);
     }
+    public void registerChangePlaylistObserverList(String name, TrackObserver trackObserver){
+        this.changePlaylistObserverList.put(name, trackObserver);
+    }
 
     public Playlist getPlaylist() {
         return playlist;
     }
     public void setPlaylist(Playlist playlist) {
+        if(this.playlist!=playlist) {
+            for (TrackObserver observer : this.changePlaylistObserverList.values()) {
+                observer.update(currentTrackNumber, this.playlist);
+            }
+        }
         this.playlist = playlist;
     }
 
@@ -103,6 +114,7 @@ public class TrackController {
 
     public void updateLastSongDuartion(long duration){
         playlistDAO.updateCurrentSong(playlist, playlist.getCurrentTrack(), duration);
+        playlist.setCurrentTrackLastStop(duration);
     }
 
     public void setPlaylistDAO(PlaylistDAO playlistDAO) {

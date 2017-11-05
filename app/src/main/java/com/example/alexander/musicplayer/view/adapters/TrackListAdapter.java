@@ -1,6 +1,7 @@
 package com.example.alexander.musicplayer.view.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,8 @@ public class TrackListAdapter extends BaseAdapter {
     private void setSongViewNameAndMarkLastPlayed(LinearLayout ll, Song song, int i){
         TextView songTitle = ll.findViewById(R.id.song_title);
         if(currentPlaylist.getSongs().get(i)==currentPlaylist.getCurrentTrack()){
-            songTitle.setText("(LAST) " + song.getName());
+            songTitle.setText(song.getName());
+            songTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         } else
             songTitle.setText(song.getName());
     }

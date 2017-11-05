@@ -59,7 +59,7 @@ public class PlaylistContentFragment extends Fragment {
 
         trackController.registerStartRunningSongObserver("playListContent", new TrackObserver() {
             @Override
-            public void update(int i, Song song) {
+            public void update(int i, Playlist playlist) {
                 trackListAdapter.notifyDataSetChanged();
             }
         });

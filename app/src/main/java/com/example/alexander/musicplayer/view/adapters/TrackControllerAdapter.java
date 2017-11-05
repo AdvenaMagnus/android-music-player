@@ -25,6 +25,7 @@ import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.controller.SongService;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.callbacks.TrackObserver;
+import com.example.alexander.musicplayer.model.entities.Playlist;
 import com.example.alexander.musicplayer.model.entities.Song;
 import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
 
@@ -57,7 +58,7 @@ public class TrackControllerAdapter extends BaseAdapter{
 
     private TrackController trackController;
 
-    public TrackControllerAdapter(final Context ctx, TrackController trackController){
+    public TrackControllerAdapter(final Context ctx, final TrackController trackController){
         this.ctx = ctx;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         equilizerService = new EquilizerService();
@@ -65,22 +66,28 @@ public class TrackControllerAdapter extends BaseAdapter{
         this.trackController = trackController;
         this.trackController.registerStartRunningSongObserver(adapterName, new TrackObserver() {
             @Override
-            public void update(int i, Song song) {
-                setupTrack(song);
+            public void update(int i, Playlist playlist) {
+                setupTrack(playlist.getCurrentTrack(), playlist.getCurrentTrackLastStop());
                 playButtonAction();
             }
         });
 
         this.trackController.registerPauseRunningSongObserverList(adapterName, new TrackObserver() {
             @Override
-            public void update(int i, Song song) {
+            public void update(int i, Playlist playlist) {
                 playButtonAction();
             }
         });
         this.trackController.registerResumeRunningSongObserverList(adapterName, new TrackObserver() {
             @Override
-            public void update(int i, Song song) {
+            public void update(int i, Playlist playlist) {
                 playButtonAction();
+            }
+        });
+        this.trackController.registerChangePlaylistObserverList(adapterName, new TrackObserver() {
+            @Override
+            public void update(int i, Playlist playlist) {
+                trackController.updateLastSongDuartion(mediaPlayer.getCurrentPosition());
             }
         });
 
@@ -88,19 +95,18 @@ public class TrackControllerAdapter extends BaseAdapter{
         initEq();
         runProgressBarUpdater();
         if(trackController!=null && trackController.getCurrentTrack()!=null){
-            setupTrack(trackController.getCurrentTrack());
-            mediaPlayer.seekTo((int) trackController.getPlaylist().getCurrentTrackLastStop());
+            setupTrack(trackController.getCurrentTrack(), trackController.getPlaylist().getCurrentTrackLastStop());
         }
-
     }
 
-    private void setupTrack(Song song){
+    private void setupTrack(Song song, long startFrom){
         if(mediaPlayer!=null){
             mediaPlayer.stop();
         }
         mediaPlayer = MediaPlayer.create(ctx, Uri.parse(song.getPath()));
         mediaPlayer.setLooping(false);
         mediaPlayer.setOnCompletionListener(getOnCompletionListener());
+        mediaPlayer.seekTo((int) startFrom);
         setSongInfo(song);
         runVisualizer(mediaPlayer.getAudioSessionId());
     }
