@@ -87,7 +87,8 @@ public class TrackControllerAdapter extends BaseAdapter{
         this.trackController.registerChangePlaylistObserverList(adapterName, new TrackObserver() {
             @Override
             public void update(int i, Playlist playlist) {
-                trackController.updateLastSongDuartion(mediaPlayer.getCurrentPosition());
+                if(mediaPlayer!=null)
+                    trackController.updateLastSongDuartion(mediaPlayer.getCurrentPosition());
             }
         });
 
