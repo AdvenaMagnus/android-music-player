@@ -5,5 +5,5 @@ package com.example.alexander.musicplayer.controller.callbacks;
  */
 
 public interface CreatePlaylistCallback {
-    void invoke(String name);
+    boolean invoke(String name);
 }

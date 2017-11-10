@@ -14,7 +14,6 @@ import com.example.alexander.musicplayer.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,9 +28,8 @@ public class FilesListAdapter extends BaseAdapter {
     private List<File> files;
     private List<String> paths;
     private List<CheckBox> checkBoxes = new ArrayList<>();
-    private String initPath;
+    private String rootPath;
     private boolean firstElementIsPrevFolder = false;
-    private static String forbiddenDirectoryLevel = "/storage";
     private HashMap<String, Boolean> extensionsToFilter; // Permitted files
     private TextView currentPathTextView;
 
@@ -40,7 +38,7 @@ public class FilesListAdapter extends BaseAdapter {
         this.ctx = ctx;
         ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         paths = filePaths;
-        this.initPath = path;
+        this.rootPath = path;
         this.currentPathTextView = currentPath;
         updateFilesToShow(new File(path));
     }
@@ -109,7 +107,7 @@ public class FilesListAdapter extends BaseAdapter {
     void updateFilesToShow(File path) {
         ArrayList<File> filesInNewDir = new ArrayList<File>();
         createOnLevelUpLinkIfNeed(filesInNewDir, path);
-        //filesInNewDir.addAll(FileUtils.filesInDirectory(initPath.getAbsolutePath()));
+        //filesInNewDir.addAll(FileUtils.filesInDirectory(rootPath.getAbsolutePath()));
         HashMap<String, List<File>> filesAndDirs = FileUtils.filesInDirectoryHMap(path.getAbsolutePath());
         filesInNewDir.addAll(filesAndDirs.get("dirs"));
 
@@ -126,7 +124,7 @@ public class FilesListAdapter extends BaseAdapter {
 
     /** If not a root path - create level up link */
     private void createOnLevelUpLinkIfNeed(ArrayList<File> filesInNewDir, File path){
-        if (path.getParentFile()!=null && !path.getParentFile().getAbsolutePath().equals(forbiddenDirectoryLevel)) {
+        if (!path.getAbsolutePath().equals(rootPath)) {
             filesInNewDir.add(path.getParentFile());
             firstElementIsPrevFolder = true;
         } else firstElementIsPrevFolder = false;

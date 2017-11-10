@@ -38,6 +38,7 @@ public class PlaylistsFragment extends Fragment {
     List<Playlist> playlists;
     PlaylistDAO playlistDAO;
     TrackController trackController;
+    PlaylistService playlistService;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -57,11 +58,18 @@ public class PlaylistsFragment extends Fragment {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 viewChanger.openDialogToCreatePlaylist(new CreatePlaylistCallback() {
-                    public void invoke(String name) {
-                        Playlist playlist = playlistDAO.createNew(name);
-                        playlist.setSongs(new ArrayList<Song>());
-                        playlists.add(playlist);
-                        viewChanger.showPlayListContent(playlist);
+                    public boolean invoke(String name) {
+                        boolean result=false;
+                        if(!name.isEmpty()) {
+                            if (playlistService.getPlayListByName(name, playlists) == null) {
+                                Playlist playlist = playlistDAO.createNew(name);
+                                playlist.setSongs(new ArrayList<Song>());
+                                playlists.add(playlist);
+                                viewChanger.showPlayListContent(playlist);
+                                return true;
+                            }
+                        }
+                        return result;
                     }
                 });
             }
@@ -70,7 +78,7 @@ public class PlaylistsFragment extends Fragment {
 
     private void refreshAdapter(){
         ((ArrayAdapter) playListsListView.getAdapter()).clear();
-        ((ArrayAdapter) playListsListView.getAdapter()).addAll(PlaylistService.playlistsNames(playlists));
+        ((ArrayAdapter) playListsListView.getAdapter()).addAll(playlistService.playlistsNames(playlists));
     }
 
     private void prepareListOfPlaylists(Context ctx){
@@ -87,7 +95,7 @@ public class PlaylistsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?>adapter, View v, int position, long id){
                 /** adapter.getItemAtPosition(position) returns String - name of playlist, not the playlist */
-                viewChanger.showPlayListContent(PlaylistService.getPlayListByName((String)adapter.getItemAtPosition(position), playlists));
+                viewChanger.showPlayListContent(playlistService.getPlayListByName((String)adapter.getItemAtPosition(position), playlists));
             }
         };
     }
@@ -123,5 +131,8 @@ public class PlaylistsFragment extends Fragment {
     }
     public void setTrackController(TrackController trackController) {
         this.trackController = trackController;
+    }
+    public void setPlaylistService(PlaylistService playlistService) {
+        this.playlistService = playlistService;
     }
 }

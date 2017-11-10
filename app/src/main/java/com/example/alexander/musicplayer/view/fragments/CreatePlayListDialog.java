@@ -36,8 +36,11 @@ public class CreatePlayListDialog extends DialogFragment {
             public void onClick(View v) {
                 //playlist.setName(playlistNameView.getText().toString());
                 playListName = playlistNameView.getText().toString();
-                if(onOkClick !=null) onOkClick.invoke(playListName);
-                CreatePlayListDialog.this.dismiss();
+                if(onOkClick !=null) {
+                    if(onOkClick.invoke(playListName)) CreatePlayListDialog.this.dismiss();
+                }else {
+                    CreatePlayListDialog.this.dismiss();
+                }
             }
         };
     }

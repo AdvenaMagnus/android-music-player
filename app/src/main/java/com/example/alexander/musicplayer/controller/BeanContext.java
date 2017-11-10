@@ -71,6 +71,7 @@ public class BeanContext {
         playlistsFragment.setViewChanger(viewChanger);
         playlistsFragment.setPlaylists(playlists);
         playlistsFragment.setPlaylistDAO(playlistDAO);
+        playlistsFragment.setPlaylistService(playlistService);
     }
 
     public SongsDAO getSongsDAO() {

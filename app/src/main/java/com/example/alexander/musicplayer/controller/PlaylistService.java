@@ -15,7 +15,7 @@ import java.util.List;
 
 public class PlaylistService {
 
-    public static List<String> playlistsNames(List<Playlist> playlists){
+    public List<String> playlistsNames(List<Playlist> playlists){
         List<String> result =  new ArrayList<>();
         for(Playlist pl: playlists){
             result.add(pl.getName());
@@ -23,7 +23,7 @@ public class PlaylistService {
         return result;
     }
 
-    public static Playlist getPlayListByName(String name, List<Playlist> pls){
+    public Playlist getPlayListByName(String name, List<Playlist> pls){
         for(Playlist pl : pls){
             if(pl.getName().equals(name)) return pl;
         }
