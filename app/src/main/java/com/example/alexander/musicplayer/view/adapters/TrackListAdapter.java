@@ -57,6 +57,7 @@ public class TrackListAdapter extends BaseAdapter {
         return ll;
     }
 
+    /** Return different layout for song in playlist depending on whether the song is in track controller now */
     private LinearLayout getStyleForTrackView(int i){
         if(currentPlaylist.getSongs().get(i)==trackController.getCurrentTrack()) {
             return (LinearLayout) lInflater.inflate(R.layout.track_layout_current, null, false);
@@ -64,7 +65,7 @@ public class TrackListAdapter extends BaseAdapter {
             return (LinearLayout) lInflater.inflate(R.layout.track_layout, null, false);
         }
     }
-
+    /** If song is the last played track (or current) then mark it */
     private void setSongViewNameAndMarkLastPlayed(LinearLayout ll, Song song, int i){
         TextView songTitle = ll.findViewById(R.id.song_title);
         if(currentPlaylist.getSongs().get(i)==currentPlaylist.getCurrentTrack()){

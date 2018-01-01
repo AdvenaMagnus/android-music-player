@@ -33,7 +33,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily=""
                         android:gravity="center"
-                        android:text="Simple Music Player"
+                        android:text="Silvia Music Player"
                         android:textColor="?attr/color_second"
                         android:background="?attr/color_primary"
                         android:textSize="18dp" />

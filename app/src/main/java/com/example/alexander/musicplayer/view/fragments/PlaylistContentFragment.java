@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.controller.SongService;
+import com.example.alexander.musicplayer.controller.callbacks.PlaylistMenuDialogActionCallback;
 import com.example.alexander.musicplayer.controller.callbacks.TrackCallBack;
 import com.example.alexander.musicplayer.controller.TrackController;
 import com.example.alexander.musicplayer.controller.callbacks.TrackObserver;
@@ -52,10 +53,33 @@ public class PlaylistContentFragment extends Fragment {
         trackList.setOnItemClickListener(getOnTrackClickListener());
         trackList.setOnItemLongClickListener(getOnLongClickListener(trackListAdapter));
 
-        ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
-        ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
+//        ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
+//        ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
 
         ((TextView)ll.findViewById(R.id.playlist_title)).setText(currentPlaylist.getName());
+        ll.findViewById(R.id.playlist_title).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewChanger.openPlaylistMenuDialog(new PlaylistMenuDialogActionCallback() {
+                    @Override
+                    public void invoke(PlaylistMenuDialog.Buttons button) {
+                        if(button == PlaylistMenuDialog.Buttons.AddNewTracks){
+                            final List<String> tracks = songService.getPaths(currentPlaylist.getSongs());
+                            final View.OnClickListener callback = new View.OnClickListener(){
+                                @Override
+                                public void onClick(View view) {
+                                    songService.updateSongs(currentPlaylist, tracks);
+                                }
+                            };
+                            viewChanger.showChooseFilesFragment((ArrayList<String>) tracks, callback);
+                        }
+                        if(button == PlaylistMenuDialog.Buttons.BackToPlaylists){
+                            viewChanger.popBackStack();
+                        }
+                    }
+                });
+            }
+        });
 
         trackController.registerStartRunningSongObserver("playListContent", new TrackObserver() {
             @Override
@@ -107,7 +131,7 @@ public class PlaylistContentFragment extends Fragment {
         };
     }
 
-    /** Long click on track of playlist handler - show extra info about track/file */
+    /** Long click on playlist track handler - show extra info about track/file */
     private AdapterView.OnItemLongClickListener getOnLongClickListener(final TrackListAdapter trackListAdapter){
         return new AdapterView.OnItemLongClickListener(){
             @Override

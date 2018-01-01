@@ -4,7 +4,7 @@
     <dimen name="margin_eq">4dp</dimen>
     <dimen name="margin_top_layout">10dp</dimen>
 
-    <dimen name="button_width">100dp</dimen>
+    <dimen name="button_width">120dp</dimen>
     <dimen name="button_height">36dp</dimen>
     <dimen name="button_text_size">10dp</dimen>
     <dimen name="track_controller_song_info_titles_width">80dp</dimen>

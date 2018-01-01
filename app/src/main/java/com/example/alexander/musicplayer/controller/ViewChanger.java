@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 
 import com.example.alexander.musicplayer.R;
 import com.example.alexander.musicplayer.controller.callbacks.CreatePlaylistCallback;
+import com.example.alexander.musicplayer.controller.callbacks.PlaylistMenuDialogActionCallback;
 import com.example.alexander.musicplayer.controller.callbacks.TrackCallBack;
 import com.example.alexander.musicplayer.file_chooser.FileChoosingFragment;
 import com.example.alexander.musicplayer.model.entities.Playlist;
@@ -18,6 +19,7 @@ import com.example.alexander.musicplayer.model.entities.Song;
 import com.example.alexander.musicplayer.view.fragments.CreatePlayListDialog;
 import com.example.alexander.musicplayer.view.fragments.PlaylistContentFragment;
 import com.example.alexander.musicplayer.view.fragments.PlaylistDetailDialog;
+import com.example.alexander.musicplayer.view.fragments.PlaylistMenuDialog;
 import com.example.alexander.musicplayer.view.fragments.PlaylistsFragment;
 import com.example.alexander.musicplayer.view.fragments.SettingsFragment;
 import com.example.alexander.musicplayer.view.fragments.TrackDetailsDialog;
@@ -65,6 +67,13 @@ public class ViewChanger {
         dialog.setOnOkClick(onOkClickCallback);
         dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
         dialog.show(activity.getFragmentManager(), "Create playlist");
+    }
+
+    public void openPlaylistMenuDialog(PlaylistMenuDialogActionCallback onOkClickCallback){
+        PlaylistMenuDialog playlistMenuDialog = new PlaylistMenuDialog();
+        playlistMenuDialog.setCallback(onOkClickCallback);
+        playlistMenuDialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        playlistMenuDialog.show(activity.getFragmentManager(), "Playlist menu");
     }
 
     public void showPlaylistDetailsDialog(Playlist playlist, View.OnClickListener deleteCallback){

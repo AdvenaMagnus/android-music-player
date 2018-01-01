@@ -11,6 +11,7 @@ import java.util.WeakHashMap;
  * Created by Alexander on 26.08.2017.
  */
 
+/** Encapsulates information about currently playing track */
 public class TrackController {
 
     private PlaylistDAO playlistDAO;

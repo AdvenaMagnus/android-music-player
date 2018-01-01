@@ -36,6 +36,7 @@ import java.util.HashMap;
  * Created by Alexander on 16.08.2017.
  */
 
+/** Left slide */
 public class TrackControllerAdapter extends BaseAdapter{
 
     static final String adapterName = "trackControllerAdapter";
