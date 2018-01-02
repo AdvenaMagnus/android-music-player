@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0">
+    <path
+        android:fillColor="#FF4000"
+        android:pathData="M12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2c-1.1,0 -2,0.9 -2,2S10.9,8 12,8zM12,10c-1.1,0 -2,0.9 -2,2s0.9,2 2,2c1.1,0 2,-0.9 2,-2S13.1,10 12,10zM12,16c-1.1,0 -2,0.9 -2,2s0.9,2 2,2c1.1,0 2,-0.9 2,-2S13.1,16 12,16z" />
+</vector>
+<!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >-->
+    <!--<item>-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/second" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:top="2dp">-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/primary" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:top="4dp">-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/second" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:top="6dp">-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/primary" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:top="8dp">-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/second" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:top="10dp">-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/primary" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:top="12dp">-->
+        <!--<shape>-->
+            <!--<solid android:color="@color/second" />-->
+            <!--<size android:height="5dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--&lt;!&ndash;<item&ndash;&gt;-->
+        <!--&lt;!&ndash;android:left="0dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:right="0dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:top="3dp">&ndash;&gt;-->
+        <!--&lt;!&ndash;<shape android:shape="rectangle" >&ndash;&gt;-->
+            <!--&lt;!&ndash;<gradient&ndash;&gt;-->
+                <!--&lt;!&ndash;android:angle="-90"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:endColor="#000000"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:startColor="#3B3B3B" />&ndash;&gt;-->
+        <!--&lt;!&ndash;</shape>&ndash;&gt;-->
+    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+<!--</layer-list>-->

@@ -56,8 +56,25 @@ public class PlaylistContentFragment extends Fragment {
 //        ll.findViewById(R.id.buttonChooseFiles).setOnClickListener(getChooseFilesButtonListener());
 //        ll.findViewById(R.id.back).setOnClickListener(getBackButtonListener());
 
-        ((TextView)ll.findViewById(R.id.playlist_title)).setText(currentPlaylist.getName());
-        ll.findViewById(R.id.playlist_title).setOnClickListener(new View.OnClickListener() {
+        TextView playlistTitle = ll.findViewById(R.id.playlist_title);
+        playlistTitle.setText(currentPlaylist.getName());
+        //playlistTitle.setWidth((int)(playlistTitle.getWidth() + playlistTitle.getWidth()*0.3));
+        //ll.findViewById(R.id.playlist_title).setOnClickListener(openPlaylistMenuListener());
+        ll.findViewById(R.id.playlist_title_layout).setOnClickListener(openPlaylistMenuListener());
+
+        trackController.registerStartRunningSongObserver("playListContent", new TrackObserver() {
+            @Override
+            public void update(int i, Playlist playlist) {
+                trackListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        return ll;
+    }
+
+    /** Open dialog with menu for playlist */
+    private View.OnClickListener openPlaylistMenuListener(){
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewChanger.openPlaylistMenuDialog(new PlaylistMenuDialogActionCallback() {
@@ -79,16 +96,7 @@ public class PlaylistContentFragment extends Fragment {
                     }
                 });
             }
-        });
-
-        trackController.registerStartRunningSongObserver("playListContent", new TrackObserver() {
-            @Override
-            public void update(int i, Playlist playlist) {
-                trackListAdapter.notifyDataSetChanged();
-            }
-        });
-
-        return ll;
+        };
     }
 
     /** Add/remove files from playlist handler */

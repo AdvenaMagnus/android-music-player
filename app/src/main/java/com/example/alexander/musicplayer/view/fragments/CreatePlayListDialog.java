@@ -26,6 +26,7 @@ public class CreatePlayListDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         final LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.create_playlist_dialog, container, false);
         playlistNameView = ll.findViewById(R.id.playlist_title);
+        //playlistNameView.setText("Playlist 1");
         ll.findViewById(R.id.ok).setOnClickListener(getOkButtonListener());
         ll.findViewById(R.id.cancel).setOnClickListener(getCancelButtonListener());
         return ll;

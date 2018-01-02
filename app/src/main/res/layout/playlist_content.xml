@@ -5,40 +5,41 @@
     android:orientation="vertical"
     android:layout_marginTop="@dimen/margin_top_layout">
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:orientation="horizontal">-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/playlist_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="@dimen/margin_top_layout"
+        android:orientation="horizontal"
+        android:gravity="right">
 
-        <!--<Button-->
-            <!--android:id="@+id/buttonChooseFiles"-->
-            <!--android:layout_width="@dimen/button_width"-->
-            <!--android:layout_height="@dimen/button_height"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:text="+ Add tracks" />-->
+        <TextView
+            android:id="@+id/playlist_title_left_slope"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/trapeze_background"
+            android:text=""
+            android:textColor="?attr/color_primary"
+            android:textSize="15dp"/>
 
-        <!--<Button-->
-            <!--android:id="@+id/back"-->
-            <!--style="@style/BrandButtonStyleDarkFilled"-->
-            <!--android:layout_width="@dimen/button_width"-->
-            <!--android:layout_height="@dimen/button_height"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:text="Back" />-->
-    <!--</LinearLayout>-->
+        <TextView
+            android:id="@+id/playlist_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Playlist name"
+            android:textColor="?attr/color_primary"
+            android:background="?attr/color_second"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/playlist_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="right"
-        android:text="Playlist name"
-        android:textSize="17dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="3dp"/>
+        <TextView
+            android:id="@+id/playlist_title_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/three_dots"
+            android:textSize="20dp"/>
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
