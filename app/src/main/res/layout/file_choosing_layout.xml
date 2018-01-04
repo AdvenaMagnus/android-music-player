@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/margin_top_layout"
-    tools:context="com.example.alexander.musicplayer.file_chooser.FileChosingActivity">
+    tools:context="com.sogoodlabs.silvia.musicplayer.file_chooser.FileChosingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
