@@ -1,4 +1,4 @@
-package com.sogoodlabs.silvia.musicplayer.utils;
+package com.sogoodlabs.fileschooser.utils;
 
 import java.io.File;
 import java.util.ArrayList;

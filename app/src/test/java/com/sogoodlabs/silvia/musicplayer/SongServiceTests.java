@@ -25,7 +25,8 @@ public class SongServiceTests {
     @Test
     public void updateSongsTest(){
         SongsDAO mockSongsDao = mock(SongsDAO.class);
-        SongService songService = new SongService(mockSongsDao);
+        SongService songService = new SongService();
+        songService.setSongsDAO(mockSongsDao);
 
         String newTrack = "path1";
         Song newSong = new Song("song1", newTrack);
