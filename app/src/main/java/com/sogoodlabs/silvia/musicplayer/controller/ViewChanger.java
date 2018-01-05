@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.sogoodlabs.fileschooser.FileChoosingFragment;
-import com.sogoodlabs.fileschooser.FilesChooserViewAPI;
+import com.sogoodlabs.fileschooser.view.FilesChooserViewAPI;
 import com.sogoodlabs.silvia.musicplayer.R;
 import com.sogoodlabs.silvia.musicplayer.controller.callbacks.CreatePlaylistCallback;
 import com.sogoodlabs.silvia.musicplayer.controller.callbacks.PlaylistMenuDialogActionCallback;
@@ -36,12 +36,8 @@ import java.util.HashMap;
 public class ViewChanger {
 
     BeanContext beanContext;
-
     FragmentActivity activity;
-    HashMap<String, Boolean> extensionsToFilter;
-
     DrawerLayout drawerLayout;
-    FilesChooserViewAPI filesChooserViewAPI;
 
     public ViewChanger(BeanContext beanContext){
         this.beanContext = beanContext;
@@ -49,16 +45,10 @@ public class ViewChanger {
 
     /** Show fragment for files chooser and choose the files */
     public void showChooseFilesFragment(ArrayList<String> tracks, View.OnClickListener callback) {
-        if(filesChooserViewAPI==null){
-            filesChooserViewAPI = new FilesChooserViewImpl();
-        }
         FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
         fileChoosingFragment.setOkButtonCallback(callback);
-        fileChoosingFragment.setExtensionsToFilter(extensionsToFilter);
-        fileChoosingFragment.setViewAPI(filesChooserViewAPI);
-        Bundle args = new Bundle();
-        args.putStringArrayList("paths", tracks);
-        fileChoosingFragment.setArguments(args);
+        fileChoosingFragment.setConfiguration(beanContext.getFilesChooserConfiguration());
+        fileChoosingFragment.setPaths(tracks);
         activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fileChoosingFragment).addToBackStack(null).commit();
     }
 
@@ -132,9 +122,6 @@ public class ViewChanger {
             this.activity = (FragmentActivity) activity;
         else
             throw new ClassCastException("Must be FragmentActivity for injecting, but found " + activity.getClass().getName());
-    }
-    public void setExtensionsToFilter(HashMap<String, Boolean> extensionsToFilter) {
-        this.extensionsToFilter = extensionsToFilter;
     }
 
     public void setDrawerLayout(DrawerLayout drawerLayout) {

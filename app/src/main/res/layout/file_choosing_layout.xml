@@ -19,6 +19,7 @@
             android:id="@+id/backToMain"
             android:layout_width="@dimen/files_chooser_button_width"
             android:layout_height="@dimen/files_chooser_button_height"
+            style="@style/BrandButtonStyleDarkFilled"
             android:text="Ok"
             android:layout_marginRight="10dp"/>
 
@@ -26,7 +27,6 @@
             android:id="@+id/selectall"
             android:layout_width="@dimen/files_chooser_button_width"
             android:layout_height="@dimen/files_chooser_button_height"
-            style="@style/BrandButtonStyleDarkFilled"
             android:text="Select All"
             android:layout_marginLeft="10dp"/>
     </LinearLayout>

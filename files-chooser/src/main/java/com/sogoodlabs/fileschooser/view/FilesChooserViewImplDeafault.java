@@ -1,4 +1,6 @@
-package com.sogoodlabs.fileschooser;
+package com.sogoodlabs.fileschooser.view;
+
+import com.sogoodlabs.fileschooser.R;
 
 /**
  * Created by Alexander on 05.01.2018.

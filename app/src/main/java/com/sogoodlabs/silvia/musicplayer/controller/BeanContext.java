@@ -2,10 +2,13 @@ package com.sogoodlabs.silvia.musicplayer.controller;
 
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
+import com.sogoodlabs.fileschooser.configuration.FilesChooserConfiguration;
 import com.sogoodlabs.silvia.musicplayer.model.PlaylistDAO;
 import com.sogoodlabs.silvia.musicplayer.model.SongsDAO;
 import com.sogoodlabs.silvia.musicplayer.model.entities.Playlist;
+import com.sogoodlabs.silvia.musicplayer.view.FilesChooserViewImpl;
 import com.sogoodlabs.silvia.musicplayer.view.fragments.PlaylistContentFragment;
 import com.sogoodlabs.silvia.musicplayer.view.fragments.PlaylistsFragment;
 
@@ -23,13 +26,16 @@ public class BeanContext {
 
     List<Playlist> playlists = new ArrayList<>();
 
-    SongsDAO songsDAO = new SongsDAO();
-    PlaylistService playlistService = new PlaylistService();
-    PlaylistDAO playlistDAO = new PlaylistDAO();
-    SongService songService = new SongService();
-    CurrentPlaylistStorageService currentPlaylistStorageService = new CurrentPlaylistStorageService();
-    ViewChanger viewChanger = new ViewChanger(this);
-    ThemeService themeService = new ThemeService();
+    private SongsDAO songsDAO = new SongsDAO();
+    private PlaylistService playlistService = new PlaylistService();
+    private PlaylistDAO playlistDAO = new PlaylistDAO();
+    private SongService songService = new SongService();
+    private CurrentPlaylistStorageService currentPlaylistStorageService = new CurrentPlaylistStorageService();
+    private ViewChanger viewChanger = new ViewChanger(this);
+    private ThemeService themeService = new ThemeService();
+    private FilesChooserConfiguration filesChooserConfiguration = new FilesChooserConfiguration(extensionsToFilter,
+            new FilesChooserViewImpl(),
+            Environment.getExternalStorageDirectory().toString());
 
     public BeanContext(){
         songsDAO.setPlaylistDAO(playlistDAO);
@@ -38,7 +44,6 @@ public class BeanContext {
         playlistDAO.setSongService(songService);
         songService.setSongsDAO(songsDAO);
         currentPlaylistStorageService.setPlaylistService(playlistService);
-        viewChanger.setExtensionsToFilter(extensionsToFilter);
     }
 
     public void injectDB(SQLiteDatabase db){
@@ -94,6 +99,9 @@ public class BeanContext {
     }
     public ThemeService getThemeService() {
         return themeService;
+    }
+    public FilesChooserConfiguration getFilesChooserConfiguration() {
+        return filesChooserConfiguration;
     }
 
     public static TrackController getTrackController() {

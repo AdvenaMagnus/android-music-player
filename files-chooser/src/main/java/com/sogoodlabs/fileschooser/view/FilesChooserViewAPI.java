@@ -1,4 +1,4 @@
-package com.sogoodlabs.fileschooser;
+package com.sogoodlabs.fileschooser.view;
 
 /**
  * Created by Alexander on 05.01.2018.

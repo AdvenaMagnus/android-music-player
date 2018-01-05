@@ -1,6 +1,6 @@
 package com.sogoodlabs.silvia.musicplayer.view;
 
-import com.sogoodlabs.fileschooser.FilesChooserViewImplDeafault;
+import com.sogoodlabs.fileschooser.view.FilesChooserViewImplDeafault;
 import com.sogoodlabs.silvia.musicplayer.R;
 
 /**

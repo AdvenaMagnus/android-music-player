@@ -30,7 +30,7 @@ public class FileChosingActivity extends AppCompatActivity {
 //        updateFilesToShow(FileUtils.filesInDirectoryHMap(rootDir), "");
 
         listView = (ListView) findViewById(R.id.fileChoosingList);
-        listView.setAdapter(new FilesListAdapter(this, rootDir, paths, null, null, null));
+        //listView.setAdapter(new FilesListAdapter(this, rootDir, paths, null, null, null));
 
         Button buttonForChosingFiles = (Button)  findViewById(R.id.backToMain);
         buttonForChosingFiles.setOnClickListener(

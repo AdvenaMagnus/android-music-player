@@ -13,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sogoodlabs.fileschooser.configuration.FilesChooserConfiguration;
+import com.sogoodlabs.fileschooser.view.FilesChooserViewAPI;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,22 +29,23 @@ public class FileChoosingFragment extends Fragment {
     List<String> paths;
 
     View.OnClickListener okButtonCallback;
-    private HashMap<String, Boolean> extensionsToFilter;
-    FilesChooserViewAPI viewAPI;
+    FilesChooserConfiguration configuration;
 
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String rootDir = Environment.getExternalStorageDirectory().toString();
-        paths = getArguments().getStringArrayList("paths");
-        LinearLayout ll = (LinearLayout) inflater.inflate(viewAPI.fileChoosingLayout(), container, false);
-        listView = ll.findViewById(viewAPI.listView());
-        TextView currentPath = ll.findViewById(viewAPI.currentDirPathTextView());
-        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), rootDir, paths, extensionsToFilter, currentPath, viewAPI);
+        //String rootDir = Environment.getExternalStorageDirectory().toString();
+        //paths = getArguments().getStringArrayList("paths");
+        if(paths == null)
+            throw new NullPointerException("FileChoosingFragment.paths must not be null");
+        LinearLayout ll = (LinearLayout) inflater.inflate(configuration.getViewAPI().fileChoosingLayout(), container, false);
+        listView = ll.findViewById(configuration.getViewAPI().listView());
+        TextView currentPath = ll.findViewById(configuration.getViewAPI().currentDirPathTextView());
+        final FilesListAdapter filesListAdapter = new FilesListAdapter(inflater.getContext(), paths, currentPath, configuration);
         listView.setAdapter(filesListAdapter);
 
-        Button buttonForChosingFiles =  ll.findViewById(viewAPI.okButton());
+        Button buttonForChosingFiles =  ll.findViewById(configuration.getViewAPI().okButton());
         buttonForChosingFiles.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -51,7 +55,7 @@ public class FileChoosingFragment extends Fragment {
                 }
         );
 
-        ll.findViewById(viewAPI.selectAllButton()).setOnClickListener(
+        ll.findViewById(configuration.getViewAPI().selectAllButton()).setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         filesListAdapter.selectAll();
@@ -71,11 +75,14 @@ public class FileChoosingFragment extends Fragment {
         this.okButtonCallback = okButtonCallback;
     }
 
-    public void setExtensionsToFilter(HashMap<String, Boolean> extensionsToFilter) {
-        this.extensionsToFilter = extensionsToFilter;
+    public FilesChooserConfiguration getConfiguration() {
+        return configuration;
+    }
+    public void setConfiguration(FilesChooserConfiguration configuration) {
+        this.configuration = configuration;
     }
 
-    public void setViewAPI(FilesChooserViewAPI viewAPI) {
-        this.viewAPI = viewAPI;
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
     }
 }

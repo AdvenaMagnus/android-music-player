@@ -10,7 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.sogoodlabs.fileschooser.configuration.FilesChooserConfiguration;
 import com.sogoodlabs.fileschooser.utils.FileUtils;
+import com.sogoodlabs.fileschooser.view.FilesChooserViewAPI;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,21 +30,17 @@ public class FilesListAdapter extends BaseAdapter {
     private List<File> files;
     private List<String> paths;
     private List<CheckBox> checkBoxes = new ArrayList<>();
-    private String rootPath;
     private boolean firstElementIsPrevFolder = false;
-    private HashMap<String, Boolean> extensionsToFilter; // Permitted files
     private TextView currentPathTextView;
-    private FilesChooserViewAPI viewAPI;
+    FilesChooserConfiguration configuration;
 
-    public FilesListAdapter(Context ctx, String path, List<String> filePaths, HashMap<String, Boolean> extensionsToFilter, TextView currentPath, FilesChooserViewAPI viewAPI){
-        this.extensionsToFilter = extensionsToFilter;
+    public FilesListAdapter(Context ctx, List<String> filePaths, TextView currentPath, FilesChooserConfiguration configuration){
         this.ctx = ctx;
+        this.configuration = configuration;
         ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         paths = filePaths;
-        this.rootPath = path;
         this.currentPathTextView = currentPath;
-        this.viewAPI = viewAPI;
-        updateFilesToShow(new File(path));
+        updateFilesToShow(new File(this.configuration.getRootDir()));
     }
 
     @Override
@@ -71,7 +69,7 @@ public class FilesListAdapter extends BaseAdapter {
 
     /** Create list item for file */
     View createFileWidget(final File file){
-        CheckBox cb = (CheckBox) ltInflater.inflate(viewAPI.fileCheckBox(), null, false);
+        CheckBox cb = (CheckBox) ltInflater.inflate(configuration.getViewAPI().fileCheckBox(), null, false);
         cb.setText(file.getName());
         cb.setChecked(paths.contains(file.getAbsolutePath()));
         cb.setOnClickListener(new View.OnClickListener(){
@@ -87,8 +85,8 @@ public class FilesListAdapter extends BaseAdapter {
 
     /** Create list item for directory */
     View createDirWidget(final File file, String text){
-        LinearLayout ll = (LinearLayout) ltInflater.inflate(viewAPI.directoryLayout(), null, false);
-        TextView txv = ll.findViewById(viewAPI.directoryTextView());
+        LinearLayout ll = (LinearLayout) ltInflater.inflate(configuration.getViewAPI().directoryLayout(), null, false);
+        TextView txv = ll.findViewById(configuration.getViewAPI().directoryTextView());
         txv.setText(text);
         ll.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -113,9 +111,9 @@ public class FilesListAdapter extends BaseAdapter {
         HashMap<String, List<File>> filesAndDirs = FileUtils.filesInDirectoryHMap(path.getAbsolutePath());
         filesInNewDir.addAll(filesAndDirs.get("dirs"));
 
-        if(extensionsToFilter!=null) {
+        if(configuration.getExtensionsToFilter()!=null) {
             for(File file : filesAndDirs.get("files")){
-                if(extensionsToFilter.get(FileUtils.getExtension(file.getAbsolutePath()))!=null)
+                if(configuration.getExtensionsToFilter().get(FileUtils.getExtension(file.getAbsolutePath()))!=null)
                     filesInNewDir.add(file);
             }
         } else filesInNewDir.addAll(filesAndDirs.get("files"));
@@ -126,7 +124,7 @@ public class FilesListAdapter extends BaseAdapter {
 
     /** If not a root path - create level up link */
     private void createOnLevelUpLinkIfNeed(ArrayList<File> filesInNewDir, File path){
-        if (!path.getAbsolutePath().equals(rootPath)) {
+        if (!path.getAbsolutePath().equals(configuration.getRootDir())) {
             filesInNewDir.add(path.getParentFile());
             firstElementIsPrevFolder = true;
         } else firstElementIsPrevFolder = false;
