@@ -9,13 +9,15 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.sogoodlabs.fileschooser.FileChoosingFragment;
+import com.sogoodlabs.fileschooser.FilesChooserViewAPI;
 import com.sogoodlabs.silvia.musicplayer.R;
 import com.sogoodlabs.silvia.musicplayer.controller.callbacks.CreatePlaylistCallback;
 import com.sogoodlabs.silvia.musicplayer.controller.callbacks.PlaylistMenuDialogActionCallback;
 import com.sogoodlabs.silvia.musicplayer.controller.callbacks.TrackCallBack;
-import com.sogoodlabs.silvia.musicplayer.file_chooser.FileChoosingFragment;
 import com.sogoodlabs.silvia.musicplayer.model.entities.Playlist;
 import com.sogoodlabs.silvia.musicplayer.model.entities.Song;
+import com.sogoodlabs.silvia.musicplayer.view.FilesChooserViewImpl;
 import com.sogoodlabs.silvia.musicplayer.view.fragments.CreatePlayListDialog;
 import com.sogoodlabs.silvia.musicplayer.view.fragments.PlaylistContentFragment;
 import com.sogoodlabs.silvia.musicplayer.view.fragments.PlaylistDetailDialog;
@@ -39,6 +41,7 @@ public class ViewChanger {
     HashMap<String, Boolean> extensionsToFilter;
 
     DrawerLayout drawerLayout;
+    FilesChooserViewAPI filesChooserViewAPI;
 
     public ViewChanger(BeanContext beanContext){
         this.beanContext = beanContext;
@@ -46,9 +49,13 @@ public class ViewChanger {
 
     /** Show fragment for files chooser and choose the files */
     public void showChooseFilesFragment(ArrayList<String> tracks, View.OnClickListener callback) {
+        if(filesChooserViewAPI==null){
+            filesChooserViewAPI = new FilesChooserViewImpl();
+        }
         FileChoosingFragment fileChoosingFragment = new FileChoosingFragment();
         fileChoosingFragment.setOkButtonCallback(callback);
         fileChoosingFragment.setExtensionsToFilter(extensionsToFilter);
+        fileChoosingFragment.setViewAPI(filesChooserViewAPI);
         Bundle args = new Bundle();
         args.putStringArrayList("paths", tracks);
         fileChoosingFragment.setArguments(args);

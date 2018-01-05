@@ -1,6 +1,7 @@
-package com.sogoodlabs.silvia.musicplayer;
+package com.sogoodlabs.fileschooser;
 
-import com.sogoodlabs.silvia.musicplayer.utils.FileUtils;
+
+import com.sogoodlabs.fileschooser.utils.FileUtils;
 
 import org.junit.Test;
 

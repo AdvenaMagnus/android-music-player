@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,7 +24,6 @@
             android:id="@+id/selectall"
             android:layout_width="@dimen/files_chooser_button_width"
             android:layout_height="@dimen/files_chooser_button_height"
-            style="@style/BrandButtonStyleDarkFilled"
             android:text="Select All"
             android:layout_marginLeft="10dp"/>
     </LinearLayout>
@@ -44,8 +41,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/color_second"/>
+        android:layout_height="1dp"/>
 
     <ListView
         android:id="@+id/fileChoosingList"

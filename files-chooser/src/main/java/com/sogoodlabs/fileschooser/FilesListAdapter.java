@@ -1,4 +1,4 @@
-package com.sogoodlabs.silvia.musicplayer.file_chooser;
+package com.sogoodlabs.fileschooser;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sogoodlabs.silvia.musicplayer.R;
-import com.sogoodlabs.silvia.musicplayer.utils.FileUtils;
+
+import com.sogoodlabs.fileschooser.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,14 +32,16 @@ public class FilesListAdapter extends BaseAdapter {
     private boolean firstElementIsPrevFolder = false;
     private HashMap<String, Boolean> extensionsToFilter; // Permitted files
     private TextView currentPathTextView;
+    private FilesChooserViewAPI viewAPI;
 
-    public FilesListAdapter(Context ctx, String path, List<String> filePaths, HashMap<String, Boolean> extensionsToFilter, TextView currentPath){
+    public FilesListAdapter(Context ctx, String path, List<String> filePaths, HashMap<String, Boolean> extensionsToFilter, TextView currentPath, FilesChooserViewAPI viewAPI){
         this.extensionsToFilter = extensionsToFilter;
         this.ctx = ctx;
         ltInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         paths = filePaths;
         this.rootPath = path;
         this.currentPathTextView = currentPath;
+        this.viewAPI = viewAPI;
         updateFilesToShow(new File(path));
     }
 
@@ -69,7 +71,7 @@ public class FilesListAdapter extends BaseAdapter {
 
     /** Create list item for file */
     View createFileWidget(final File file){
-        CheckBox cb = (CheckBox) ltInflater.inflate(R.layout.file_chooser_checkbox, null, false);
+        CheckBox cb = (CheckBox) ltInflater.inflate(viewAPI.fileCheckBox(), null, false);
         cb.setText(file.getName());
         cb.setChecked(paths.contains(file.getAbsolutePath()));
         cb.setOnClickListener(new View.OnClickListener(){
@@ -85,8 +87,8 @@ public class FilesListAdapter extends BaseAdapter {
 
     /** Create list item for directory */
     View createDirWidget(final File file, String text){
-        LinearLayout ll = (LinearLayout) ltInflater.inflate(R.layout.file_chooser_dir, null, false);
-        TextView txv = ll.findViewById(R.id.text_for_directory);
+        LinearLayout ll = (LinearLayout) ltInflater.inflate(viewAPI.directoryLayout(), null, false);
+        TextView txv = ll.findViewById(viewAPI.directoryTextView());
         txv.setText(text);
         ll.setOnClickListener(new View.OnClickListener(){
             @Override

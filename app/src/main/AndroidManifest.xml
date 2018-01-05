@@ -22,8 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.sogoodlabs.silvia.musicplayer.file_chooser.FileChosingActivity">
-        </activity>
+        <!--<activity android:name="com.sogoodlabs.silvia.musicplayer.file_chooser.FileChosingActivity">-->
+        <!--</activity>-->
     </application>
 
 </manifest>
